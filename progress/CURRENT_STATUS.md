@@ -1,8 +1,8 @@
 # 📊 Project Progress — Resume Agent
 
-> **Last Updated:** Not started yet  
-> **Current Phase:** Phase 1 — Foundation & Project Skeleton  
-> **Overall Progress:** 0/10 phases complete
+> **Last Updated:** 2026-09-22  
+> **Current Phase:** Phase 2 — Profile Extraction & Identity  
+> **Overall Progress:** 1/10 phases complete
 
 ---
 
@@ -10,7 +10,7 @@
 
 | Phase | Name | Status | Date Completed | Commit Tag |
 |:---:|---|:---:|:---:|:---:|
-| 1 | Foundation & Project Skeleton | ⬜ Not Started | — | — |
+| 1 | Foundation & Project Skeleton | ✅ Completed | 2026-09-22 | `phase-1-foundation` |
 | 2 | Profile Extraction & Identity | ⬜ Not Started | — | — |
 | 3 | GitHub Sync & Portfolio Corpus | ⬜ Not Started | — | — |
 | 4 | Company Database & ATS Detection | ⬜ Not Started | — | — |
