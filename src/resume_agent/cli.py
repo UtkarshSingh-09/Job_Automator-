@@ -292,9 +292,112 @@ def github_group():
     """Sync repositories and compute project scores (Phase 3)."""
     pass
 
+
 @github_group.command("sync")
-def github_sync_cmd():
-    print_info("GitHub synchronization will be available in Phase 3.")
+@click.option("--username", default=None, help="GitHub username to sync (defaults to config)")
+@click.option("--offline", is_flag=True, help="Force offline sync from local overrides only")
+def github_sync_cmd(username: str | None, offline: bool):
+    """Sync candidate repositories, compute quality scores, and merge manual notes."""
+    from resume_agent.github.sync import sync_projects
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    user = username or settings.github_username
+    console.print(Panel.fit(
+        f"[bold cyan]Synchronizing Project Portfolio Corpus[/bold cyan]\n"
+        f"Target User: [bold]{user}[/bold] (Mode: {'Offline' if offline else 'Hybrid GitHub/Local'})",
+        title="GitHub Sync"
+    ))
+
+    projects = sync_projects(username=user, offline=offline)
+    print_success(f"Synchronized {len(projects)} projects into database!")
+
+    # Display summary table
+    _display_projects_table(projects)
+
+
+@cli.group("projects")
+def projects_group():
+    """Manage and inspect the candidate's project portfolio corpus."""
+    pass
+
+
+@projects_group.command("list")
+@click.option("--min-score", default=0.0, type=float, help="Filter projects by minimum quality score")
+def projects_list_cmd(min_score: float):
+    """List all candidate projects sorted by priority and quality score."""
+    from resume_agent.github.sync import get_all_projects
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    projects = get_all_projects(min_score=min_score)
+    if not projects:
+        print_info("No projects found in database. Run 'resume-agent github sync' first.")
+        return
+
+    _display_projects_table(projects)
+
+
+@projects_group.command("show")
+@click.argument("repo_name")
+def projects_show_cmd(repo_name: str):
+    """Show detailed metadata, manual notes, and metrics for a single project."""
+    from resume_agent.github.sync import get_project_by_repo
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    project = get_project_by_repo(repo_name)
+    if not project:
+        print_error(f"Project '{repo_name}' not found in database.")
+        return
+
+    priority_label = (
+        "[bold green]P0 (Top Priority)[/bold green]" if project.priority == 1 else
+        f"[yellow]Priority {project.priority}[/yellow]"
+    )
+
+    console.print(Panel.fit(
+        f"[bold white]{project.display_name}[/bold white] ({project.repo_name})\n"
+        f"Priority: {priority_label} | Quality Score: [bold green]{project.quality_score}/100[/bold green]\n"
+        f"Primary Language: [cyan]{project.primary_language}[/cyan] | Stars: ⭐ {project.stars} | Commits: {project.commit_count}\n"
+        f"Tests: {'[green]✔ Yes[/green]' if project.has_tests else '[red]✖ No[/red]'} | "
+        f"CI/CD: {'[green]✔ Yes[/green]' if project.has_ci else '[yellow]✖ No[/yellow]'} | "
+        f"Docker: {'[green]✔ Yes[/green]' if project.has_docker else '[yellow]✖ No[/yellow]'}\n\n"
+        f"[bold cyan]Description:[/bold cyan]\n{project.description}\n\n"
+        f"[bold cyan]Grounded Manual Notes (Verified Metrics):[/bold cyan]\n{project.manual_notes}",
+        title=f"Project Details: {project.display_name}"
+    ))
+
+
+def _display_projects_table(projects):
+    """Render Rich table of projects."""
+    table = Table(title="Candidate Project Portfolio Corpus", border_style="cyan")
+    table.add_column("Priority", justify="center", style="bold")
+    table.add_column("Display Name", style="bold white")
+    table.add_column("Repository", style="dim")
+    table.add_column("Language", style="cyan")
+    table.add_column("Score", justify="right", style="bold green")
+    table.add_column("Tests", justify="center")
+    table.add_column("Docker", justify="center")
+    table.add_column("CI", justify="center")
+
+    for p in projects:
+        p_badge = f"[bold green]P{p.priority}[/bold green]" if p.priority == 1 else f"P{p.priority}"
+        table.add_row(
+            p_badge,
+            p.display_name,
+            p.repo_name,
+            p.primary_language or "N/A",
+            f"{p.quality_score:.1f}",
+            "[green]✔[/green]" if p.has_tests else "[dim]—[/dim]",
+            "[green]✔[/green]" if p.has_docker else "[dim]—[/dim]",
+            "[green]✔[/green]" if p.has_ci else "[dim]—[/dim]",
+        )
+
+    console.print(table)
 
 @cli.group("companies")
 def companies_group():

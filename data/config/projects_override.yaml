@@ -1,0 +1,133 @@
+# ==============================================================================
+# Projects Grounding Corpus & Manual Notes Override
+# Candidate: Utkarsh Singh (UtkarshSingh-09)
+# Priority: 1 = Top Priority (P0), 2 = Secondary, 3 = Tertiary
+# ==============================================================================
+
+projects:
+  - repo_name: "merchantmind"
+    display_name: "MerchantMind"
+    priority: 1
+    include_override: true
+    primary_language: "Python"
+    languages: ["Python", "JavaScript", "SQL"]
+    topics: ["conversational-commerce", "multi-agent", "fastapi", "postgresql", "redis", "razorpay"]
+    has_tests: true
+    has_ci: true
+    has_docker: true
+    commit_count: 48
+    stars: 12
+    github_url: "https://github.com/UtkarshSingh-09/MerchantMind"
+    demo_url: "https://merchantmind.demo"
+    description: "Autonomous AI shopping & growth agent with multi-agent orchestration, atomic 3-phase checkout saga, and sub-650ms catalog retrieval."
+    manual_notes: |
+      • Built multi-agent conversational-commerce platform for natural-language and voice shopping across 200+ Bangalore stores and 5,000+ products.
+      • Achieved sub-650ms cached catalog retrieval using Redis multi-tier caching.
+      • Engineered atomic 3-phase checkout saga using PostgreSQL row-level locks, Razorpay Orders/Payment Links, idempotency keys, and HMAC-SHA256 webhooks to prevent duplicate charges and overselling.
+      • Implemented deterministic budget enforcement, occasion-based upselling, prompt injection sanitization, and Redis sliding-window rate limiting.
+      • Validated reliability with comprehensive 151-test security and integration test suite.
+
+  - repo_name: "trinetra"
+    display_name: "Trinetra"
+    priority: 1
+    include_override: true
+    primary_language: "Python"
+    languages: ["Python", "SQL"]
+    topics: ["financial-intelligence", "langgraph", "fastapi", "xgboost", "postgresql", "credit-risk"]
+    has_tests: true
+    has_ci: true
+    has_docker: true
+    commit_count: 52
+    stars: 18
+    github_url: "https://github.com/UtkarshSingh-09/Trinetra"
+    demo_url: ""
+    description: "Cross-Compliance Guardian (Patent Filed) — Autonomous financial document intelligence pipeline replacing 2-3 weeks of NBFC manual analysis."
+    manual_notes: |
+      • Built financial document intelligence pipeline ingesting ITR filings, GST records, annual reports, and bank statements to autonomously generate a 12-page Credit Assessment Memorandum in under 90 seconds.
+      • Replaced 2–3 weeks of manual credit risk analysis workflow at Non-Banking Financial Companies (NBFCs).
+      • Designed RESTful APIs coordinating 13 concurrent LangGraph agents with sub-second task scheduling for parallel multi-format document processing.
+      • Instrumented with health-check endpoints, structured logging, and observability metrics.
+      • Integrated XGBoost with SHAP/LIME explainability for transparent, auditable credit risk scoring meeting strict regulatory compliance standards.
+      • Patent filed for multi-agent financial compliance extraction architecture.
+
+  - repo_name: "aegis-forge"
+    display_name: "Aegis Forge"
+    priority: 1
+    include_override: true
+    primary_language: "Python"
+    languages: ["Python", "JavaScript"]
+    topics: ["voice-ai", "livekit", "webrtc", "fastapi", "mediapipe", "speech-to-text"]
+    has_tests: true
+    has_ci: true
+    has_docker: true
+    commit_count: 64
+    stars: 25
+    github_url: "https://github.com/UtkarshSingh-09/Aegis-Forge"
+    demo_url: "https://aegisforge.live"
+    description: "Real-time Voice AI interview platform achieving 850ms latency across speech-to-text, LLM, and TTS with behavioral biometrics."
+    manual_notes: |
+      • Built real-time voice AI interview platform achieving 850ms end-to-end latency across speech-to-text, LLM reasoning, and text-to-speech pipelines over LiveKit WebRTC with FastAPI backend.
+      • Architected 6-agent orchestration system with event-driven inter-agent communication and shared state managed via singleton knowledge engine.
+      • Comprehensive integration test coverage across full session lifecycle and WebRTC reconnection failover paths.
+      • Designed candidate integrity verification using MediaPipe behavioral biometrics for real-time gaze tracking and anti-cheating audit logging.
+
+  - repo_name: "rudrakernel"
+    display_name: "RudraKernel"
+    priority: 1
+    include_override: true
+    primary_language: "Python"
+    languages: ["Python", "C++"]
+    topics: ["reinforcement-learning", "rl-safety", "trl", "grpo", "llm-security", "fastapi"]
+    has_tests: true
+    has_ci: true
+    has_docker: true
+    commit_count: 38
+    stars: 34
+    github_url: "https://github.com/UtkarshSingh-09/RudraKernel"
+    demo_url: ""
+    description: "Multi-Agent Reinforcement Learning environment for LLM safety — Meta OpenEnv × PyTorch Hackathon 2026 Finalist."
+    manual_notes: |
+      • Built OpenEnv-compatible multi-agent reinforcement learning environment training LLMs to detect adversarial sleeper-agent attacks and epistemic cascade failures.
+      • Selected as Top Finalist in Meta OpenEnv × PyTorch Hackathon 2026.
+      • Engineered fine-tuning pipeline featuring a 9-component composable reward system using TRL and GRPO algorithms.
+      • Implemented deterministic replay engine for auditable safety training and step-gated test coverage across unit, integration, and end-to-end validation suites.
+
+  - repo_name: "astraguard"
+    display_name: "AstraGuard"
+    priority: 2
+    include_override: true
+    primary_language: "Python"
+    languages: ["Python", "Go"]
+    topics: ["threat-detection", "agent-security", "docker", "microservices", "eBPF"]
+    has_tests: true
+    has_ci: false
+    has_docker: true
+    commit_count: 24
+    stars: 9
+    github_url: "https://github.com/UtkarshSingh-09/AstraGuard"
+    demo_url: ""
+    description: "Autonomous Security & Runtime Threat Detection engine for containerized multi-agent workloads."
+    manual_notes: |
+      • Engineered runtime security monitoring engine analyzing container system calls and network traffic anomalies across distributed agent pods.
+      • Built low-overhead detection daemon utilizing eBPF probes with sub-5ms alerting latency.
+      • Shipped automated isolation policies quarantining compromised agent workers with zero downtime to healthy cluster services.
+
+  - repo_name: "madad-ai"
+    display_name: "Madad AI"
+    priority: 3
+    include_override: true
+    primary_language: "Python"
+    languages: ["Python", "TypeScript"]
+    topics: ["healthcare", "social-impact", "multilingual", "rag", "fastapi"]
+    has_tests: true
+    has_ci: false
+    has_docker: true
+    commit_count: 29
+    stars: 15
+    github_url: "https://github.com/UtkarshSingh-09/Madad-AI"
+    demo_url: ""
+    description: "Multilingual emergency assistance & public health query agent supporting regional Indian languages."
+    manual_notes: |
+      • Developed multilingual emergency triage platform supporting 7 Indian regional languages via speech-to-text and localized RAG retrieval.
+      • Benchmarked query response accuracy against medical protocols, delivering vetted first-aid guidance with sub-1.2s round-trip latency.
+      • Integrated SMS and WhatsApp fallback channels for low-connectivity rural deployment.
