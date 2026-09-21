@@ -38,7 +38,7 @@
 ### Before Phase 9
 - [ ] Create Telegram Bot via [@BotFather](https://t.me/BotFather)
 - [ ] Get Telegram Chat ID via [@userinfobot](https://t.me/userinfobot)
-- [ ] Set up GitHub repo with secrets for Actions
+- [ ] Setup n8n workflow (`npx n8n` on Mac or free cloud container)
 
 ### Before Phase 10
 - [ ] Install Playwright: `uv run playwright install chromium --with-deps`
@@ -78,7 +78,7 @@ If you're an AI agent picking this up fresh, do the following:
 - **Target:** SDE/ML internships & entry-level roles
 - **Key Projects (Priority):** Aegis Forge, Trinetra, RudraKernel, MerchantMind
 - **Tech Stack:** Python 3.11+, SQLite, Claude Sonnet, LaTeX/tectonic, Telegram Bot API
-- **Scheduler:** GitHub Actions (free tier cron)
+- **Scheduler & Orchestrator:** n8n (Self-Hosted Community Edition, visual canvas)
 - **Delivery:** Telegram
 - **Resume:** LaTeX → PDF (single page, ATS-safe)
 - **Auto-Apply:** Enabled with safety guards (10/day max, 3-min cooldown, no CAPTCHA)

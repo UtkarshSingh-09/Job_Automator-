@@ -305,24 +305,25 @@ git add . && git commit -m "Phase 8: Validation — 7-gate ATS verification suit
 
 ---
 
-## Phase 9 — Telegram Delivery & Automation (GitHub Actions)
+## Phase 9 — Telegram Delivery & Automation (n8n Visual Workflow Engine)
 
 ### What Gets Built
 - `src/resume_agent/deliver/telegram.py` — Telegram Bot API: send text messages, PDFs, screenshots
 - `src/resume_agent/orchestrate/daily.py` — Full daily pipeline orchestrator (fetch → match → generate → validate → deliver)
-- `.github/workflows/daily.yml` — GitHub Actions cron job (09:00 IST / 03:30 UTC)
+- `n8n/workflows/daily_pipeline.json` — n8n visual workflow definition (Schedule Trigger 09:00 IST → Execute CLI → Condition → Telegram delivery)
 - Daily digest: morning summary with all matches, PDFs attached, apply links
 - Real-time alerts: instant notification per successful generation
+- Error branch: instant visual error alerts on pipeline issues
 
 ### Acceptance Test
 ```bash
-# Local test:
+# Local CLI test:
 uv run resume-agent daily --dry-run
 # → Runs full pipeline locally
 # → Sends test Telegram message with PDF attached
 
-# GitHub Actions test:
-# Trigger workflow manually from GitHub UI → verify Telegram notification arrives
+# n8n Visual Workflow test:
+# Open n8n UI (http://localhost:5678 or deployed container) → Click "Execute Workflow" → verify visual node execution & Telegram alert
 ```
 
 ### 🔧 Manual Steps After Phase 9 (⚠️ MOST MANUAL STEPS)
@@ -331,14 +332,13 @@ uv run resume-agent daily --dry-run
 | **Create Telegram Bot** | Delivery channel for notifications | 1. Open Telegram → search `@BotFather` → `/newbot` → name it `ResumeAgentBot` → copy the token |
 | **Get your Chat ID** | Bot needs to know where to send messages | Message `@userinfobot` on Telegram → it replies with your chat ID (a number like `123456789`) |
 | **Paste into `.env`** | Connect bot to pipeline | `TELEGRAM_BOT_TOKEN=your_token_here` and `TELEGRAM_CHAT_ID=your_id_here` |
-| **Test the bot** | Verify it works | Run `resume-agent telegram test` — you should receive a test message |
-| **Set up GitHub repo** | For GitHub Actions automation | `git remote add origin https://github.com/UtkarshSingh-09/Job_finder.git` (if not already done) |
-| **Add GitHub Secrets** | Actions needs your API keys | Go to repo → Settings → Secrets → Add: `ANTHROPIC_API_KEY`, `GITHUB_TOKEN`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` |
-| **Enable Actions** | Start the daily cron | Go to repo → Actions tab → Enable workflows |
+| **Start n8n** | Visual workflow automation engine | Run `npx n8n` on Mac (opens `http://localhost:5678`) or deploy to Railway/Render/Oracle Free Cloud |
+| **Import Workflow** | Load visual pipeline into n8n | In n8n UI → Click "Import from File" → select `n8n/workflows/daily_pipeline.json` |
+| **Activate Workflow** | Start the daily 9:00 AM visual schedule | Toggle the "Active" switch to ON in the n8n canvas |
 
 ### Git Checkpoint
 ```bash
-git add . && git commit -m "Phase 9: Automation — Telegram delivery, daily pipeline, GitHub Actions cron" && git tag phase-9-automation && git push --tags
+git add . && git commit -m "Phase 9: Automation — Telegram delivery, daily pipeline, n8n visual workflow" && git tag phase-9-automation && git push --tags
 ```
 
 ---
@@ -421,7 +421,7 @@ Each `phase_XX_done.md` contains:
 | Resource | Monthly Cost |
 |---|---|
 | Claude Sonnet API (15 resumes/day) | ~₹400–500 |
-| GitHub Actions | Free (2,000 min/month) |
+| n8n (Self-Hosted Community Edition) | Free (Open-source, unlimited runs) |
 | Telegram Bot | Free |
 | SQLite database | Free (local file) |
 | `tectonic` LaTeX | Free (open source) |

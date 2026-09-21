@@ -9,7 +9,7 @@ Use this alongside `RESUME_AGENT_SPEC.md` for implementation.
 
 | Decision | Choice |
 |---|---|
-| Scheduler | GitHub Actions cron |
+| Scheduler | n8n (Self-Hosted Community Edition, free) |
 | Delivery | Telegram Bot API |
 | Resume format | LaTeX → PDF (via `tectonic`) |
 | Auto-apply | Enabled (API + Playwright) |
@@ -44,9 +44,9 @@ That's it. No other scopes needed. Read-only, no write access.
 
 ```
 resume-agent/
-├── .github/
+├── n8n/
 │   └── workflows/
-│       └── daily.yml                    # GitHub Actions cron — runs daily at 03:30 UTC (09:00 IST)
+│       └── daily_pipeline.json          # n8n visual workflow — scheduled daily at 09:00 IST
 │
 ├── migrations/
 │   ├── 001_init.sql                     # Core schema: profile, projects, companies, jobs, matches, applications, run_log
@@ -335,56 +335,47 @@ RunStats         — jobs_fetched, jobs_filtered, matches, resumes_generated, ap
 
 ---
 
-## GitHub Actions Workflow
+## n8n Visual Workflow Engine
 
-```yaml
-# .github/workflows/daily.yml
-name: Daily Job Run
-on:
-  schedule:
-    - cron: '30 3 * * *'    # 03:30 UTC = 09:00 IST
-  workflow_dispatch:          # manual trigger
+The daily orchestration is driven visually by **n8n (Self-Hosted Community Edition)**.
 
-jobs:
-  run:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
-
-      - name: Install tectonic
-        run: |
-          curl -sSL https://github.com/AdjoinedTech/tectonic/releases/latest/download/tectonic-x86_64-unknown-linux-gnu.tar.gz \
-            | tar xz -C /usr/local/bin
-
-      - name: Install Playwright
-        run: uv run playwright install chromium --with-deps
-
-      - name: Install dependencies
-        run: uv sync
-
-      - name: Run daily pipeline
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
-          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
-        run: uv run resume-agent run daily
-
-      - name: Upload artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: daily-output-${{ github.run_number }}
-          path: data/output/
-          retention-days: 30
+### Architecture:
 ```
+┌─────────────────────────┐
+│ Schedule Trigger (9 AM) │  (Cron: exact 09:00 IST / 03:30 UTC, zero delay)
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│  Execute Command Node   │  (Runs: uv run resume-agent daily --format json)
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│    IF / Switch Node     │  (Checks if matches > 0)
+└─────┬─────────────┬─────┘
+      │ YES         │ NO
+      │             ▼
+      │     ┌─────────────────────────┐
+      │     │  Telegram Node (Digest) │  ("No new internships passed threshold today")
+      │     └─────────────────────────┘
+      ▼
+┌─────────────────────────┐
+│ Telegram Node (Batched) │  (Sends formatted digest + PDF attachments via Bot API)
+└────────────┬────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│ Error Trigger Node      │  (Catches failures & dispatches immediate Telegram alert)
+└─────────────────────────┘
+```
+
+### Why n8n instead of cron scripts:
+1. **Interactive Visual Debugger:** Every step's payload and execution time can be inspected in real time in the browser UI (`localhost:5678` or hosted cloud container).
+2. **Exact Timing:** No GitHub Actions queue delay or jitter.
+3. **Native Telegram Integration:** Drag-and-drop Telegram node with HTML formatting, inline buttons ("Apply Link"), and PDF attachment handling.
+4. **Deployable Anywhere:** Runs locally on Mac (`npx n8n`) or in a free Docker container (Railway / Render / Oracle Always-Free).
+5. **Workflow Template:** Exported as `n8n/workflows/daily_pipeline.json` for 1-click import into any n8n instance.
 
 ---
 

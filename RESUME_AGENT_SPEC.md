@@ -144,8 +144,8 @@ Do not build these. They were evaluated and rejected.
 | PDF render | `tectonic` | Self-contained LaTeX engine, single binary, no TeXLive install |
 | PDF validate | `pymupdf` | Text extraction for parse-back |
 | Keyword extraction | `spacy` `en_core_web_sm` + curated skill gazetteer | Deterministic; do not use an LLM for this — it must be reproducible |
-| Scheduler | GitHub Actions cron (free) | Best fit: free, no infra to maintain, built-in secrets management. |
-| Delivery | Telegram Bot API via `python-telegram-bot` | Instant push notifications, inline buttons, PDF file sharing. |
+| Scheduler | n8n (Self-Hosted Community Edition, free) | Visual workflow canvas, exact on-time scheduling, live node debugging, native Telegram nodes |
+| Delivery | Telegram Bot API via n8n / python | Instant push notifications, inline buttons, PDF file sharing. |
 | Config | `pydantic-settings` + `.env` + `companies.yaml` | |
 | Logging | `structlog`, JSON to stdout | |
 | Tests | `pytest`, `pytest-asyncio`, `respx` for HTTP mocks | |
@@ -153,10 +153,10 @@ Do not build these. They were evaluated and rejected.
 
 ### On n8n
 
-n8n is acceptable **only** as the scheduler and notification layer. The
-matching, rendering, and validation logic must live in Python modules invoked as
-a CLI. Do not implement business logic inside n8n code nodes — it is
-untestable, unversionable, and slower than plain Python.
+n8n is the primary visual scheduler, workflow coordinator, and notification layer.
+The core domain logic (matching, bullet writing, LaTeX rendering, and validation) lives
+in modular Python CLI commands (`resume-agent daily`). n8n visually triggers the pipeline,
+inspects intermediate status nodes, and coordinates real-time Telegram delivery with attached PDFs.
 
 ---
 
@@ -811,7 +811,7 @@ Minimum coverage on `writer/` and `validate/`: 90%. Elsewhere: 70%.
 | **Per resume** | **≈ ₹4–7** |
 | **Monthly (15/day)** | **≈ ₹1,800–3,000** → tune `MIN_FIT_SCORE` upward or `MAX_DAILY_RESUMES` down to hit the ₹600 target; 4–5 high-quality resumes/day is the realistic setting |
 | Tier-3 LLM extraction | ~₹80/week |
-| Hosting | ₹0 (GitHub Actions free tier) |
+| Hosting | ₹0 (n8n Self-Hosted Community Edition / Free Cloud) |
 
 Prompt-cache the profile and project corpus across calls within a run.
 
@@ -879,7 +879,7 @@ Workable, Recruitee, SmartRecruiters, Adzuna, Arbeitnow, LLM extraction.
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| Scheduler | **GitHub Actions cron** | Free tier, no infra to maintain, built-in secrets management, reliable. |
+| Scheduler | **n8n (Self-Hosted)** | Visual workflow editor, exact execution timing, live node debugging, built-in Telegram nodes. |
 | Delivery | **Telegram Bot API** | Instant push notifications, inline buttons, PDF/screenshot sharing. |
 | Resume format | **LaTeX → PDF** | Superior typography, ATS-safe output via `tectonic`. DOCX export deferred to a later phase. |
 | Auto-apply | **Enabled** | API-based (Greenhouse/Lever/Workable) + Playwright browser automation with safety guardrails. Telegram notification after each apply. |

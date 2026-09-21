@@ -54,7 +54,7 @@ All preparatory research, source resumes, project specifications, and architectu
 
 ## 3. Required Credentials & Environment Prerequisites
 
-To run the pipeline locally and in GitHub Actions, the following environment variables and tools are required:
+To run the pipeline locally and via n8n orchestration, the following environment variables and tools are required:
 
 ### 1. API Keys & Tokens (`.env`)
 
@@ -175,7 +175,7 @@ Every compiled PDF must pass before moving forward:
 | **NFR-03** | **Cost Circuit Breakers** | Max 15 resumes generated per day (`MAX_DAILY_RESUMES=15`). Max 10 auto-applies per day (`MAX_DAILY_APPLIES=10`). Monthly LLM API spend strictly $<\text{₹}600$. |
 | **NFR-04** | **Single-Page Guarantee** | PDF vertical geometry must fit on a single A4 page. Automated truncation drops secondary achievements or project 3 third bullet if spillover occurs. |
 | **NFR-05** | **Performance & Latency** | End-to-end latency per resume generation $< 60$ seconds. Daily sweep of 300+ companies completes in $< 10$ minutes. |
-| **NFR-06** | **Zero Cloud Infrastructure Ops** | Local SQLite database in WAL mode. Scheduled via GitHub Actions cron (100% free tier). Zero monthly server hosting cost. |
+| **NFR-06** | **Zero Cloud Infrastructure Ops** | Local SQLite database in WAL mode. Scheduled via n8n visual workflow orchestrator (100% free Community Edition). Zero monthly server hosting cost. |
 
 ---
 
@@ -309,7 +309,7 @@ We build in strict phase order (expanded to 10 phases from the original 8). Each
 * **Acceptance Test:** 10/10 generated PDFs recover 100% of candidate data on parse-back; keyword coverage score reaches $\ge 90\%$.
 
 ### Phase 7 — Automation & Telegram Delivery
-* **Deliverables:** `deliver/telegram.py`, `orchestrate/daily.py`, `.github/workflows/daily.yml`.
+* **Deliverables:** `deliver/telegram.py`, `orchestrate/daily.py`, `n8n/workflows/daily_pipeline.json`.
 * **Acceptance Test:** End-to-end unattended daily pipeline run executes successfully and dispatches Telegram notification with PDF attached.
 
 ### Phase 8 — Auto-Apply Engine & Remaining Adapters
@@ -323,7 +323,7 @@ We build in strict phase order (expanded to 10 phases from the original 8). Each
 To begin execution, here is the immediate checklist:
 
 ```markdown
-- [x] 1. Spec updated with Auto-Apply, Telegram, GitHub Actions, LaTeX format (RESUME_AGENT_SPEC.md)
+- [x] 1. Spec updated with Auto-Apply, Telegram, n8n Workflow, LaTeX format (RESUME_AGENT_SPEC.md)
 - [x] 2. System Architecture & 59-file composition mapped (PROJECT_ARCHITECTURE.md)
 - [x] 3. Project Knowledge Base & Grounding Corpus created for 6 projects (PROJECTS_PORTFOLIO.md)
 - [x] 4. Deep ATS Parser & LaTeX Engineering Research completed (ATS_RESUME_RESEARCH.md)
