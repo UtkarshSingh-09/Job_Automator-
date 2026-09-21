@@ -636,10 +636,204 @@ def jobs_show_cmd(job_id: int):
         title=f"Job #{job.id}: {job.company_name} - {job.title}"
     ))
 
-@cli.command("match")
-def match_cmd():
-    """Run semantic matching against active jobs (Phase 6)."""
-    print_info("Semantic matching will be available in Phase 6.")
+@cli.group("match")
+def match_group():
+    """Semantic project matching & fit scoring engine (Phase 6)."""
+    pass
+
+
+@match_group.command("run")
+@click.option("--job-id", required=True, type=int, help="Target job ID from database")
+def match_run_cmd(job_id: int):
+    """Run semantic matching pipeline for a specific job opportunity."""
+    from resume_agent.jobs.service import get_job_by_id
+    from resume_agent.matcher.service import match_job
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    job = get_job_by_id(job_id)
+    if not job:
+        print_error(f"Job with ID {job_id} not found in database.")
+        return
+
+    console.print(Panel.fit(
+        f"[bold cyan]Semantic Matching Engine[/bold cyan]\n"
+        f"Target Role: [bold white]{job.title}[/bold white] at [bold cyan]{job.company_name}[/bold cyan]\n"
+        f"Location: {job.location} | Remote: {job.remote_type.upper()}",
+        title=f"Evaluating Job #{job.id}"
+    ))
+
+    with console.status("[bold green]Computing dense vectors & selecting Top 3 projects...[/bold green]"):
+        m = match_job(job_id)
+
+    if not m:
+        print_error(f"Failed to match Job #{job_id}.")
+        return
+
+    fit_color = "bold green" if m.overall_fit >= 75 else ("yellow" if m.overall_fit >= 55 else "red")
+    recommend = "[bold green]✔ YES (Strong Candidate)[/bold green]" if m.overall_fit >= 55 else "[bold red]✖ NO (Fit below 55 threshold)[/bold red]"
+
+    console.print(f"\nOverall Fit Score: [{fit_color}]{m.overall_fit:.1f}/100[/{fit_color}] | Recommend Apply: {recommend}")
+    console.print(f"[bold cyan]Selection Reasoning:[/bold cyan]\n{m.selection_reasoning}\n")
+
+    table = Table(title="Selected Top 3 Flagship Projects", border_style="cyan")
+    table.add_column("Rank", justify="center", style="bold")
+    table.add_column("Project", style="bold white")
+    table.add_column("Key Skills Covered", style="green")
+    table.add_column("Rationale", style="dim")
+
+    for p in m.selected_projects:
+        skills_str = ", ".join(p.get("jd_requirements_covered", [])) or "Full Stack Depth"
+        table.add_row(
+            f"#{p.get('rank', '-')}",
+            p.get("display_name", p.get("repo_name", "")),
+            skills_str,
+            p.get("why", "")[:60] + ("..." if len(p.get("why", "")) > 60 else ""),
+        )
+
+    console.print(table)
+    if m.uncovered_requirements:
+        console.print(f"[dim]Uncovered Requirements: {', '.join(m.uncovered_requirements)}[/dim]")
+    print_success(f"Match evaluation for Job #{job_id} saved to database.")
+
+
+@match_group.command("all")
+@click.option("--limit", default=10, type=int, help="Maximum number of passed jobs to evaluate")
+@click.option("--min-fit", default=55.0, type=float, help="Minimum fit score threshold")
+def match_all_cmd(limit: int, min_fit: float):
+    """Batch run matching across all un-matched passed jobs."""
+    from resume_agent.matcher.service import match_all_jobs
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    console.print(Panel.fit(
+        f"[bold cyan]Batch Semantic Matching Pipeline[/bold cyan]\n"
+        f"Processing un-matched jobs that passed internship filter (Limit: {limit})...",
+        title="Batch Matching"
+    ))
+
+    with console.status("[bold green]Processing jobs...[/bold green]"):
+        matches = match_all_jobs(min_fit=min_fit, limit=limit)
+
+    table = Table(title=f"Batch Matches ({len(matches)} Evaluated)", border_style="cyan")
+    table.add_column("Job ID", justify="center", style="bold")
+    table.add_column("Fit Score", justify="right")
+    table.add_column("Top Project", style="bold white")
+    table.add_column("Recommend", justify="center")
+
+    for m in matches:
+        top_proj = m.selected_projects[0].get("display_name", "N/A") if m.selected_projects else "N/A"
+        fit_col = "bold green" if m.overall_fit >= 75 else ("yellow" if m.overall_fit >= 55 else "red")
+        rec = "[bold green]✔ APPLY[/bold green]" if m.overall_fit >= 55 else "[red]SKIP[/red]"
+        table.add_row(
+            str(m.job_id),
+            f"[{fit_col}]{m.overall_fit:.1f}[/{fit_col}]",
+            top_proj,
+            rec,
+        )
+
+    console.print(table)
+    print_success(f"Batch matching complete: {len(matches)} listings evaluated and stored.")
+
+
+@match_group.command("list")
+@click.option("--min-fit", default=0.0, type=float, help="Filter matches by minimum overall fit score")
+@click.option("--limit", default=25, type=int, help="Maximum number of matches to display")
+def match_list_cmd(min_fit: float, limit: int):
+    """List evaluated job matches ranked by overall fit score."""
+    from resume_agent.matcher.service import get_matches
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    matches = get_matches(min_fit=min_fit, limit=limit)
+    if not matches:
+        print_info("No match records found. Run 'resume-agent match run --job-id <id>' or 'resume-agent match all' first.")
+        return
+
+    table = Table(title=f"Semantic Matches (Min Fit: {min_fit}%)", border_style="cyan")
+    table.add_column("Fit", justify="right", style="bold")
+    table.add_column("Company", style="bold white")
+    table.add_column("Job Title", style="cyan")
+    table.add_column("Location", style="dim")
+    table.add_column("Selected Projects", style="green")
+
+    for m in matches:
+        fit_val = m["overall_fit"]
+        fit_style = "bold green" if fit_val >= 75 else ("yellow" if fit_val >= 55 else "red")
+        proj_names = ", ".join(p.get("display_name", "") for p in m["selected_projects"][:3])
+        table.add_row(
+            f"[{fit_style}]{fit_val:.1f}%[/{fit_style}]",
+            m["company_name"],
+            m["job_title"][:40],
+            (m["location"] or "N/A")[:20],
+            proj_names,
+        )
+
+    console.print(table)
+
+
+@match_group.command("test-suite")
+def match_test_suite_cmd():
+    """Run automated semantic matching test suite against 5 benchmark internship roles."""
+    from resume_agent.db import get_db
+    from resume_agent.matcher.service import match_job
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    console.print(Panel.fit(
+        "[bold cyan]Running Semantic Matcher Test Suite[/bold cyan]\n"
+        "Testing candidate project ranking & fit scoring across diverse job categories...",
+        title="Matching Test Suite"
+    ))
+
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT id, company_name, title FROM jobs WHERE passed_filter = 1 LIMIT 5;"
+        ).fetchall()
+
+    if not rows:
+        print_error("No passed jobs available to run test suite. Ingest jobs with 'resume-agent jobs fetch' first.")
+        return
+
+    results = []
+    with console.status("[bold green]Evaluating test suite jobs...[/bold green]"):
+        for r in rows:
+            m = match_job(r["id"])
+            if m:
+                results.append((r["company_name"], r["title"], m.overall_fit, len(m.selected_projects)))
+
+    table = Table(title="Test Suite Results", border_style="cyan")
+    table.add_column("Company", style="bold white")
+    table.add_column("Role", style="cyan")
+    table.add_column("Fit Score", justify="right")
+    table.add_column("Projects Selected", justify="center")
+    table.add_column("Status", justify="center")
+
+    passed_tests = 0
+    for comp, title, fit, proj_count in results:
+        ok = fit >= 50.0 and proj_count == 3
+        if ok:
+            passed_tests += 1
+        status = "[bold green]PASS[/bold green]" if ok else "[bold red]FAIL[/bold red]"
+        fit_col = "green" if fit >= 55 else "yellow"
+        table.add_row(
+            comp,
+            title[:40],
+            f"[{fit_col}]{fit:.1f}[/{fit_col}]",
+            str(proj_count),
+            status,
+        )
+
+    console.print(table)
+    if passed_tests >= len(results) * 0.7:
+        print_success(f"Test suite PASSED ({passed_tests}/{len(results)} benchmark roles evaluated successfully)!")
+    else:
+        print_warning(f"Test suite had warnings: {passed_tests}/{len(results)} passed criteria.")
+
 
 @cli.command("generate")
 def generate_cmd():

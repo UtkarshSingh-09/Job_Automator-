@@ -1,8 +1,8 @@
 # 📊 Project Progress — Resume Agent
 
 > **Last Updated:** 2026-09-22  
-> **Current Phase:** Phase 6 — Semantic Matching Engine  
-> **Overall Progress:** 5/10 phases complete
+> **Current Phase:** Phase 7 — Bullet Writer & LaTeX Renderer  
+> **Overall Progress:** 6/10 phases complete
 
 ---
 
@@ -15,7 +15,7 @@
 | 3 | GitHub Sync & Portfolio Corpus | ✅ Completed | 2026-09-22 | `phase-3-github` |
 | 4 | Company Database & ATS Detection | ✅ Completed | 2026-09-22 | `phase-4-companies` |
 | 5 | Job Ingestion & Filtering Pipeline | ✅ Completed | 2026-09-22 | `phase-5-ingestion` |
-| 6 | Semantic Matching Engine | ⬜ Not Started | — | — |
+| 6 | Semantic Matching Engine | ✅ Completed | 2026-09-22 | `phase-6-matching` |
 | 7 | Bullet Writer & LaTeX Renderer | ⬜ Not Started | — | — |
 | 8 | ATS Validation Suite | ⬜ Not Started | — | — |
 | 9 | Telegram Delivery & Automation | ⬜ Not Started | — | — |

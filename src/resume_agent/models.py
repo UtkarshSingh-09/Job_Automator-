@@ -116,7 +116,7 @@ class MatchModel(BaseModel):
     id: Optional[int] = None
     job_id: int
     overall_fit: Optional[float] = None
-    selected_projects: List[str] = Field(default_factory=list)
+    selected_projects: List[Dict[str, Any]] = Field(default_factory=list)
     selection_reasoning: Optional[str] = None
     uncovered_requirements: List[str] = Field(default_factory=list)
     bullets: List[Dict[str, Any]] = Field(default_factory=list)

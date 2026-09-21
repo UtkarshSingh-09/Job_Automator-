@@ -1,0 +1,122 @@
+# Tech Skills Gazetteer & Taxonomy
+# Used for technical vocabulary grounding, keyword extraction, and coverage scoring
+
+languages:
+  - python
+  - c++
+  - c
+  - rust
+  - go
+  - golang
+  - java
+  - javascript
+  - typescript
+  - sql
+  - bash
+  - shell
+  - r
+  - solidity
+
+backend_frameworks:
+  - fastapi
+  - flask
+  - django
+  - express
+  - node.js
+  - nodejs
+  - nestjs
+  - spring boot
+  - grpc
+  - rest api
+  - graphql
+  - websockets
+
+databases_and_storage:
+  - postgresql
+  - postgres
+  - mysql
+  - sqlite
+  - redis
+  - mongodb
+  - cassandra
+  - dynamodb
+  - elasticsearch
+  - chromadb
+  - pinecone
+  - qdrant
+  - faiss
+  - weaviate
+
+messaging_and_streaming:
+  - kafka
+  - rabbitmq
+  - celery
+  - redis pub/sub
+  - sqs
+  - event-driven architecture
+
+machine_learning_and_ai:
+  - pytorch
+  - tensorflow
+  - scikit-learn
+  - huggingface
+  - transformers
+  - sentence-transformers
+  - langchain
+  - langgraph
+  - rag
+  - retrieval-augmented generation
+  - slms
+  - llms
+  - prompt engineering
+  - fine-tuning
+  - peft
+  - lora
+  - computer vision
+  - opencv
+  - nlp
+  - agentic workflows
+
+systems_and_os:
+  - concurrency
+  - multithreading
+  - multiprocessing
+  - linux
+  - kernel
+  - bpf
+  - ebpf
+  - ipc
+  - posix
+  - socket programming
+  - memory management
+  - operating systems
+  - distributed systems
+  - low latency
+  - performance profiling
+
+cloud_and_devops:
+  - docker
+  - kubernetes
+  - k8s
+  - ci/cd
+  - github actions
+  - aws
+  - gcp
+  - azure
+  - terraform
+  - prometheus
+  - grafana
+  - nginx
+
+core_engineering:
+  - data structures
+  - algorithms
+  - dsa
+  - system design
+  - oops
+  - object-oriented design
+  - unit testing
+  - pytest
+  - integration testing
+  - microservices
+  - clean architecture

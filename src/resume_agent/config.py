@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     output_dir: Path = PROJECT_ROOT / "data" / "output"
 
     # API Keys & Tokens
+    openrouter_api_key: Optional[str] = Field(default=None, alias="OPENROUTER_API_KEY")
+    llm_model: str = Field(default="deepseek/deepseek-chat", alias="LLM_MODEL")
+    openrouter_base_url: str = Field(default="https://openrouter.ai/api/v1", alias="OPENROUTER_BASE_URL")
     anthropic_api_key: Optional[str] = Field(default=None, alias="ANTHROPIC_API_KEY")
     github_token: Optional[str] = Field(default=None, alias="GITHUB_TOKEN")
     github_username: str = Field(default="UtkarshSingh-09", alias="GITHUB_USERNAME")

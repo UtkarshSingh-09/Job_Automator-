@@ -226,6 +226,8 @@ def get_all_projects(min_score: float = 0.0) -> List[ProjectModel]:
                 quality_score=r["quality_score"],
                 include_override=bool(r["include_override"]),
                 priority=r["priority"],
+                embedding=r["embedding"],
+                embedding_source_hash=r["embedding_source_hash"],
             ))
         return projects
 
@@ -257,4 +259,6 @@ def get_project_by_repo(repo_name: str) -> Optional[ProjectModel]:
             quality_score=r["quality_score"],
             include_override=bool(r["include_override"]),
             priority=r["priority"],
+            embedding=r["embedding"],
+            embedding_source_hash=r["embedding_source_hash"],
         )
