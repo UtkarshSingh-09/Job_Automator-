@@ -404,6 +404,120 @@ def companies_group():
     """Manage company catalog and ATS detection (Phase 4)."""
     pass
 
+
+@companies_group.command("seed")
+def companies_seed_cmd():
+    """Load or sync curated seed companies from data/config/companies.yaml."""
+    from resume_agent.jobs.companies import seed_companies_from_yaml, get_companies_list
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    console.print(Panel.fit(
+        "[bold cyan]Seeding Company Catalog[/bold cyan]\n"
+        "Loading targets from [yellow]data/config/companies.yaml[/yellow]",
+        title="Company Seed"
+    ))
+
+    count = seed_companies_from_yaml()
+    resolved = len(get_companies_list(status="resolved"))
+    unknown = len(get_companies_list(status="unknown"))
+
+    print_success(f"Seeded {count} companies ({resolved} pre-resolved ATS, {unknown} pending detection).")
+
+
+@companies_group.command("detect")
+@click.option("--limit", default=10, type=int, help="Maximum number of unresolved companies to probe")
+@click.option("--tier", default=None, type=int, help="Filter probe to specific tier (1 or 2)")
+def companies_detect_cmd(limit: int, tier: int | None):
+    """Run automated career portal probe and ATS signature detection."""
+    from resume_agent.jobs.companies import get_unresolved_companies, update_company_ats, mark_company_unknown
+    from resume_agent.jobs.discovery.detector import detect_ats
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    targets = get_unresolved_companies(limit=limit, tier=tier)
+    if not targets:
+        print_info("No unresolved companies found matching criteria.")
+        return
+
+    console.print(f"[bold cyan]Probing {len(targets)} company career portals for ATS signatures...[/bold cyan]\n")
+
+    resolved_count = 0
+    with console.status("[bold green]Probing career portals...[/bold green]"):
+        for c in targets:
+            console.print(f"Probing [bold]{c.name}[/bold] ([dim]{c.domain}[/dim])...", end=" ")
+            res = detect_ats(c.domain)
+            if res:
+                provider, slug = res
+                update_company_ats(c.id, provider, slug, status="resolved")
+                console.print(f"[bold green]✔ DETECTED {provider.upper()} ({slug})[/bold green]")
+                resolved_count += 1
+            else:
+                mark_company_unknown(c.id)
+                console.print("[yellow]✖ Not resolved[/yellow]")
+
+    print_success(f"Detection run finished: {resolved_count}/{len(targets)} newly resolved.")
+
+
+@companies_group.command("list")
+@click.option("--status", default=None, type=click.Choice(["resolved", "unknown", "dead"]), help="Filter by detection status")
+@click.option("--tier", default=None, type=int, help="Filter by tier (1 or 2)")
+def companies_list_cmd(status: str | None, tier: int | None):
+    """List companies in the catalog with ATS provider and slug status."""
+    from resume_agent.jobs.companies import get_companies_list
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    companies = get_companies_list(status=status, tier=tier)
+    if not companies:
+        print_info("No companies found. Run 'resume-agent companies seed' first.")
+        return
+
+    table = Table(title="Company Catalog & ATS Endpoints", border_style="cyan")
+    table.add_column("Tier", justify="center", style="bold")
+    table.add_column("Company Name", style="bold white")
+    table.add_column("Domain", style="dim")
+    table.add_column("ATS Provider", style="cyan")
+    table.add_column("ATS Slug", style="green")
+    table.add_column("Status", justify="center")
+
+    for c in companies:
+        tier_str = f"T{c.tier}"
+        status_badge = (
+            "[bold green]✔ Resolved[/bold green]" if c.detection_status == "resolved" else
+            "[yellow]Pending[/yellow]"
+        )
+        table.add_row(
+            tier_str,
+            c.name,
+            c.domain,
+            c.ats_provider or "—",
+            c.ats_slug or "—",
+            status_badge,
+        )
+
+    console.print(table)
+
+
+@companies_group.command("add")
+@click.option("--name", required=True, help="Company name")
+@click.option("--domain", required=True, help="Company website domain (e.g. stripe.com)")
+@click.option("--tier", default=2, type=int, help="Priority tier (1, 2, or 3)")
+@click.option("--provider", default=None, help="ATS provider (greenhouse, lever, ashby, workable)")
+@click.option("--slug", default=None, help="ATS company slug")
+def companies_add_cmd(name: str, domain: str, tier: int, provider: str | None, slug: str | None):
+    """Manually add or update a target company."""
+    from resume_agent.jobs.companies import add_custom_company
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    add_custom_company(name, domain, tier=tier, provider=provider, slug=slug)
+    print_success(f"Company '{name}' ({domain}) added to catalog.")
+
 @cli.group("jobs")
 def jobs_group():
     """Ingest, deduplicate, and filter job postings (Phase 5)."""

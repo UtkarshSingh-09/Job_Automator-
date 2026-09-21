@@ -1,0 +1,329 @@
+# ==============================================================================
+# Seed Companies Catalog
+# Contains high-signal tech startups, AI labs, Indian unicorns, and global engineering firms.
+# Tier 1 = Dream Startups & Unicorns, Tier 2 = High-Growth, Tier 3 = General Tech
+# ==============================================================================
+
+companies:
+  # --- Tier 1: High Priority AI Labs & Global Startups ---
+  - name: "Postman"
+    domain: "postman.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "postman"
+
+  - name: "BrowserStack"
+    domain: "browserstack.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "browserstack"
+
+  - name: "Razorpay"
+    domain: "razorpay.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "razorpay"
+
+  - name: "CRED"
+    domain: "cred.club"
+    tier: 1
+    ats_provider: "lever"
+    ats_slug: "cred"
+
+  - name: "Zepto"
+    domain: "zeptonow.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "zepto"
+
+  - name: "Swiggy"
+    domain: "swiggy.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "swiggy"
+
+  - name: "Vercel"
+    domain: "vercel.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "vercel"
+
+  - name: "Supabase"
+    domain: "supabase.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "supabase"
+
+  - name: "Retool"
+    domain: "retool.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "retool"
+
+  - name: "Stripe"
+    domain: "stripe.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "stripe"
+
+  - name: "Figma"
+    domain: "figma.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "figma"
+
+  - name: "Scale AI"
+    domain: "scale.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "scaleai"
+
+  - name: "Modal"
+    domain: "modal.com"
+    tier: 1
+    ats_provider: "ashby"
+    ats_slug: "modal"
+
+  - name: "Perplexity"
+    domain: "perplexity.ai"
+    tier: 1
+    ats_provider: "ashby"
+    ats_slug: "perplexity"
+
+  - name: "Together AI"
+    domain: "together.ai"
+    tier: 1
+    ats_provider: "ashby"
+    ats_slug: "together-ai"
+
+  - name: "LlamaIndex"
+    domain: "llamaindex.ai"
+    tier: 1
+    ats_provider: "ashby"
+    ats_slug: "llamaindex"
+
+  - name: "Rippling"
+    domain: "rippling.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "rippling"
+
+  - name: "Brex"
+    domain: "brex.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "brex"
+
+  - name: "Ramp"
+    domain: "ramp.com"
+    tier: 1
+    ats_provider: "ashby"
+    ats_slug: "ramp"
+
+  - name: "Coinbase"
+    domain: "coinbase.com"
+    tier: 1
+    ats_provider: "greenhouse"
+    ats_slug: "coinbase"
+
+  # --- Tier 2: Indian Tech Unicorns & Fast-Growing Startups ---
+  - name: "Meesho"
+    domain: "meesho.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "meesho"
+
+  - name: "Hasura"
+    domain: "hasura.io"
+    tier: 2
+    ats_provider: "lever"
+    ats_slug: "hasura"
+
+  - name: "InVideo"
+    domain: "invideo.io"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "invideo"
+
+  - name: "Urban Company"
+    domain: "urbancompany.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "urbancompany"
+
+  - name: "Groww"
+    domain: "groww.in"
+    tier: 2
+    ats_provider: "lever"
+    ats_slug: "groww"
+
+  - name: "CoinDCX"
+    domain: "coindcx.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "coindcx"
+
+  - name: "Pine Labs"
+    domain: "pinelabs.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "pinelabs"
+
+  - name: "Clevertap"
+    domain: "clevertap.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "clevertap"
+
+  - name: "Yellow.ai"
+    domain: "yellow.ai"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "yellowai"
+
+  - name: "Khatabook"
+    domain: "khatabook.com"
+    tier: 2
+    ats_provider: "lever"
+    ats_slug: "khatabook"
+
+  - name: "Juspay"
+    domain: "juspay.in"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "juspay"
+
+  - name: "Unacademy"
+    domain: "unacademy.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "unacademy"
+
+  - name: "Dream11"
+    domain: "dream11.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "dream11"
+
+  - name: "Classplus"
+    domain: "classplusapp.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "classplus"
+
+  - name: "Loco"
+    domain: "loco.gg"
+    tier: 2
+    ats_provider: "lever"
+    ats_slug: "loco"
+
+  - name: "Mobile Premier League (MPL)"
+    domain: "mpl.live"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "mpl"
+
+  - name: "Cars24"
+    domain: "cars24.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "cars24"
+
+  - name: "Spinny"
+    domain: "spinny.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "spinny"
+
+  - name: "LeadSquared"
+    domain: "leadsquared.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "leadsquared"
+
+  - name: "Darwinbox"
+    domain: "darwinbox.com"
+    tier: 2
+    ats_provider: "greenhouse"
+    ats_slug: "darwinbox"
+
+  # --- Tier 2 / 3: Companies requiring automated ATS detection ---
+  - name: "Apna"
+    domain: "apna.co"
+    tier: 2
+
+  - name: "Kodo"
+    domain: "kodo.com"
+    tier: 2
+
+  - name: "OneCode"
+    domain: "onecode.in"
+    tier: 2
+
+  - name: "Jar"
+    domain: "myjar.app"
+    tier: 2
+
+  - name: "Jupiter"
+    domain: "jupiter.money"
+    tier: 2
+
+  - name: "Fi Money"
+    domain: "fi.money"
+    tier: 2
+
+  - name: "Kite (Zerodha)"
+    domain: "zerodha.com"
+    tier: 1
+
+  - name: "Rebel Foods"
+    domain: "rebelfoods.com"
+    tier: 2
+
+  - name: "Shiprocket"
+    domain: "shiprocket.in"
+    tier: 2
+
+  - name: "Delhivery"
+    domain: "delhivery.com"
+    tier: 2
+
+  - name: "Shadowfax"
+    domain: "shadowfax.in"
+    tier: 2
+
+  - name: "Porter"
+    domain: "porter.in"
+    tier: 2
+
+  - name: "Dunzo"
+    domain: "dunzo.com"
+    tier: 2
+
+  - name: "Rapido"
+    domain: "rapido.bike"
+    tier: 2
+
+  - name: "Ola Cabs"
+    domain: "olacabs.com"
+    tier: 2
+
+  - name: "Ather Energy"
+    domain: "atherenergy.com"
+    tier: 2
+
+  - name: "Ultrahuman"
+    domain: "ultrahuman.com"
+    tier: 2
+
+  - name: "Cuemath"
+    domain: "cuemath.com"
+    tier: 2
+
+  - name: "Eruditus"
+    domain: "eruditus.com"
+    tier: 2
+
+  - name: "Licious"
+    domain: "licious.in"
+    tier: 2

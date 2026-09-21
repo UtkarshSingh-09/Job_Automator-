@@ -1,8 +1,8 @@
 # 📊 Project Progress — Resume Agent
 
 > **Last Updated:** 2026-09-22  
-> **Current Phase:** Phase 4 — Company Database & ATS Detection  
-> **Overall Progress:** 3/10 phases complete
+> **Current Phase:** Phase 5 — Job Ingestion & Filtering Pipeline  
+> **Overall Progress:** 4/10 phases complete
 
 ---
 
@@ -13,7 +13,7 @@
 | 1 | Foundation & Project Skeleton | ✅ Completed | 2026-09-22 | `phase-1-foundation` |
 | 2 | Profile Extraction & Identity | ✅ Completed | 2026-09-22 | `phase-2-identity` |
 | 3 | GitHub Sync & Portfolio Corpus | ✅ Completed | 2026-09-22 | `phase-3-github` |
-| 4 | Company Database & ATS Detection | ⬜ Not Started | — | — |
+| 4 | Company Database & ATS Detection | ✅ Completed | 2026-09-22 | `phase-4-companies` |
 | 5 | Job Ingestion & Filtering Pipeline | ⬜ Not Started | — | — |
 | 6 | Semantic Matching Engine | ⬜ Not Started | — | — |
 | 7 | Bullet Writer & LaTeX Renderer | ⬜ Not Started | — | — |
