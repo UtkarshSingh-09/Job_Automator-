@@ -523,6 +523,119 @@ def jobs_group():
     """Ingest, deduplicate, and filter job postings (Phase 5)."""
     pass
 
+
+@jobs_group.command("fetch")
+@click.option("--limit-companies", default=None, type=int, help="Limit number of resolved companies to poll")
+@click.option("--source", default=None, type=click.Choice(["greenhouse", "lever", "ashby", "workable"], case_sensitive=False), help="Filter ingestion to specific ATS source")
+@click.option("--dry-run", is_flag=True, help="Simulate ingestion without writing to SQLite database")
+def jobs_fetch_cmd(limit_companies: int | None, source: str | None, dry_run: bool):
+    """Fetch active jobs from resolved ATS endpoints, normalize, deduplicate, and filter."""
+    from resume_agent.jobs.service import ingest_jobs
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    console.print(Panel.fit(
+        "[bold cyan]Job Ingestion Pipeline (Phase 5)[/bold cyan]\n"
+        f"Source Filter: [yellow]{source or 'All Resolved ATS'}[/yellow] | "
+        f"Limit Companies: [yellow]{limit_companies or 'All'}[/yellow] | "
+        f"Dry Run: [yellow]{'Yes' if dry_run else 'No'}[/yellow]",
+        title="Job Ingestion"
+    ))
+
+    with console.status("[bold green]Polling ATS endpoints and parsing postings...[/bold green]"):
+        stats = ingest_jobs(limit_companies=limit_companies, source_filter=source, dry_run=dry_run)
+
+    table = Table(title="Job Ingestion Summary", border_style="cyan")
+    table.add_column("Metric", style="bold white")
+    table.add_column("Count", justify="right", style="green")
+
+    table.add_row("Companies Polled", str(stats["companies_polled"]))
+    table.add_row("Total Postings Fetched", str(stats["total_fetched"]))
+    table.add_row("Passed Internship/Location Filter", f"[bold green]{stats['passed_filter']}[/bold green]")
+    table.add_row("New Listings Inserted to DB", str(stats["new_inserted"]))
+
+    console.print(table)
+    print_success("Job ingestion completed successfully!")
+
+
+@jobs_group.command("list")
+@click.option("--all", "show_all", is_flag=True, help="Show all fetched jobs (including filtered out ones)")
+@click.option("--limit", default=30, type=int, help="Maximum number of jobs to list")
+def jobs_list_cmd(show_all: bool, limit: int):
+    """List ingested job opportunities from the database."""
+    from resume_agent.jobs.service import get_jobs
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    passed_only = not show_all
+    jobs = get_jobs(passed_only=passed_only, limit=limit)
+
+    if not jobs:
+        msg = "No jobs found matching criteria. Run 'resume-agent jobs fetch' first."
+        print_info(msg)
+        return
+
+    table = Table(
+        title=f"Ingested Jobs ({'Passed Filter Only' if passed_only else 'All Listings'})",
+        border_style="cyan"
+    )
+    table.add_column("ID", justify="center", style="bold")
+    table.add_column("Company", style="bold white")
+    table.add_column("Title", style="cyan")
+    table.add_column("Location", style="dim")
+    table.add_column("Remote", justify="center")
+    table.add_column("Source", style="magenta")
+    table.add_column("Filter", justify="center")
+
+    for j in jobs:
+        filter_badge = "[bold green]✔ PASS[/bold green]" if j.passed_filter else "[dim red]✖ FAIL[/dim red]"
+        table.add_row(
+            str(j.id),
+            j.company_name,
+            j.title[:45] + ("..." if len(j.title) > 45 else ""),
+            (j.location or "N/A")[:25],
+            j.remote_type.upper(),
+            j.source.capitalize(),
+            filter_badge,
+        )
+
+    console.print(table)
+    console.print(f"[dim]Showing {len(jobs)} listing(s). Use 'resume-agent jobs show <id>' for details.[/dim]")
+
+
+@jobs_group.command("show")
+@click.argument("job_id", type=int)
+def jobs_show_cmd(job_id: int):
+    """Display detailed posting information, location, and description snippet."""
+    from resume_agent.jobs.service import get_job_by_id
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    job = get_job_by_id(job_id)
+    if not job:
+        print_error(f"Job with ID {job_id} not found.")
+        return
+
+    filter_badge = "[bold green]✔ Passed Internship & Location Filter[/bold green]" if job.passed_filter else "[bold red]✖ Did Not Pass Filter[/bold red]"
+
+    desc_preview = "\n".join(job.description_md.splitlines()[:25])
+    if len(job.description_md.splitlines()) > 25:
+        desc_preview += "\n\n[dim]... [truncated for display] ...[/dim]"
+
+    console.print(Panel.fit(
+        f"[bold white]{job.title}[/bold white] at [bold cyan]{job.company_name}[/bold cyan]\n"
+        f"Location: {job.location} | Remote Type: [bold]{job.remote_type.upper()}[/bold]\n"
+        f"Source: [magenta]{job.source.capitalize()}[/magenta] (ID: {job.source_job_id})\n"
+        f"Filter Status: {filter_badge}\n"
+        f"Content Hash: [dim]{job.content_hash}[/dim]\n"
+        f"Apply URL: [link={job.apply_url}]{job.apply_url}[/link]\n\n"
+        f"[bold cyan]Job Description Preview:[/bold cyan]\n{desc_preview}",
+        title=f"Job #{job.id}: {job.company_name} - {job.title}"
+    ))
+
 @cli.command("match")
 def match_cmd():
     """Run semantic matching against active jobs (Phase 6)."""

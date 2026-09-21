@@ -1,0 +1,146 @@
+from datetime import datetime
+from typing import List, Dict, Any, Optional
+from resume_agent.db import get_db
+from resume_agent.models import JobModel, CompanyModel
+from resume_agent.jobs.companies import get_companies_list
+from resume_agent.jobs.sources import get_adapter
+from resume_agent.logging import logger
+
+
+def ingest_jobs(
+    limit_companies: Optional[int] = None,
+    source_filter: Optional[str] = None,
+    dry_run: bool = False
+) -> Dict[str, int]:
+    """
+    Ingest jobs across all resolved companies in database.
+    Normalizes, deduplicates, and evaluates filter criteria.
+    Returns summary statistics: {'companies_polled': int, 'total_fetched': int, 'new_inserted': int, 'passed_filter': int}
+    """
+    companies = get_companies_list(status="resolved")
+    if source_filter:
+        companies = [c for c in companies if c.ats_provider and c.ats_provider.lower() == source_filter.lower()]
+
+    if limit_companies:
+        companies = companies[:limit_companies]
+
+    stats = {
+        "companies_polled": len(companies),
+        "total_fetched": 0,
+        "new_inserted": 0,
+        "passed_filter": 0,
+    }
+
+    logger.info(f"Starting job ingestion for {len(companies)} resolved company endpoints...")
+
+    for company in companies:
+        if not company.ats_provider or not company.ats_slug:
+            continue
+
+        adapter = get_adapter(company.ats_provider)
+        if not adapter:
+            logger.warning(f"No adapter registered for provider: {company.ats_provider}")
+            continue
+
+        raw_jobs = adapter.fetch_jobs(company)
+        stats["total_fetched"] += len(raw_jobs)
+
+        for raw_item in raw_jobs:
+            try:
+                job = adapter.normalize_job(raw_item, company)
+                if job.passed_filter:
+                    stats["passed_filter"] += 1
+
+                if not dry_run:
+                    inserted = _upsert_job_to_db(job)
+                    if inserted:
+                        stats["new_inserted"] += 1
+            except Exception as e:
+                logger.debug(f"Error normalizing job for {company.name}: {e}")
+
+    logger.info(f"Ingestion complete: {stats}")
+    return stats
+
+
+def _upsert_job_to_db(job: JobModel) -> bool:
+    """
+    Upsert job into SQLite database.
+    Returns True if a new row was inserted, False if updated existing.
+    """
+    sql = """
+    INSERT INTO jobs (
+        company_id, company_name, title, location, remote_type,
+        description_md, apply_url, source, source_job_id,
+        content_hash, passed_filter, first_seen_at, last_seen_at
+    ) VALUES (
+        :company_id, :company_name, :title, :location, :remote_type,
+        :description_md, :apply_url, :source, :source_job_id,
+        :content_hash, :passed_filter, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    )
+    ON CONFLICT(content_hash) DO UPDATE SET
+        last_seen_at = CURRENT_TIMESTAMP,
+        passed_filter = excluded.passed_filter,
+        description_md = excluded.description_md,
+        apply_url = excluded.apply_url;
+    """
+    with get_db() as conn:
+        cursor = conn.cursor()
+        # Check if already exists to track new insertions
+        existing = cursor.execute(
+            "SELECT id FROM jobs WHERE content_hash = ?;", (job.content_hash,)
+        ).fetchone()
+
+        cursor.execute(sql, {
+            "company_id": job.company_id,
+            "company_name": job.company_name,
+            "title": job.title,
+            "location": job.location,
+            "remote_type": job.remote_type,
+            "description_md": job.description_md,
+            "apply_url": job.apply_url,
+            "source": job.source,
+            "source_job_id": job.source_job_id,
+            "content_hash": job.content_hash,
+            "passed_filter": 1 if job.passed_filter else 0,
+        })
+        return existing is None
+
+
+def get_jobs(passed_only: bool = True, limit: int = 50) -> List[JobModel]:
+    """Retrieve ingested job listings from database."""
+    query = "SELECT * FROM jobs"
+    params = []
+
+    if passed_only:
+        query += " WHERE passed_filter = 1"
+
+    query += " ORDER BY id DESC LIMIT ?;"
+    params.append(limit)
+
+    with get_db() as conn:
+        rows = conn.execute(query, params).fetchall()
+        return [_row_to_job(r) for r in rows]
+
+
+def get_job_by_id(job_id: int) -> Optional[JobModel]:
+    """Retrieve a single job listing by ID."""
+    with get_db() as conn:
+        row = conn.execute("SELECT * FROM jobs WHERE id = ?;", (job_id,)).fetchone()
+        return _row_to_job(row) if row else None
+
+
+def _row_to_job(r) -> JobModel:
+    return JobModel(
+        id=r["id"],
+        company_id=r["company_id"],
+        company_name=r["company_name"],
+        title=r["title"],
+        location=r["location"],
+        remote_type=r["remote_type"],
+        description_md=r["description_md"],
+        apply_url=r["apply_url"],
+        source=r["source"],
+        source_job_id=r["source_job_id"],
+        content_hash=r["content_hash"],
+        passed_filter=bool(r["passed_filter"]),
+    )
