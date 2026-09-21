@@ -63,20 +63,30 @@ class LLMClient:
             "response_format": {"type": "json_object"},
         }
 
-        try:
-            with httpx.Client(timeout=45.0) as client:
-                resp = client.post(url, headers=headers, json=payload)
-                if resp.status_code == 200:
-                    data = resp.json()
-                    content = data["choices"][0]["message"]["content"]
-                    return json.loads(content)
-                logger.warning(
-                    f"OpenRouter API call failed with status {resp.status_code}: {resp.text}"
-                )
+        import time
+        for attempt in range(3):
+            try:
+                with httpx.Client(timeout=45.0) as client:
+                    resp = client.post(url, headers=headers, json=payload)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        content = data["choices"][0]["message"]["content"]
+                        return json.loads(content)
+                    elif resp.status_code == 429 and attempt < 2:
+                        logger.warning(f"OpenRouter 429 rate limit/admission control. Retrying in 2.5s (attempt {attempt+1}/3)...")
+                        time.sleep(2.5)
+                        continue
+                    logger.warning(
+                        f"OpenRouter API call failed with status {resp.status_code}: {resp.text}"
+                    )
+                    return None
+            except Exception as e:
+                if attempt < 2:
+                    time.sleep(2.0)
+                    continue
+                logger.warning(f"Error calling OpenRouter API: {e}")
                 return None
-        except Exception as e:
-            logger.warning(f"Error calling OpenRouter API: {e}")
-            return None
+        return None
 
     def _call_anthropic(
         self,

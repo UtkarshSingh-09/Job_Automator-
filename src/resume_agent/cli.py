@@ -836,9 +836,73 @@ def match_test_suite_cmd():
 
 
 @cli.command("generate")
-def generate_cmd():
-    """Generate tailored resume and compile PDF (Phase 7)."""
-    print_info("Resume generator will be available in Phase 7.")
+@click.option("--job-id", required=True, type=int, help="Target job ID to tailor resume for")
+def generate_cmd(job_id: int):
+    """Generate tailored grounded bullets, ATS-proof LaTeX, and compile single-page PDF (Phase 7)."""
+    import fitz
+    from resume_agent.jobs.service import get_job_by_id
+    from resume_agent.writer.service import generate_tailored_resume
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    job = get_job_by_id(job_id)
+    if not job:
+        print_error(f"Job #{job_id} not found in database.")
+        return
+
+    console.print(Panel.fit(
+        f"[bold cyan]Tailored Resume Generation (Phase 7)[/bold cyan]\n"
+        f"Target Role: [bold white]{job.title}[/bold white] at [bold cyan]{job.company_name}[/bold cyan]\n"
+        f"Compiling ATS single-page resume via TeX Live / tectonic...",
+        title=f"Generating Resume for Job #{job.id}"
+    ))
+
+    with console.status("[bold green]Generating bullets, verifying grounding, compiling PDF...[/bold green]"):
+        try:
+            pdf_path = generate_tailored_resume(job_id)
+        except Exception as e:
+            print_error(f"Resume generation failed: {e}")
+            return
+
+    # Verify single-page constraint
+    doc = fitz.open(pdf_path)
+    page_cnt = doc.page_count
+    doc.close()
+
+    page_badge = "[bold green]1 Page (ATS Compliant)[/bold green]" if page_cnt == 1 else f"[bold red]{page_cnt} Pages (Exceeds 1-page budget!)[/bold red]"
+
+    console.print(Panel.fit(
+        f"[bold white]Output PDF:[/bold white] [green]{pdf_path}[/green]\n"
+        f"Page Count: {page_badge}\n"
+        f"File Size: [cyan]{pdf_path.stat().st_size // 1024} KB[/cyan]\n\n"
+        f"[dim]To preview in macOS Preview: open '{pdf_path}'[/dim]",
+        title="Resume Generated Successfully"
+    ))
+    print_success(f"Resume generated and stored in SQLite database for Job #{job_id}!")
+
+
+@cli.command("test-grounding")
+def test_grounding_cmd():
+    """Run programmatic anti-hallucination verification test suite (Phase 7)."""
+    import subprocess
+    import sys
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
+    console.print(Panel.fit(
+        "[bold cyan]Anti-Hallucination Grounding Test Suite[/bold cyan]\n"
+        "Testing strict verification against hallucinated tools, fake metrics, pronouns, and word bounds...",
+        title="Grounding Verification Suite"
+    ))
+
+    cmd = [sys.executable, "-m", "pytest", "tests/test_grounding.py", "-v"]
+    res = subprocess.run(cmd, cwd=str(settings.project_root), capture_output=True, text=True)
+    console.print(res.stdout)
+    if res.returncode == 0:
+        print_success("Anti-hallucination verification suite PASSED (100% tests passed)!")
+    else:
+        print_error("Anti-hallucination verification suite encountered test failures.")
 
 @cli.command("validate")
 def validate_cmd():

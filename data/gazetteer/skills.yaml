@@ -53,6 +53,10 @@ messaging_and_streaming:
   - celery
   - redis pub/sub
   - sqs
+  - spark
+  - pyspark
+  - hadoop
+  - flink
   - event-driven architecture
 
 machine_learning_and_ai:
