@@ -2,6 +2,7 @@ import logging
 import sys
 from rich.console import Console
 from rich.logging import RichHandler
+from rich.panel import Panel
 from rich.theme import Theme
 
 # Custom rich theme
@@ -50,7 +51,8 @@ def print_success(message: str) -> None:
 
 def print_error(message: str) -> None:
     """Print red error message with crossmark."""
-    console.print(f"[error]✖[/error] {message}", file=sys.stderr)
+    console.print(f"[error]✖[/error] {message}")
+
 
 
 def print_warning(message: str) -> None:
@@ -61,3 +63,12 @@ def print_warning(message: str) -> None:
 def print_info(message: str) -> None:
     """Print blue/cyan info message."""
     console.print(f"[info]ℹ[/info] {message}")
+
+
+def print_step(title: str, subtitle: str = "") -> None:
+    """Print a prominent step panel in the console."""
+    body = f"[bold cyan]{title}[/bold cyan]"
+    if subtitle:
+        body += f"\n[dim white]{subtitle}[/dim white]"
+    console.print(Panel.fit(body, border_style="cyan"))
+

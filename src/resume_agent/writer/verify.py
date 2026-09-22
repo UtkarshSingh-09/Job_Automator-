@@ -4,6 +4,13 @@ from resume_agent.models import ProjectModel
 from resume_agent.matcher.select import _load_skills_vocab
 
 
+def _strip_markdown(text: str) -> str:
+    """Strip markdown bolding and inline code formatting for clean lexical validation."""
+    t = re.sub(r"\*\*(.*?)\*\*", r"\1", text)
+    t = re.sub(r"`(.*?)`", r"\1", text)
+    return t
+
+
 def verify_bullets(
     bullets: List[str],
     project: ProjectModel,
@@ -14,10 +21,11 @@ def verify_bullets(
     Programmatic anti-hallucination and formatting verification suite.
     Enforces that:
     1. Exactly 3 bullets are provided.
-    2. Word counts are within [14, 26] words.
-    3. No first-person pronouns ('I', 'me', 'my', 'we', 'our').
-    4. Numeric figures, percentages, and latency metrics appear verbatim in project truth.
-    5. Technical framework/tool terms are grounded in the project corpus.
+    2. Word counts are within [14, 26] words (excluding markdown asterisks).
+    3. First 4 Words Rule: Starts with strong technical active verb; rejects weak starters.
+    4. No first-person pronouns ('I', 'me', 'my', 'we', 'our').
+    5. Numeric figures, percentages, and latency metrics appear in project truth.
+    6. Technical framework/tool terms are grounded in the project corpus.
     
     Returns:
         (is_valid: bool, violations: List[str])
@@ -40,16 +48,30 @@ def verify_bullets(
         " ".join(project.topics),
     ]
     ground_truth_lower = " ".join(truth_parts).lower()
-    ground_truth_raw = " ".join(truth_parts)
+    norm_truth = ground_truth_lower.replace(" ", "").replace(",", "").replace("$", "").replace("~", "")
 
     skills_vocab = set(s.lower() for s in _load_skills_vocab())
 
     first_person_pattern = re.compile(r"\b(i|me|my|we|our|us)\b", re.IGNORECASE)
-    metric_pattern = re.compile(r"\b(\d+(\.\d+)?%|\d+x|\d+\s*(?:ms|s|µs|fps|rpm|qps|rps|tps))\b", re.IGNORECASE)
-    large_number_pattern = re.compile(r"\b\d{2,}\b")
+    weak_starters = [
+        "assisted", "helped", "worked on", "responsible for", "participated in",
+        "collaborated", "supported", "contributed to", "involved in"
+    ]
+    metric_pattern = re.compile(
+        r"(~?\d+(?:\.\d+)?%|\b\d+x\b|~?\d+\s*(?:ms|s|µs|fps|rpm|qps|rps|tps)|\$\d+(?:,\d+)?|\b\d+\s*(?:days|weeks|months|seconds)\b)",
+        re.IGNORECASE
+    )
 
-    for idx, bullet in enumerate(bullets, 1):
-        clean_bullet = bullet.strip().rstrip(".").strip()
+    # Acronym synonyms allowed if primary is grounded
+    synonym_aliases = {
+        "postgres": "postgresql",
+        "rest": "restful",
+        "k8s": "kubernetes",
+        "ci/cd": "github actions",
+    }
+
+    for idx, raw_bullet in enumerate(bullets, 1):
+        clean_bullet = _strip_markdown(raw_bullet.strip()).rstrip(".").strip()
         words = clean_bullet.split()
         word_count = len(words)
 
@@ -59,29 +81,40 @@ def verify_bullets(
                 f"Bullet #{idx} has {word_count} words (must be between {min_words} and {max_words}): '{clean_bullet[:40]}...'"
             )
 
-        # 3. Check first-person pronouns
+        # 3. Check First 4 Words Rule (anti-weak starter)
+        bullet_start = clean_bullet.lower()
+        for ws in weak_starters:
+            if bullet_start.startswith(ws):
+                violations.append(
+                    f"Bullet #{idx} starts with weak phrasing '{ws}'. Enforce Google X-Y-Z formula with strong active verb."
+                )
+
+        # 4. Check first-person pronouns
         fp_match = first_person_pattern.search(clean_bullet)
         if fp_match:
             violations.append(f"Bullet #{idx} contains first-person pronoun '{fp_match.group(0)}'")
 
-        # 4. Check metrics (percentages, speedups, latencies)
+        # 5. Check metrics (percentages, speedups, latencies, prizes)
         for metric_m in metric_pattern.finditer(clean_bullet):
-            metric_str = metric_m.group(0).lower().replace(" ", "")
-            # Verify metric appears in ground truth
-            norm_truth = ground_truth_lower.replace(" ", "")
-            if metric_str not in norm_truth:
+            metric_raw = metric_m.group(0).lower()
+            metric_norm = metric_raw.replace(" ", "").replace(",", "").replace("$", "").replace("~", "")
+            if metric_norm not in norm_truth:
                 violations.append(
                     f"Bullet #{idx} contains ungrounded metric '{metric_m.group(0)}' not found in project truth"
                 )
 
-        # 5. Check technical skill terms (anti-hallucination)
+        # 6. Check technical skill terms (anti-hallucination)
         bullet_lower = clean_bullet.lower()
         for skill in skills_vocab:
-            # Check if this skill keyword is mentioned in the bullet
             pattern = r"\b" + re.escape(skill) + r"\b"
             if re.search(pattern, bullet_lower):
-                # Check if it was in the project ground truth
-                if not re.search(pattern, ground_truth_lower):
+                # Check if skill or its known alias is in truth
+                grounded = bool(re.search(pattern, ground_truth_lower))
+                if not grounded and skill in synonym_aliases:
+                    alias = synonym_aliases[skill]
+                    grounded = bool(re.search(r"\b" + re.escape(alias) + r"\b", ground_truth_lower))
+
+                if not grounded:
                     violations.append(
                         f"Bullet #{idx} introduces hallucinated technology '{skill}' not in project truth"
                     )

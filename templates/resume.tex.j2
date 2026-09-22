@@ -5,7 +5,7 @@
 \pdfgentounicode=1
 
 % --- Layout & Geometry (Strict 1-Page ATS Budget) ---
-\usepackage[margin=0.55in,top=0.45in,bottom=0.45in]{geometry}
+\usepackage[margin=0.5in,top=0.42in,bottom=0.42in]{geometry}
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
@@ -17,17 +17,18 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 
-% Suppress hyphenation for clean keyword parsing
+% Suppress hyphenation for clean keyword parsing (ATS anti-mutilation)
 \hyphenpenalty=10000
 \exhyphenpenalty=10000
+\sloppy
 
 % Pure standard LaTeX Section styling with solid horizontal divider
 \renewcommand{\section}[1]{
-  \vspace{5pt}
+  \vspace{4pt}
   \noindent{\large\bfseries\scshape #1}
   \vspace{2pt}
   \hrule height 0.6pt
-  \vspace{4pt}
+  \vspace{3pt}
 }
 
 \setlist[itemize]{
@@ -36,7 +37,7 @@
   topsep=1pt,
   partopsep=0pt,
   parsep=0pt,
-  itemsep=1.5pt,
+  itemsep=1.2pt,
   after=\vspace{1pt}
 }
 
@@ -46,7 +47,7 @@
 % 1. HEADER (Candidate Identification & Contact Details)
 % ==============================================================================
 \begin{center}
-    {\Huge \textbf{ {{ profile.name | latex_escape }} }} \\ \vspace{3pt}
+    {\Huge \textbf{ {{ profile.name | latex_escape }} }} \\ \vspace{2pt}
     \small
     {{ profile.location | latex_escape }} \ $|$ \ 
     {{ profile.phone | latex_escape }} \ $|$ \ 
@@ -61,7 +62,8 @@
 % ==============================================================================
 \section{Education}
 \noindent\textbf{ {{ profile.college | latex_escape }} } \hfill \textbf{Amaravati, India} \\
-\textit{ {{ profile.degree | latex_escape }}{% if profile.branch and profile.branch.lower() not in profile.degree.lower() %} in {{ profile.branch | latex_escape }}{% endif %} (CGPA: {{ profile.cgpa }}/10.00)} \hfill \textit{Expected Graduation: {{ profile.grad_year }}}
+\textit{ {{ profile.degree | latex_escape }} } \hfill \textbf{ {{ profile.date_range | latex_escape }} } \\
+\small CGPA: {{ profile.cgpa }} / 10.00 \ $|$ \ \textit{Coursework: {{ coursework | latex_escape }}}
 \vspace{-2pt}
 
 % ==============================================================================
@@ -70,9 +72,10 @@
 \section{Technical Skills}
 \begin{itemize}[leftmargin=0.15in, label={}]
     \item \textbf{Languages:} {{ skills_languages | latex_escape }}
-    \item \textbf{Systems \& Frameworks:} {{ skills_frameworks | latex_escape }}
-    \item \textbf{Machine Learning \& AI:} {{ skills_ai | latex_escape }}
-    \item \textbf{Core Competencies:} {{ skills_core | latex_escape }}
+    \item \textbf{Frameworks \& Libraries:} {{ skills_frameworks | latex_escape }}
+    \item \textbf{Databases \& Vector Stores:} {{ skills_databases | latex_escape }}
+    \item \textbf{ML, RL \& AI Safety:} {{ skills_ai | latex_escape }}
+    \item \textbf{Developer Tools \& Protocols:} {{ skills_tools | latex_escape }}
 \end{itemize}
 \vspace{-2pt}
 
@@ -82,7 +85,8 @@
 \section{Technical Projects}
 
 {% for proj in projects %}
-\noindent\textbf{ {{ proj.display_name | latex_escape }} } $|$ \textit{ {{ proj.tech_stack | latex_escape }} } \hfill \href{https://github.com/{{ profile.github }}/{{ proj.repo_name }}}{\underline{\footnotesize github.com/{{ profile.github | latex_escape }}/{{ proj.repo_name | latex_escape }}}} \\
+\noindent\textbf{ {{ proj.display_name | latex_escape }} }{% if proj.subtitle %} $|$ \textit{ {{ proj.subtitle | latex_escape }} }{% endif %} \hfill \href{https://github.com/{{ profile.github }}/{{ proj.repo_name }}}{\underline{\footnotesize GitHub}}{% if proj.demo_url %} $|$ \href{ {{ proj.demo_url }} }{\underline{\footnotesize Demo Video}}{% endif %}{% if proj.is_patent %} $|$ \textbf{\footnotesize Patent Filed}{% endif %}{% if proj.live_url %} $|$ \href{ {{ proj.live_url }} }{\underline{\footnotesize Live}}{% endif %} \\
+\textit{ {{ proj.tech_stack | latex_escape }} } \hfill \textbf{ {{ proj.date_range | latex_escape }} }
 \begin{itemize}
     {% for bullet in proj.bullets %}
     \item {{ bullet | latex_escape }}

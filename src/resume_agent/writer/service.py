@@ -53,6 +53,34 @@ def generate_tailored_resume(job_id: int) -> Path:
         f"Generating tailored resume for '{job.title}' at {job.company_name} (Fit: {match_obj.overall_fit}/100)..."
     )
 
+    # Metadata registry for flagship projects (temporal binding, dates, links)
+    project_meta = {
+        "merchantmind": {
+            "subtitle": "Autonomous Conversational Commerce Engine",
+            "date_range": "Jan 2026 -- Feb 2026",
+            "tech_stack": "Python 3.12, FastAPI, PostgreSQL 16, Redis 7, Razorpay SDK",
+            "demo_url": "https://youtu.be/hS77jr1y1z4",
+            "live_url": "https://merchantmind-ai.netlify.app",
+        },
+        "trinetra": {
+            "subtitle": "Agentic Commercial Credit Intelligence OS",
+            "date_range": "Dec 2025 -- Jan 2026",
+            "tech_stack": "Python, FastAPI, Qdrant Vector DB, Redis Pub/Sub, XGBoost, SHAP/LIME",
+            "is_patent": True,
+        },
+        "aegis-forge": {
+            "subtitle": "Real-Time Voice AI Interview Platform",
+            "date_range": "Jan 2026 -- Feb 2026",
+            "tech_stack": "Python, FastAPI, Next.js 16, LiveKit WebRTC, Deepgram Nova-3",
+            "demo_url": "https://youtu.be/6XJ7HiaCKKQ",
+        },
+        "rudrakernel": {
+            "subtitle": "Multi-Agent Reinforcement Learning Environment",
+            "date_range": "Jan 2026 -- Feb 2026",
+            "tech_stack": "Python, PyTorch, OpenEnv, Multi-Agent RL, GRPO, TRL, LoRA",
+        },
+    }
+
     # 2. Generate grounded bullets for each of the 3 selected projects
     projects_context = []
     bullets_payload = []
@@ -67,55 +95,69 @@ def generate_tailored_resume(job_id: int) -> Path:
         res = generate_project_bullets(proj, job)
         bullets_payload.append(res)
 
-        tech_stack = ", ".join(proj.languages[:4]) or (proj.primary_language or "Python")
+        meta = project_meta.get(repo.lower(), {})
+        tech_stack = meta.get("tech_stack") or (", ".join(proj.languages[:4]) or (proj.primary_language or "Python"))
+        subtitle = meta.get("subtitle") or (proj.description[:45] if proj.description else "")
+        date_range = meta.get("date_range", "Oct 2025 -- Jan 2026")
+
         projects_context.append({
             "display_name": proj.display_name or proj.repo_name,
             "repo_name": proj.repo_name,
+            "subtitle": subtitle,
             "tech_stack": tech_stack,
+            "date_range": date_range,
+            "demo_url": meta.get("demo_url"),
+            "live_url": meta.get("live_url"),
+            "is_patent": meta.get("is_patent", False),
             "bullets": res["bullets"],
         })
 
     if not projects_context:
         raise RuntimeError("No projects available to include in resume.")
 
-    # 3. Categorize candidate technical skills for ATS readability
-    all_skills = [s.strip() for s in profile.skills]
-    skills_languages = "Python, C++, SQL, Bash, Go, JavaScript"
-    skills_frameworks = "FastAPI, Docker, Linux, Concurrency, Git, REST APIs, Redis"
-    skills_ai = "PyTorch, LangChain, LangGraph, RAG, SLMs, LLMs (GPT-4, Llama-3)"
-    skills_core = "Data Structures & Algorithms, OS, DBMS, System Design, OOPs"
+    # 3. Categorize candidate technical skills for ATS readability & temporal binding
+    skills_languages = "Python, C++, SQL, Go, C, TypeScript, JavaScript, HTML5, CSS3"
+    skills_frameworks = "FastAPI, Next.js 16, React 19, LangGraph, LiveKit WebRTC, Deepgram SDK, Razorpay SDK, Pydantic v2"
+    skills_databases = "Qdrant Vector DB (14 Collections), PostgreSQL 16, Redis 7, SQLite, ChromaDB"
+    skills_ai = "Sentence-Transformers (bge-small, MiniLM), XGBoost, LightGBM, SHAP, LIME, OpenEnv, LoRA"
+    skills_tools = "Docker, Git, GitHub Actions CI/CD, WebSockets, Redis Pub/Sub, Raw Sockets (TCP/UDP), Linux, RESTful APIs"
 
-    # Achievements / Hackathon Honors
+    coursework = "Data Structures & Algorithms, DBMS, Operating Systems, Machine Learning, System Design, Distributed Systems"
+
+    # Achievements / Hackathon Honors with recruiter bolding
     achievements = [
-        "1st Place Winner — HackSRM 6.0: Built autonomous multi-agent dispute resolution engine.",
-        "Top 5 Finalist — National Smart India Hackathon (SIH 2024): Financial document intelligence system.",
-        "Special Recognition Award — SRM Hackathon: Real-time low-latency kernel monitoring tool.",
-        "Ranked Top 5% Globally in competitive programming challenges across LeetCode & Codeforces.",
+        "**1st Runner-Up ($1,500 Prize):** Zenith National Hackathon (Built Aegis Forge distributed multi-agent system under competitive time constraints).",
+        "**Top Finalist:** Meta OpenEnv x PyTorch Hackathon 2026 (Built RudraKernel multi-agent RL environment for LLM epistemic safety).",
+        "**Top 25 Finalist:** Logithon '25 @ IIT Bombay and HackFor Green Bharat @ Microsoft Gurugram.",
+        "**Competitive Programming:** Solved 150+ DSA problems on LeetCode covering dynamic programming, graph theory, and system optimization.",
     ]
-    if profile.achievements:
-        achievements = profile.achievements[:4]
 
     gh_handle = profile.github_url.rstrip("/").split("/")[-1] if profile.github_url else "UtkarshSingh-09"
-    li_handle = profile.linkedin_url.rstrip("/").split("/")[-1] if profile.linkedin_url else "utkarshsingh"
+    li_handle = profile.linkedin_url.rstrip("/").split("/")[-1] if profile.linkedin_url else "utkarshsingh09"
+
+    degree_display = "Bachelor of Technology in Computer Science"
+    if profile.degree and "bachelor" in profile.degree.lower():
+        degree_display = profile.degree
 
     template_context = {
         "profile": {
             "name": profile.full_name,
             "email": profile.email,
-            "phone": profile.phone or "+91 91539 31333",
-            "college": profile.college or "SRM University, AP",
-            "degree": profile.degree or "Bachelor of Technology",
-            "branch": profile.branch or "Computer Science and Engineering",
-            "grad_year": profile.grad_year or 2028,
+            "phone": profile.phone or "+91-7565960168",
+            "college": "SRM University Amaravati",
+            "degree": degree_display,
+            "date_range": "Aug 2024 -- May 2028",
             "cgpa": f"{profile.cgpa:.2f}" if profile.cgpa else "8.78",
-            "location": profile.location or "Amaravati, India",
+            "location": profile.location or "Ayodhya, UP, India",
             "github": gh_handle,
             "linkedin": li_handle,
         },
+        "coursework": coursework,
         "skills_languages": skills_languages,
         "skills_frameworks": skills_frameworks,
+        "skills_databases": skills_databases,
         "skills_ai": skills_ai,
-        "skills_core": skills_core,
+        "skills_tools": skills_tools,
         "projects": projects_context,
         "achievements": achievements,
     }

@@ -1,10 +1,12 @@
+from pathlib import Path
+from typing import Optional
 import click
 from rich.table import Table
 from rich.panel import Panel
 from resume_agent import __version__
 from resume_agent.config import get_settings
 from resume_agent.db import run_migrations, get_table_counts
-from resume_agent.logging import setup_logging, console, print_success, print_error, print_info
+from resume_agent.logging import setup_logging, console, print_success, print_error, print_info, print_warning, print_step
 
 
 @click.group()
@@ -905,9 +907,68 @@ def test_grounding_cmd():
         print_error("Anti-hallucination verification suite encountered test failures.")
 
 @cli.command("validate")
-def validate_cmd():
+@click.option("--job-id", type=int, default=None, help="Job ID from database to validate.")
+@click.option("--pdf", type=click.Path(exists=True, path_type=Path), default=None, help="Explicit PDF path to validate.")
+@click.option("--all-recent", is_flag=True, help="Validate all recently generated PDFs in data/output/.")
+@click.option("--min-coverage", type=float, default=80.0, help="Minimum JD keyword coverage percentage (default: 80.0).")
+def validate_cmd(job_id: Optional[int], pdf: Optional[Path], all_recent: bool, min_coverage: float):
     """Run mechanical ATS validation suite (Phase 8)."""
-    print_info("Validation suite will be available in Phase 8.")
+    from resume_agent.validate import validate_resume_pdf
+    from resume_agent.db import get_db
+
+    print_step("ATS Mechanical Verification Suite (Phase 8)", "Evaluating PDF against 7 deterministic parser gates...")
+    settings = get_settings()
+
+    if all_recent:
+        output_dir = settings.project_root / "data" / "output"
+        pdf_files = list(output_dir.rglob("*.pdf"))
+        if not pdf_files:
+            print_warning(f"No generated PDFs found in {output_dir}.")
+            return
+
+        print_info(f"Discovered {len(pdf_files)} PDF artifact(s) to validate.")
+        total_passed = 0
+        for p in pdf_files:
+            report = validate_resume_pdf(p, min_coverage=min_coverage)
+            report.print_summary(console)
+            if report.is_valid:
+                total_passed += 1
+
+        if total_passed == len(pdf_files):
+            print_success(f"All {total_passed}/{len(pdf_files)} PDFs PASSED ATS verification!")
+        else:
+            print_warning(f"{total_passed}/{len(pdf_files)} PDFs passed ATS verification.")
+        return
+
+    # If job_id specified, find its PDF from DB
+    target_pdf = pdf
+    if job_id:
+        with get_db() as conn:
+            row = conn.execute("SELECT pdf_path FROM matches WHERE job_id = ?;", (job_id,)).fetchone()
+            if row and row["pdf_path"]:
+                target_pdf = Path(row["pdf_path"])
+            else:
+                print_error(f"No generated PDF found in database for Job #{job_id}. Run 'resume-agent generate --job-id {job_id}' first.")
+                return
+
+    if not target_pdf:
+        # Default: pick most recent PDF in data/output
+        output_dir = settings.project_root / "data" / "output"
+        pdf_files = sorted(output_dir.rglob("*.pdf"), key=lambda p: p.stat().st_mtime, reverse=True)
+        if pdf_files:
+            target_pdf = pdf_files[0]
+            print_info(f"No PDF or --job-id provided. Defaulting to most recent: {target_pdf.name}")
+        else:
+            print_error("No PDF specified and no recent PDF artifacts found in data/output/.")
+            return
+
+    report = validate_resume_pdf(target_pdf, job_id=job_id, min_coverage=min_coverage)
+    report.print_summary(console)
+
+    if report.is_valid:
+        print_success(f"Artifact '{target_pdf.name}' passed all 7 ATS validation gates (Score: {report.ats_score}/100)!")
+    else:
+        print_error(f"Artifact '{target_pdf.name}' failed one or more ATS validation gates.")
 
 @cli.command("daily")
 def daily_cmd():

@@ -130,3 +130,28 @@ def test_trinetra_reject_hallucinated_blockchain(sample_trinetra):
     is_valid, violations = verify_bullets(poisoned_bullets, sample_trinetra)
     assert is_valid is False
     assert any("solidity" in v.lower() or "ethereum" in v.lower() for v in violations)
+
+
+def test_markdown_bolded_metrics_pass(sample_merchantmind):
+    """Bullets featuring markdown bold highlights for metrics and tools must pass verification cleanly."""
+    bold_bullets = [
+        "Engineered multi-agent conversational platform using **Python** and **FastAPI**, processing 5,000+ products with **sub-650ms** cached catalog retrieval via Redis.",
+        "Architected atomic 3-phase checkout saga with **PostgreSQL** row-level locks and Razorpay Payment Links, ensuring idempotency and preventing duplicate charges.",
+        "Implemented deterministic budget enforcement and Redis sliding-window rate limiting, validated by **151-test** security suite for reliable transaction handling.",
+    ]
+    is_valid, violations = verify_bullets(bold_bullets, sample_merchantmind)
+    assert is_valid is True
+    assert len(violations) == 0
+
+
+def test_reject_weak_action_starters(sample_merchantmind):
+    """Bullets starting with passive or weak verbs ('Worked on', 'Assisted in') must fail First 4 Words Rule."""
+    weak_bullets = [
+        "Worked on multi-agent conversational platform using Python and FastAPI, processing 5,000+ products with sub-650ms cached catalog retrieval via Redis.",
+        "Architected atomic 3-phase checkout saga with PostgreSQL row-level locks and Razorpay Payment Links, ensuring idempotency and preventing duplicate charges.",
+        "Implemented deterministic budget enforcement and Redis sliding-window rate limiting, validated by 151-test security suite for reliable transaction handling.",
+    ]
+    is_valid, violations = verify_bullets(weak_bullets, sample_merchantmind)
+    assert is_valid is False
+    assert any("weak phrasing" in v.lower() for v in violations)
+
