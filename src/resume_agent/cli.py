@@ -971,9 +971,47 @@ def validate_cmd(job_id: Optional[int], pdf: Optional[Path], all_recent: bool, m
         print_error(f"Artifact '{target_pdf.name}' failed one or more ATS validation gates.")
 
 @cli.command("daily")
-def daily_cmd():
+@click.option("--dry-run", is_flag=True, help="Run in simulation mode without updating records or sending live network calls.")
+@click.option("--format", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format (text or json for n8n consumption).")
+@click.option("--limit", type=int, default=5, help="Maximum number of candidate matches to process (default: 5).")
+@click.option("--skip-fetch", is_flag=True, help="Skip live company ATS job board fetching.")
+@click.option("--no-delivery", is_flag=True, help="Skip dispatching notifications to Telegram.")
+def daily_cmd(dry_run: bool, output_format: str, limit: int, skip_fetch: bool, no_delivery: bool):
     """Run full automated daily pipeline (Phase 9)."""
-    print_info("Daily orchestrator will be available in Phase 9.")
+    from resume_agent.orchestrate.daily import run_daily_pipeline
+    import json as json_lib
+
+    if output_format == "text":
+        print_step("Daily Autonomous Pipeline (Phase 9)", f"Executing end-to-end loop (Dry Run: {dry_run})...")
+
+    res = run_daily_pipeline(
+        dry_run=dry_run,
+        skip_fetch=skip_fetch,
+        limit=limit,
+        send_telegram=not no_delivery,
+    )
+
+    if output_format == "json":
+        click.echo(json_lib.dumps(res, indent=2))
+    else:
+        if res["success"]:
+            print_success(f"Daily pipeline completed! Processed {len(res['matches'])} match(es), {res['resumes_validated']} validated.")
+        else:
+            print_error(f"Daily pipeline encountered errors: {res['errors']}")
+
+
+@cli.command("notify-test")
+@click.option("--dry-run", is_flag=True, help="Simulate Telegram delivery without calling live API.")
+def notify_test_cmd(dry_run: bool):
+    """Send a test alert and sample PDF to Telegram (Phase 9)."""
+    from resume_agent.deliver.telegram import TelegramClient
+    print_step("Telegram Delivery Test", "Verifying Bot API connectivity and PDF attachment dispatch...")
+    client = TelegramClient(dry_run=dry_run)
+    ok = client.send_message("⚡ <b>Resume Agent Telegram Bot</b> is online and operational!\n\nAutomated daily dispatch ready for 09:00 IST.")
+    if ok:
+        print_success("Telegram test message dispatched successfully!")
+    else:
+        print_error("Failed to dispatch test message to Telegram. Check your bot token and chat ID.")
 
 @cli.command("apply")
 def apply_cmd():

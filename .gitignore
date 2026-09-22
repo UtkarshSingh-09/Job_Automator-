@@ -19,6 +19,7 @@ venv/
 
 # Output (generated resumes — don't commit PDFs)
 data/output/
+data/notifications/
 
 # IDE
 .vscode/

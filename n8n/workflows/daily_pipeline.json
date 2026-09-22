@@ -1,0 +1,201 @@
+{
+  "name": "Resume Agent Daily Autonomous Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 3 * * *"
+            }
+          ]
+        }
+      },
+      "id": "node-schedule-trigger",
+      "name": "Schedule Trigger (09:00 AM IST)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "uv run resume-agent daily --format json"
+      },
+      "id": "node-execute-daily-cli",
+      "name": "Execute Daily Pipeline CLI",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse JSON stdout emitted by resume-agent daily CLI\nconst rawOutput = $input.first().json.stdout || '{}';\ntry {\n  const data = JSON.parse(rawOutput);\n  return [ { json: data } ];\n} catch (e) {\n  return [ { json: { success: false, error: 'Failed to parse CLI JSON output: ' + e.message, raw: rawOutput } } ];\n}"
+      },
+      "id": "node-parse-output",
+      "name": "Parse Pipeline Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.matches_found }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "node-if-matches-found",
+      "name": "Matches Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        920,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "🌅 <b>Daily Pipeline Complete</b>\n\nGenerated and ATS-validated {{ $json.resumes_validated }} tailored resumes across {{ $json.boards_monitored }} monitored company boards.\n\nIndividual PDF match cards dispatched to Telegram chat.",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "node-telegram-success",
+      "name": "Telegram: Matches Digest",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1160,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "ℹ️ <b>Daily Pipeline Update</b>\n\n0 new qualifying internships detected today across {{ $json.boards_monitored }} boards.\nMonitoring remains active.",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "node-telegram-idle",
+      "name": "Telegram: Idle Update",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1160,
+        400
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "node-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        480,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "🚨 <b>Pipeline Execution Alert</b>\n\nn8n visual workflow encountered an error executing the daily pipeline. Please inspect n8n execution history at localhost:5678.",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "node-telegram-error-alert",
+      "name": "Telegram: Failure Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        540
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (09:00 AM IST)": {
+      "main": [
+        [
+          {
+            "node": "Execute Daily Pipeline CLI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Daily Pipeline CLI": {
+      "main": [
+        [
+          {
+            "node": "Parse Pipeline Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Pipeline Results": {
+      "main": [
+        [
+          {
+            "node": "Matches Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Matches Found?": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Matches Digest",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Idle Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Failure Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
