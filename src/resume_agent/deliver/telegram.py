@@ -245,6 +245,125 @@ class TelegramClient:
 
         return self.send_message(text=text, parse_mode="HTML")
 
+    def send_photo(
+        self,
+        photo_path: Path,
+        caption: str = "",
+        parse_mode: str = "HTML",
+        reply_markup: Optional[Dict[str, Any]] = None
+    ) -> bool:
+        """Upload and send a photo screenshot to Telegram."""
+        photo_p = Path(photo_path)
+        if not photo_p.exists():
+            logger.error(f"Photo file not found: {photo_p}")
+            return False
+
+        payload = {
+            "chat_id": self.chat_id,
+            "caption": caption,
+            "parse_mode": parse_mode,
+            "photo_path": str(photo_p),
+            "file_size_bytes": photo_p.stat().st_size,
+        }
+        if reply_markup:
+            payload["reply_markup"] = reply_markup
+
+        if self.dry_run or not self.is_configured:
+            self._record_dry_run("send_photo", payload)
+            return True
+
+        url = f"{self.base_url}/sendPhoto"
+        data = {
+            "chat_id": self.chat_id,
+            "caption": caption,
+            "parse_mode": parse_mode,
+        }
+        if reply_markup:
+            data["reply_markup"] = json.dumps(reply_markup)
+
+        try:
+            with open(photo_p, "rb") as f:
+                files = {"photo": (photo_p.name, f, "image/png")}
+                with httpx.Client(timeout=self.timeout) as client:
+                    resp = client.post(url, data=data, files=files)
+                    resp.raise_for_status()
+                    res_json = resp.json()
+                    if res_json.get("ok"):
+                        logger.info(f"Telegram photo '{photo_p.name}' dispatched successfully.")
+                        return True
+                    else:
+                        logger.error(f"Telegram sendPhoto error: {res_json.get('description')}")
+                        return False
+        except Exception as e:
+            logger.error(f"Failed to upload Telegram photo: {e}")
+            return False
+
+    def send_apply_confirmation(
+        self,
+        job: JobModel,
+        status: str,
+        method: str,
+        pdf_path: Optional[Path] = None,
+        screenshot_path: Optional[Path] = None,
+        notes: str = ""
+    ) -> bool:
+        """
+        Send application dispatch confirmation or safety intervention alert to Telegram.
+        """
+        comp = html.escape(job.company_name)
+        title = html.escape(job.title)
+        apply_url = job.apply_url
+
+        reply_markup = None
+        if apply_url:
+            reply_markup = {
+                "inline_keyboard": [
+                    [{"text": "🔗 View Job Page", "url": apply_url}]
+                ]
+            }
+
+        if status == "submitted":
+            caption = (
+                f"✅ <b>APPLICATION SUBMITTED!</b>\n\n"
+                f"🏢 <b>Company:</b> {comp}\n"
+                f"💼 <b>Role:</b> {title}\n"
+                f"⚙️ <b>Submission Method:</b> <code>{method}</code>\n"
+                f"📝 <b>Status:</b> Success\n\n"
+                f"📸 Confirmation screenshot attached."
+            )
+        elif status == "dry_run":
+            caption = (
+                f"🧪 <b>SIMULATED APPLICATION (DRY-RUN)</b>\n\n"
+                f"🏢 <b>Company:</b> {comp}\n"
+                f"💼 <b>Role:</b> {title}\n"
+                f"⚙️ <b>Engine:</b> <code>{method}</code>\n"
+                f"📝 <b>Note:</b> {html.escape(notes or 'Form filled and verified.')}\n\n"
+                f"📸 Pre-submit form screenshot attached below."
+            )
+        else:
+            caption = (
+                f"⚠️ <b>AUTO-APPLY SKIPPED (Manual Action Needed)</b>\n\n"
+                f"🏢 <b>Company:</b> {comp}\n"
+                f"💼 <b>Role:</b> {title}\n"
+                f"🛑 <b>Reason:</b> <code>{status}</code> — {html.escape(notes)}\n\n"
+                f"Please click below to submit manually:"
+            )
+
+        # Dispatch photo screenshot if available
+        if screenshot_path and Path(screenshot_path).exists():
+            self.send_photo(Path(screenshot_path), caption=caption, reply_markup=reply_markup)
+        else:
+            self.send_message(text=caption, reply_markup=reply_markup)
+
+        # Also dispatch PDF resume if available and not dry-run
+        if status == "submitted" and pdf_path and Path(pdf_path).exists():
+            self.send_document(
+                document_path=Path(pdf_path),
+                caption=f"📎 ATS Resume Submitted for {comp} — {title}"
+            )
+
+        return True
+
     def send_error_alert(self, error_message: str, stage: str = "") -> bool:
         """Send instant visual alert when an error occurs in the daily pipeline."""
         stage_str = f" at stage <b>{html.escape(stage)}</b>" if stage else ""

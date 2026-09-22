@@ -136,10 +136,13 @@ class ApplicationModel(BaseModel):
     match_id: int
     status: str = "generated"
     auto_apply_status: str = "pending"
+    apply_method: str = "playwright_form"
     confirmation_screenshot: Optional[str] = None
+    response_payload: Optional[str] = "{}"
     submit_attempted_at: Optional[datetime] = None
     applied_at: Optional[datetime] = None
     notes: Optional[str] = None
+    created_at: Optional[datetime] = None
 
 
 class RunLogModel(BaseModel):

@@ -976,26 +976,28 @@ def validate_cmd(job_id: Optional[int], pdf: Optional[Path], all_recent: bool, m
 @click.option("--limit", type=int, default=5, help="Maximum number of candidate matches to process (default: 5).")
 @click.option("--skip-fetch", is_flag=True, help="Skip live company ATS job board fetching.")
 @click.option("--no-delivery", is_flag=True, help="Skip dispatching notifications to Telegram.")
-def daily_cmd(dry_run: bool, output_format: str, limit: int, skip_fetch: bool, no_delivery: bool):
-    """Run full automated daily pipeline (Phase 9)."""
+@click.option("--auto-apply", is_flag=True, help="Automatically submit applications for validated resumes (Phase 10).")
+def daily_cmd(dry_run: bool, output_format: str, limit: int, skip_fetch: bool, no_delivery: bool, auto_apply: bool):
+    """Run full automated daily pipeline (Phase 9 & 10)."""
     from resume_agent.orchestrate.daily import run_daily_pipeline
     import json as json_lib
 
     if output_format == "text":
-        print_step("Daily Autonomous Pipeline (Phase 9)", f"Executing end-to-end loop (Dry Run: {dry_run})...")
+        print_step("Daily Autonomous Pipeline", f"Executing end-to-end loop (Dry Run: {dry_run}, Auto-Apply: {auto_apply})...")
 
     res = run_daily_pipeline(
         dry_run=dry_run,
         skip_fetch=skip_fetch,
         limit=limit,
         send_telegram=not no_delivery,
+        auto_apply=auto_apply,
     )
 
     if output_format == "json":
         click.echo(json_lib.dumps(res, indent=2))
     else:
         if res["success"]:
-            print_success(f"Daily pipeline completed! Processed {len(res['matches'])} match(es), {res['resumes_validated']} validated.")
+            print_success(f"Daily pipeline completed! Processed {len(res['matches'])} match(es), {res['resumes_validated']} validated, {res['applied_count']} applied.")
         else:
             print_error(f"Daily pipeline encountered errors: {res['errors']}")
 
@@ -1013,10 +1015,74 @@ def notify_test_cmd(dry_run: bool):
     else:
         print_error("Failed to dispatch test message to Telegram. Check your bot token and chat ID.")
 
+
 @cli.command("apply")
-def apply_cmd():
-    """Execute auto-apply submission engine (Phase 10)."""
-    print_info("Auto-apply engine will be available in Phase 10.")
+@click.option("--job-id", type=int, required=True, help="Target Job ID to submit application for.")
+@click.option("--dry-run", is_flag=True, help="Populate form and capture screenshot proof without clicking final Submit.")
+@click.option("--force", is_flag=True, help="Bypass daily limit and domain cooldown circuit breakers.")
+def apply_cmd(job_id: int, dry_run: bool, force: bool):
+    """Submit or simulate job application for a specific role (Phase 10)."""
+    from resume_agent.apply.manager import ApplyManager
+    print_step("Auto-Apply Engine (Phase 10)", f"Initiating application dispatch for Job #{job_id} (Dry Run: {dry_run})...")
+    mgr = ApplyManager(dry_run=dry_run)
+    res = mgr.apply_for_job(job_id, dry_run=dry_run, force=force)
+
+    if res.success:
+        if res.status == "submitted":
+            print_success(f"Application submitted successfully! Method: {res.method}. Screenshot: {res.screenshot_path}")
+        else:
+            print_success(f"Application simulation succeeded! Status: {res.status}. Method: {res.method}. Screenshot proof: {res.screenshot_path}")
+    else:
+        print_error(f"Application submission skipped or failed: [{res.status}] {res.notes or res.error}")
+
+
+@cli.command("apply-batch")
+@click.option("--limit", type=int, default=5, help="Maximum number of applications to submit (default: 5).")
+@click.option("--min-score", type=float, default=80.0, help="Minimum candidate fit score threshold (default: 80.0).")
+@click.option("--dry-run", is_flag=True, help="Run batch submission in simulation dry-run mode.")
+def apply_batch_cmd(limit: int, min_score: float, dry_run: bool):
+    """Batch apply to top qualified matches (Phase 10)."""
+    from resume_agent.apply.manager import ApplyManager
+    print_step("Batch Auto-Apply (Phase 10)", f"Targeting top {limit} matches (Fit ≥ {min_score}%, Dry Run: {dry_run})...")
+    mgr = ApplyManager(dry_run=dry_run)
+    results = mgr.apply_batch(limit=limit, min_fit_threshold=min_score, dry_run=dry_run)
+    succ = sum(1 for r in results if r.success)
+    print_success(f"Batch run complete: {succ}/{len(results)} successful attempts.")
+
+
+@cli.command("applications")
+def applications_cmd():
+    """View application submission history and audit log (Phase 10)."""
+    from resume_agent.apply.manager import ApplyManager
+    from rich.table import Table
+    mgr = ApplyManager()
+    history = mgr.get_applications_history()
+
+    if not history:
+        print_info("No application history recorded yet.")
+        return
+
+    table = Table(title="Application History & Audit Log", show_header=True, header_style="bold magenta")
+    table.add_column("App ID", style="dim", width=8)
+    table.add_column("Company", style="cyan", width=18)
+    table.add_column("Role", style="white", width=28)
+    table.add_column("Status", width=16)
+    table.add_column("Method", style="yellow", width=16)
+    table.add_column("Timestamp", style="green", width=20)
+
+    for item in history:
+        st = item["auto_apply_status"] or item["status"]
+        color = "green" if st in ("submitted", "applied") else "yellow" if st == "dry_run" else "red"
+        table.add_row(
+            str(item["id"]),
+            item["company_name"][:16],
+            item["title"][:26],
+            f"[{color}]{st}[/{color}]",
+            item["apply_method"] or "playwright_form",
+            str(item["submit_attempted_at"] or item["applied_at"] or "")[:19]
+        )
+
+    console.print(table)
 
 
 if __name__ == "__main__":
