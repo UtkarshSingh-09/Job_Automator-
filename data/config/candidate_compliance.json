@@ -31,6 +31,8 @@
   "eeo_demographics": {
     "gender": "Male",
     "gender_decline": "Decline to self-identify",
+    "hispanic_latino": "No",
+    "hispanic_decline": "Decline to self-identify",
     "race_ethnicity": "Asian (Indian)",
     "race_decline": "Decline to self-identify",
     "veteran_status": "I am not a protected veteran",

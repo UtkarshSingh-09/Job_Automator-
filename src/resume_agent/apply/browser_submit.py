@@ -87,7 +87,7 @@ def resolve_custom_form_questions(
     qa = QAGenerator()
     filled_answers = {}
 
-    # 0. Handle Greenhouse & standard custom question inputs and textareas (e.g. [id^="question_"])
+    # 0. Handle standard custom text inputs and textareas (excluding comboboxes)
     try:
         q_elements = page.locator('input[id^="question_"], textarea[id^="question_"]')
         count = q_elements.count()
@@ -95,6 +95,11 @@ def resolve_custom_form_questions(
             elem = q_elements.nth(i)
             if not elem.is_visible():
                 continue
+
+            role = elem.get_attribute("role") or ""
+            cls = elem.get_attribute("class") or ""
+            if role == "combobox" or "select__input" in cls:
+                continue  # Handled by combobox section
 
             current_val = elem.input_value() or ""
             if current_val.strip():
@@ -155,7 +160,7 @@ def resolve_custom_form_questions(
     except Exception as e:
         logger.warning(f"Error resolving custom textareas: {e}")
 
-    # 2. Handle Select / Dropdown fields (Work auth, EEO, Track choices)
+    # 2. Handle Standard HTML <select> Dropdown fields
     try:
         selects = page.locator("select")
         count = selects.count()
@@ -209,7 +214,55 @@ def resolve_custom_form_questions(
                     except Exception as e:
                         logger.warning(f"Could not select option '{chosen_opt}' for '{clean_label}': {e}")
     except Exception as e:
-        logger.warning(f"Error resolving custom selects: {e}")
+        logger.warning(f"Error resolving standard selects: {e}")
+
+    # 3. Handle Modern Comboboxes (Greenhouse react-select, dynamic dropdowns)
+    # Run 2 passes to capture cascading fields that appear after an answer (e.g. race after Hispanic: No)
+    try:
+        for _pass in range(2):
+            combos = page.locator('input.select__input, input[role="combobox"]').all()
+            for cinp in combos:
+                cid = cinp.get_attribute("id") or ""
+                if cid in ["country", "candidate-location", "iti-0__search-input"]:
+                    continue
+                if not cinp.is_visible():
+                    continue
+
+                # Check if this react-select already has an active selection
+                parent_container = cinp.locator("xpath=../../..")
+                single_val = parent_container.locator(".select__single-value")
+                if single_val.count() > 0 and single_val.inner_text().strip():
+                    continue  # Already selected
+
+                lbl_elem = page.locator(f'label[for="{cid}"], [id="{cid}-label"]')
+                lbl = lbl_elem.first.inner_text().strip().replace("\n", " ") if lbl_elem.count() > 0 else cid
+
+                try:
+                    cinp.click(timeout=2000)
+                    page.keyboard.press("ArrowDown")
+                    page.wait_for_timeout(300)
+                    opts = [o.inner_text().strip() for o in page.locator('div[id*="-option-"], .select__option').all()]
+                    if not opts:
+                        page.keyboard.press("Escape")
+                        continue
+
+                    res = qa.resolve_question(lbl, field_type="select", job=job, candidate=candidate, options=opts)
+                    chosen = res.get("answer", "")
+                    if chosen:
+                        clean_lbl = lbl.strip("*").strip()
+                        filled_answers[clean_lbl] = chosen
+
+                    matched = page.locator('div[id*="-option-"], .select__option').filter(has_text=chosen).first
+                    if matched.count() > 0:
+                        matched.click()
+                    else:
+                        page.keyboard.press("Enter")
+                    page.wait_for_timeout(300)
+                except Exception as ce:
+                    logger.debug(f"Combobox interaction warning on '{cid}': {ce}")
+                    page.keyboard.press("Escape")
+    except Exception as e:
+        logger.warning(f"Error resolving modern comboboxes: {e}")
 
     return filled_answers
 
@@ -381,20 +434,61 @@ def fill_form_fields(
             except Exception:
                 pass
 
-    # 9. City / Location / Address
+    # 8.5 Country Combobox (Greenhouse Phone & Country selection)
+    country_selectors = [
+        "#country",
+        "input[name='country']",
+        "input[id*='country' i]",
+    ]
+    for sel in country_selectors:
+        loc = page.locator(sel)
+        if loc.count() > 0 and loc.first.is_visible():
+            try:
+                loc.first.click()
+                page.keyboard.type("India", delay=80)
+                page.wait_for_timeout(600)
+                opts = page.locator("div[id*='-option-'], .select__option").all()
+                for o in opts:
+                    t = o.inner_text().strip()
+                    if t == "India +91" or t.startswith("India +") or t == "India":
+                        o.click()
+                        matched["country"] = True
+                        break
+                page.wait_for_timeout(300)
+                break
+            except Exception as ce:
+                logger.debug(f"Country selection error: {ce}")
+
+    # 9. City / Location / Address (handles standard text and react-select comboboxes)
     loc_selectors = [
-        "input[name*='city' i]",
+        "#candidate-location",
         "input[name*='location' i]",
-        "input[name*='address' i]",
-        "input[placeholder*='city' i]",
+        "input[name*='city' i]",
         "input[placeholder*='location' i]",
+        "input[placeholder*='city' i]",
         "input[id*='city' i]",
+        "input[id*='location' i]",
     ]
     for sel in loc_selectors:
         loc = page.locator(sel)
         if loc.count() > 0 and loc.first.is_visible():
             try:
-                loc.first.fill(candidate.location)
+                role = loc.first.get_attribute("role") or ""
+                cls = loc.first.get_attribute("class") or ""
+                if role == "combobox" or "select__input" in cls:
+                    loc.first.click()
+                    # For autocomplete comboboxes, type primary city name rather than full address string
+                    target_city = candidate.location.split(",")[0].strip() if candidate.location else "Ayodhya"
+                    page.keyboard.type(target_city, delay=80)
+                    page.wait_for_timeout(1200)
+                    opts = page.locator("div[id*='-option-'], .select__option").all()
+                    if opts:
+                        opts[0].click()
+                    else:
+                        page.keyboard.press("Enter")
+                    page.wait_for_timeout(400)
+                else:
+                    loc.first.fill(candidate.location)
                 matched["location"] = True
                 break
             except Exception:
@@ -597,19 +691,120 @@ def submit_via_browser(
                     notes="Could not locate visible submit button on form."
                 )
 
-            # Wait for response / confirmation
-            page.wait_for_timeout(4000)
-            ss_file = screenshot_dir / f"{comp_slug}__{title_slug}_confirmed.png"
-            page.screenshot(path=str(ss_file), full_page=True)
-            logger.info(f"Application submitted! Confirmation screenshot saved to: {ss_file}")
+            # 7. Verification Gate: Confirm actual submission
+            # Poll for up to 10 seconds for navigation or confirmation/error states
+            verified_success = False
+            validation_errors = []
+            captcha_challenge = False
 
+            for _ in range(10):
+                page.wait_for_timeout(1000)
+
+                # Check if CAPTCHA challenge popped up
+                if check_captcha_present(page):
+                    captcha_challenge = True
+                    break
+
+                # Check for visible validation error messages on page
+                error_locs = page.locator(
+                    ".field-error, "
+                    "div[aria-invalid='true'], "
+                    "input[aria-invalid='true'], "
+                    "[class*='error-message'], "
+                    "[class*='errorMessage'], "
+                    "span:has-text('This field is required'), "
+                    "div:has-text('This field is required'), "
+                    "span:has-text('Please enter your location')"
+                )
+                err_texts = []
+                for e_idx in range(error_locs.count()):
+                    try:
+                        e_elem = error_locs.nth(e_idx)
+                        if e_elem.is_visible():
+                            txt = e_elem.inner_text().strip()
+                            if txt and txt not in err_texts and len(txt) < 100:
+                                err_texts.append(txt)
+                    except Exception:
+                        pass
+
+                if err_texts:
+                    validation_errors = err_texts
+                    break
+
+                # Check for confirmation indicators in URL
+                curr_url = page.url.lower()
+                if any(ind in curr_url for ind in ["confirmation", "thank_you", "submitted", "applied"]):
+                    verified_success = True
+                    break
+
+                # Check for confirmation text in DOM
+                body_text = page.inner_text("body").lower() if page.locator("body").count() > 0 else ""
+                if any(conf in body_text for conf in [
+                    "thank you for applying",
+                    "application submitted",
+                    "your application has been received",
+                    "thanks for applying",
+                    "we've received your application",
+                    "application received"
+                ]):
+                    verified_success = True
+                    break
+
+            # Handle CAPTCHA challenge
+            if captcha_challenge:
+                ss_file = screenshot_dir / f"{comp_slug}__{title_slug}_captcha.png"
+                page.screenshot(path=str(ss_file), full_page=True)
+                browser.close()
+                return ApplyResult(
+                    success=False,
+                    status="captcha_blocked",
+                    method="playwright_form",
+                    screenshot_path=ss_file,
+                    notes="Interactive CAPTCHA challenge presented upon submit. Human interaction required.",
+                    response_data={"matched_fields": matched_fields, "filled_answers": filled_answers}
+                )
+
+            # Handle Form Validation Errors
+            if validation_errors:
+                ss_file = screenshot_dir / f"{comp_slug}__{title_slug}_validation_failed.png"
+                page.screenshot(path=str(ss_file), full_page=True)
+                logger.warning(f"Form validation errors detected: {validation_errors}")
+                browser.close()
+                return ApplyResult(
+                    success=False,
+                    status="validation_blocked",
+                    method="playwright_form",
+                    screenshot_path=ss_file,
+                    notes=f"Submission blocked by form validation errors: {', '.join(validation_errors)}",
+                    response_data={"validation_errors": validation_errors, "matched_fields": matched_fields}
+                )
+
+            # Handle Confirmed Submission
+            if verified_success:
+                ss_file = screenshot_dir / f"{comp_slug}__{title_slug}_confirmed.png"
+                page.screenshot(path=str(ss_file), full_page=True)
+                logger.info(f"Application confirmed! Confirmation screenshot saved to: {ss_file}")
+                browser.close()
+                return ApplyResult(
+                    success=True,
+                    status="submitted",
+                    method="playwright_form",
+                    screenshot_path=ss_file,
+                    notes="Application submission verified on employer confirmation screen.",
+                    response_data={"matched_fields": matched_fields, "filled_answers": filled_answers}
+                )
+
+            # Fallback: Timeout / Ambiguous state
+            ss_file = screenshot_dir / f"{comp_slug}__{title_slug}_ambiguous.png"
+            page.screenshot(path=str(ss_file), full_page=True)
+            logger.warning("Submission state unconfirmed after waiting 10 seconds.")
             browser.close()
             return ApplyResult(
-                success=True,
-                status="submitted",
+                success=False,
+                status="manual_required",
                 method="playwright_form",
                 screenshot_path=ss_file,
-                notes="Submitted via headless browser.",
+                notes="Submit clicked, but page did not transition to a verified confirmation screen. Manual verification required.",
                 response_data={"matched_fields": matched_fields, "filled_answers": filled_answers}
             )
 

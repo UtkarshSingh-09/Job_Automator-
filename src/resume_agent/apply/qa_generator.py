@@ -152,6 +152,10 @@ class QAGenerator:
             return self._format_result(ans, "referral_source", options)
 
         # --- E. EEO / Demographics ---
+        if any(kw in q_norm for kw in ["hispanic", "latino"]):
+            ans = eeo.get("hispanic_latino", "No")
+            return self._format_result(ans, "eeo_hispanic", options)
+
         if "gender" in q_norm:
             ans = eeo.get("gender", "Male")
             return self._format_result(ans, "eeo_gender", options)
@@ -174,13 +178,23 @@ class QAGenerator:
         """Match engineering interest or standard categorical choice from dropdown."""
         # Engineering track preference
         if any(kw in q_norm for kw in ["type of engineering", "engineering work", "interest", "team", "track"]):
-            keywords_priority = [
-                ["backend", "server", "distributed"],
-                ["infrastructure", "platform", "systems", "cloud"],
-                ["full stack", "fullstack", "web"],
-                ["machine learning", "ai", "data"],
-                ["product engineering", "software engineer"]
-            ]
+            is_second_choice = any(sc in q_norm for sc in ["second choice", "choice 2", "2nd choice", "secondary"])
+            if is_second_choice:
+                keywords_priority = [
+                    ["product engineering", "software engineer", "frontend"],
+                    ["full stack", "fullstack", "web"],
+                    ["machine learning", "ai", "data"],
+                    ["backend", "server", "distributed"],
+                    ["infrastructure", "platform", "systems", "cloud"],
+                ]
+            else:
+                keywords_priority = [
+                    ["backend", "server", "distributed"],
+                    ["infrastructure", "platform", "systems", "cloud"],
+                    ["product engineering", "software engineer"],
+                    ["full stack", "fullstack", "web"],
+                    ["machine learning", "ai", "data"],
+                ]
             for kw_group in keywords_priority:
                 for opt in options:
                     if any(kw in opt.lower() for kw in kw_group):
@@ -226,7 +240,7 @@ class QAGenerator:
         jd_snippet = (job.description_md or "")[:600] if job else ""
 
         system_prompt = (
-            "You are Utkarsh Singh, a 3rd-year CS student at SRM University Amaravati (CGPA 8.78, graduating May 2028). "
+            "You are Utkarsh Singh, a 3rd-year CS student at SRM University, AP (CGPA 8.78, graduating May 2028). "
             "You are applying for a software engineering internship. "
             "Your verified engineering portfolio consists of:\n"
             "1. RudraKernel: Multi-Agent Reinforcement Learning Environment for LLM Safety (Python, TRL, GRPO, FastAPI) — Meta OpenEnv Hackathon finalist.\n"
@@ -235,7 +249,7 @@ class QAGenerator:
             "4. Aegis Forge: Real-Time Voice AI Interview Platform (850ms latency, LiveKit WebRTC, FastAPI).\n\n"
             "Rules for answering employer questions:\n"
             "- Write in first person ('I built...', 'My experience with...').\n"
-            "- Exactly 2 to 4 sentences. Concise, dense, high-impact.\n"
+            "- Exactly 3 to 4 sentences. Dense, high-impact, directly addressing the prompt.\n"
             "- Ground the answer strictly in your real technical projects above.\n"
             "- Zero corporate jargon, zero exaggerated fluff, no conversational greetings.\n"
             "- Answer the specific question directly."
@@ -248,6 +262,8 @@ class QAGenerator:
             f"Question on Application Form: \"{question_text}\"\n\n"
             f"Please generate the exact text to enter into this application form field."
         )
+        if "3-4" in question_text or "3 to 4" in question_text:
+            user_prompt += "\nNote: Write exactly 3 or 4 complete sentences."
 
         try:
             api_key = self.settings.openrouter_api_key
@@ -261,7 +277,7 @@ class QAGenerator:
                     {"role": "user", "content": user_prompt}
                 ],
                 "temperature": 0.2,
-                "max_tokens": 200
+                "max_tokens": 250
             }
 
             headers = {
@@ -312,16 +328,59 @@ class QAGenerator:
                 "confidence": 1.0
             }
 
-        # Match closest option
         val_lower = raw_value.lower()
+        # 1. Exact match
         for opt in options:
-            if opt.lower() == val_lower or val_lower in opt.lower() or opt.lower() in val_lower:
+            if opt.lower() == val_lower:
                 return {
                     "answer": opt,
                     "is_ai_generated": False,
                     "category": category,
                     "confidence": 1.0
                 }
+
+        # 2. Graduation date matching (e.g. 'May 2028' -> 'Spring 2028')
+        if category in ["graduation_date", "graduation_year"]:
+            for opt in options:
+                if "2028" in opt:
+                    return {
+                        "answer": opt,
+                        "is_ai_generated": False,
+                        "category": category,
+                        "confidence": 0.95
+                    }
+
+        # 3. Substring match
+        for opt in options:
+            if val_lower in opt.lower() or opt.lower() in val_lower:
+                return {
+                    "answer": opt,
+                    "is_ai_generated": False,
+                    "category": category,
+                    "confidence": 1.0
+                }
+
+        # 4. Referral source fallback: 'Other'
+        if category == "referral_source":
+            for opt in options:
+                if opt.lower() in ["other", "other / please specify"]:
+                    return {
+                        "answer": opt,
+                        "is_ai_generated": False,
+                        "category": category,
+                        "confidence": 0.90
+                    }
+
+        # 5. EEO fallback to 'Decline' if available
+        if category.startswith("eeo_"):
+            for opt in options:
+                if "decline" in opt.lower() or "wish not" in opt.lower():
+                    return {
+                        "answer": opt,
+                        "is_ai_generated": False,
+                        "category": category,
+                        "confidence": 0.85
+                    }
 
         # Fallback to raw value
         return {

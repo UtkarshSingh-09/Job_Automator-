@@ -422,6 +422,31 @@ class TelegramClient:
                 caption=f"{caption_prefix} {comp} — {title}"
             )
 
+        # Dispatch tap-to-copy Q&A answers for manual applications so candidate can copy-paste directly
+        if ai_answers and status != "submitted":
+            qa_blocks = []
+            for idx, (q_label, ans_val) in enumerate(ai_answers.items(), 1):
+                clean_q = html.escape(str(q_label).strip())
+                clean_a = html.escape(str(ans_val).strip())
+                qa_blocks.append(
+                    f"<b>Q{idx}: {clean_q}</b>\n"
+                    f"<code>{clean_a}</code>"
+                )
+
+            if qa_blocks:
+                header = (
+                    f"📋 <b>COPY-PASTE ANSWERS FOR THIS ROLE:</b>\n"
+                    f"🏢 <b>{comp}</b> — <i>{title}</i>\n"
+                    f"<i>(Tap on any text box below to copy answer to clipboard instantly)</i>\n\n"
+                )
+                full_qa_text = header + "\n\n".join(qa_blocks)
+                if len(full_qa_text) <= 4000:
+                    self.send_message(text=full_qa_text)
+                else:
+                    self.send_message(text=header)
+                    for block in qa_blocks:
+                        self.send_message(text=block)
+
         return True
 
     def send_error_alert(self, error_message: str, stage: str = "") -> bool:
