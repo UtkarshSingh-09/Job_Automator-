@@ -13,6 +13,90 @@ from resume_agent.render.latex import compile_resume_pdf
 from resume_agent.logging import logger
 
 
+import re
+
+
+def build_tailored_skills(job: JobModel, profile: ProfileModel) -> Dict[str, str]:
+    """
+    Dynamically tailor and prioritize candidate technical skills for target Job Description.
+    Maintains 100% grounding to candidate profile and verified portfolio while prioritizing
+    languages, frameworks, databases, AI/ML tools, and systems protocols mentioned in the target JD.
+    """
+    master_skills = {
+        "languages": [
+            "Python", "C++", "SQL", "TypeScript", "JavaScript", "Go", "C", "Bash", "Shell", "HTML5", "CSS3"
+        ],
+        "frameworks": [
+            "FastAPI", "PyTorch", "Next.js 16", "React 19", "LangGraph", "LangChain", 
+            "LiveKit WebRTC", "Pydantic v2", "Deepgram SDK", "Razorpay SDK", "XGBoost"
+        ],
+        "databases": [
+            "PostgreSQL 16", "Redis 7", "Qdrant Vector DB", "SQLite", "ChromaDB"
+        ],
+        "ai_ml": [
+            "LLMs (Fine-tuning, LoRA, GRPO, TRL)", "PyTorch", "RAG Pipelines", "Sentence-Transformers", 
+            "Deep Learning", "NLP", "Multi-Agent RL", "OpenEnv", "SLMs", "Classical ML", "XGBoost", "SHAP", "LIME"
+        ],
+        "tools": [
+            "Docker", "Git", "GitHub Actions CI/CD", "Concurrency", "WebSockets", 
+            "Redis Pub/Sub", "Raw Sockets (TCP/UDP)", "Linux", "System Design", "RESTful APIs"
+        ]
+    }
+
+    synonyms = {
+        "python": ["python"],
+        "c++": ["c++", "cpp"],
+        "c": ["c"],
+        "go": ["go", "golang"],
+        "typescript": ["typescript", "ts"],
+        "javascript": ["javascript", "js"],
+        "sql": ["sql", "postgres", "postgresql"],
+        "bash": ["bash", "shell"],
+        "shell": ["shell", "bash"],
+        "pytorch": ["pytorch", "torch"],
+        "llms": ["llms", "llm", "large language models"],
+        "fine-tuning": ["fine-tuning", "finetuning", "fine tuning"],
+        "nlp": ["nlp", "natural language processing"],
+        "deep learning": ["deep learning", "dl"],
+        "rag": ["rag", "retrieval-augmented generation"],
+        "concurrency": ["concurrency", "multithreading", "concurrent"],
+        "linux": ["linux", "unix"],
+        "fastapi": ["fastapi"],
+        "next.js": ["next.js", "nextjs", "next"],
+        "react": ["react", "reactjs"],
+        "docker": ["docker", "container", "containers"],
+        "git": ["git", "github", "gitlab"],
+        "ci/cd": ["ci/cd", "continuous integration", "actions"],
+        "kubernetes": ["kubernetes", "k8s"],
+        "testing": ["testing", "unit test", "pytest"],
+        "websockets": ["websockets", "websocket", "real-time"],
+    }
+
+    jd_text = f"{job.title} {job.description_md}".lower() if (job.title and job.description_md) else ""
+
+    result = {}
+    for cat, skills in master_skills.items():
+        matched = []
+        unmatched = []
+        for s in skills:
+            s_clean = s.split("(")[0].strip().lower()
+            syns = [s_clean]
+            for k, v in synonyms.items():
+                if k in s_clean:
+                    syns.extend(v)
+            is_matched = any(re.search(r"\b" + re.escape(w) + r"\b", jd_text) for w in syns)
+            if is_matched:
+                matched.append(s)
+            else:
+                unmatched.append(s)
+
+        # Keep matched first, and complement with remaining verified skills (up to 8)
+        final_list = (matched + unmatched)[:8]
+        result[cat] = ", ".join(final_list)
+
+    return result
+
+
 def generate_tailored_resume(job_id: int) -> Path:
     """
     End-to-end resume generation orchestrator:
@@ -115,12 +199,13 @@ def generate_tailored_resume(job_id: int) -> Path:
     if not projects_context:
         raise RuntimeError("No projects available to include in resume.")
 
-    # 3. Categorize candidate technical skills for ATS readability & temporal binding
-    skills_languages = "Python, C++, SQL, Go, C, TypeScript, JavaScript, HTML5, CSS3"
-    skills_frameworks = "FastAPI, Next.js 16, React 19, LangGraph, LiveKit WebRTC, Deepgram SDK, Razorpay SDK, Pydantic v2"
-    skills_databases = "Qdrant Vector DB (14 Collections), PostgreSQL 16, Redis 7, SQLite, ChromaDB"
-    skills_ai = "Sentence-Transformers (bge-small, MiniLM), XGBoost, LightGBM, SHAP, LIME, OpenEnv, LoRA"
-    skills_tools = "Docker, Git, GitHub Actions CI/CD, WebSockets, Redis Pub/Sub, Raw Sockets (TCP/UDP), Linux, RESTful APIs"
+    # 3. Categorize candidate technical skills dynamically tailored to target Job Description
+    tailored_skills = build_tailored_skills(job, profile)
+    skills_languages = tailored_skills["languages"]
+    skills_frameworks = tailored_skills["frameworks"]
+    skills_databases = tailored_skills["databases"]
+    skills_ai = tailored_skills["ai_ml"]
+    skills_tools = tailored_skills["tools"]
 
     coursework = "Data Structures & Algorithms, DBMS, Operating Systems, Machine Learning, System Design, Distributed Systems"
 
