@@ -31,32 +31,43 @@ def ingest_jobs(
         "passed_filter": 0,
     }
 
+    import concurrent.futures
+
     logger.info(f"Starting job ingestion for {len(companies)} resolved company endpoints...")
 
-    for company in companies:
-        if not company.ats_provider or not company.ats_slug:
-            continue
-
-        adapter = get_adapter(company.ats_provider)
+    def _fetch_one(c):
+        if not c.ats_provider or not c.ats_slug:
+            return c, []
+        adapter = get_adapter(c.ats_provider)
         if not adapter:
-            logger.warning(f"No adapter registered for provider: {company.ats_provider}")
-            continue
+            return c, []
+        try:
+            return c, adapter.fetch_jobs(c)
+        except Exception as e:
+            logger.debug(f"Error fetching {c.name}: {e}")
+            return c, []
 
-        raw_jobs = adapter.fetch_jobs(company)
-        stats["total_fetched"] += len(raw_jobs)
+    max_workers = min(15, max(1, len(companies)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(_fetch_one, c) for c in companies]
+        for f in concurrent.futures.as_completed(futures):
+            company, raw_jobs = f.result()
+            adapter = get_adapter(company.ats_provider)
+            if not adapter:
+                continue
+            stats["total_fetched"] += len(raw_jobs)
+            for raw_item in raw_jobs:
+                try:
+                    job = adapter.normalize_job(raw_item, company)
+                    if job.passed_filter:
+                        stats["passed_filter"] += 1
 
-        for raw_item in raw_jobs:
-            try:
-                job = adapter.normalize_job(raw_item, company)
-                if job.passed_filter:
-                    stats["passed_filter"] += 1
-
-                if not dry_run:
-                    inserted = _upsert_job_to_db(job)
-                    if inserted:
-                        stats["new_inserted"] += 1
-            except Exception as e:
-                logger.debug(f"Error normalizing job for {company.name}: {e}")
+                    if not dry_run:
+                        inserted = _upsert_job_to_db(job)
+                        if inserted:
+                            stats["new_inserted"] += 1
+                except Exception as e:
+                    logger.debug(f"Error normalizing job for {company.name}: {e}")
 
     logger.info(f"Ingestion complete: {stats}")
     return stats
