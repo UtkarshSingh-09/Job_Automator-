@@ -131,13 +131,19 @@ def submit_via_greenhouse_api(
                 response_data=resp.json() if "application/json" in resp.headers.get("content-type", "") else {"status": resp.status_code}
             )
         else:
-            err_msg = f"Greenhouse API returned HTTP {resp.status_code}: {resp.text[:300]}"
-            logger.warning(err_msg)
+            if resp.status_code == 401:
+                friendly_msg = "Career portal requires manual web submission (Custom Questions / Auth restricted)."
+            elif resp.status_code == 422:
+                friendly_msg = "Career portal requires custom application questions / work authorization."
+            else:
+                friendly_msg = f"Greenhouse returned HTTP {resp.status_code}"
+            logger.warning(f"Greenhouse submission: {friendly_msg}")
             return ApplyResult(
                 success=False,
-                status="failed",
+                status="manual_required",
                 method="direct_api",
-                error=err_msg,
+                error=friendly_msg,
+                notes=friendly_msg,
                 response_data={"status_code": resp.status_code, "body": resp.text[:500]}
             )
 
@@ -218,13 +224,19 @@ def submit_via_lever_api(
                 response_data=resp.json() if "application/json" in resp.headers.get("content-type", "") else {"status": resp.status_code}
             )
         else:
-            err_msg = f"Lever API returned HTTP {resp.status_code}: {resp.text[:300]}"
-            logger.warning(err_msg)
+            if resp.status_code in (401, 403):
+                friendly_msg = "Career portal requires manual web submission (Auth restricted)."
+            elif resp.status_code == 422:
+                friendly_msg = "Career portal requires custom application questions."
+            else:
+                friendly_msg = f"Lever returned HTTP {resp.status_code}"
+            logger.warning(f"Lever submission: {friendly_msg}")
             return ApplyResult(
                 success=False,
-                status="failed",
+                status="manual_required",
                 method="direct_api",
-                error=err_msg,
+                error=friendly_msg,
+                notes=friendly_msg,
                 response_data={"status_code": resp.status_code, "body": resp.text[:500]}
             )
 

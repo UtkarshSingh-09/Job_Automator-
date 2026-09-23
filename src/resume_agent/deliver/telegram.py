@@ -359,24 +359,18 @@ class TelegramClient:
         title = html.escape(job.title)
         apply_url = job.apply_url
 
-        reply_markup = None
-        if apply_url:
-            reply_markup = {
-                "inline_keyboard": [
-                    [{"text": "🔗 View Job Page", "url": apply_url}]
-                ]
-            }
-
         if status == "submitted":
+            button_label = "🔗 View Job Posting"
             caption = (
-                f"✅ <b>APPLICATION SUBMITTED!</b>\n\n"
+                f"✅ <b>APPLICATION AUTO-SUBMITTED!</b>\n\n"
                 f"🏢 <b>Company:</b> {comp}\n"
                 f"💼 <b>Role:</b> {title}\n"
                 f"⚙️ <b>Submission Method:</b> <code>{method}</code>\n"
                 f"📝 <b>Status:</b> Success\n\n"
-                f"📸 Confirmation screenshot attached."
+                f"📄 <i>Tailored 1-page ATS resume used for this application is attached below.</i>"
             )
         elif status == "dry_run":
+            button_label = "🔗 View Job Page"
             caption = (
                 f"🧪 <b>SIMULATED APPLICATION (DRY-RUN)</b>\n\n"
                 f"🏢 <b>Company:</b> {comp}\n"
@@ -386,13 +380,23 @@ class TelegramClient:
                 f"📸 Pre-submit form screenshot attached below."
             )
         else:
+            button_label = "🚀 Apply on Career Page"
+            reason_text = html.escape(notes or status)
             caption = (
-                f"⚠️ <b>AUTO-APPLY SKIPPED (Manual Action Needed)</b>\n\n"
+                f"⚠️ <b>MANUAL ACTION REQUIRED (Auto-Apply Skipped)</b>\n\n"
                 f"🏢 <b>Company:</b> {comp}\n"
                 f"💼 <b>Role:</b> {title}\n"
-                f"🛑 <b>Reason:</b> <code>{status}</code> — {html.escape(notes)}\n\n"
-                f"Please click below to submit manually:"
+                f"🛑 <b>Reason:</b> {reason_text}\n\n"
+                f"👉 <i>Please click the button below to submit manually using the attached tailored resume.</i>"
             )
+
+        reply_markup = None
+        if apply_url:
+            reply_markup = {
+                "inline_keyboard": [
+                    [{"text": button_label, "url": apply_url}]
+                ]
+            }
 
         # Dispatch photo screenshot if available
         if screenshot_path and Path(screenshot_path).exists():
@@ -402,10 +406,10 @@ class TelegramClient:
 
         # Also dispatch PDF resume if available
         if pdf_path and Path(pdf_path).exists() and status != "dry_run":
-            caption_prefix = "📎 ATS Resume Submitted" if status == "submitted" else "📎 Tailored ATS Resume (Ready to Upload)"
+            caption_prefix = "📎 <b>ATS Resume (Auto-Submitted):</b>" if status == "submitted" else "📎 <b>Tailored ATS Resume (Ready to Upload):</b>"
             self.send_document(
                 document_path=Path(pdf_path),
-                caption=f"{caption_prefix} for {comp} — {title}"
+                caption=f"{caption_prefix} {comp} — {title}"
             )
 
         return True

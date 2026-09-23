@@ -191,25 +191,24 @@ def run_daily_pipeline(
                 logger.warning(f"Artifact {pdf_path.name} failed gates: {val_report.all_violations}")
 
             # ------------------------------------------------------------------
-            # Stage 4: Individual Match Delivery via Telegram
+            # Stage 4: Automated Application Submission or Match Delivery
             # ------------------------------------------------------------------
-            if send_telegram and val_report.is_valid:
-                logger.info(f"Dispatching Telegram match card for {job_obj.company_name}...")
-                telegram.send_match_alert(job_obj, match_obj, pdf_path)
-
-            # ------------------------------------------------------------------
-            # Stage 4.5: Automated Application Submission (Phase 10)
-            # ------------------------------------------------------------------
-            if auto_apply and val_report.is_valid:
-                logger.info(f"Executing automated application for {job_obj.company_name} (Job #{j_id})...")
-                try:
-                    from resume_agent.apply.manager import ApplyManager
-                    app_mgr = ApplyManager(dry_run=dry_run)
-                    apply_res = app_mgr.apply_for_job(j_id, dry_run=dry_run)
-                    if apply_res.success:
-                        stats["applied_count"] += 1
-                except Exception as e:
-                    logger.error(f"Auto-apply attempt failed for Job #{j_id}: {e}")
+            if val_report.is_valid:
+                if auto_apply:
+                    logger.info(f"Executing automated application for {job_obj.company_name} (Job #{j_id})...")
+                    try:
+                        from resume_agent.apply.manager import ApplyManager
+                        app_mgr = ApplyManager(dry_run=dry_run)
+                        apply_res = app_mgr.apply_for_job(j_id, dry_run=dry_run)
+                        if apply_res.success:
+                            stats["applied_count"] += 1
+                    except Exception as e:
+                        logger.error(f"Auto-apply attempt failed for Job #{j_id}: {e}")
+                        if send_telegram:
+                            telegram.send_match_alert(job_obj, match_obj, pdf_path)
+                elif send_telegram:
+                    logger.info(f"Dispatching Telegram match card for {job_obj.company_name}...")
+                    telegram.send_match_alert(job_obj, match_obj, pdf_path)
 
             stats["matches"].append({
                 "job_id": j_id,
