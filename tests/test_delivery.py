@@ -126,3 +126,28 @@ def test_daily_pipeline_dry_run():
     assert stats["success"] is True
     assert stats["boards_monitored"] > 0
     assert "matches" in stats
+
+
+def test_telegram_client_send_apply_confirmation_with_tap_to_copy(sample_job, tmp_path):
+    """Validates Telegram alert packaging for manual/OTP intervention with tap-to-copy Q&A blocks."""
+    client = TelegramClient(dry_run=True)
+    sample_pdf = tmp_path / "resume.pdf"
+    sample_pdf.write_bytes(b"%PDF-1.4 test")
+    sample_img = tmp_path / "captcha.png"
+    sample_img.write_bytes(b"PNG mock")
+
+    answers = {
+        "Why do you want to work at Stripe?": "Strong alignment with financial infrastructure.",
+        "Expected Graduation": "May 2028"
+    }
+
+    res = client.send_apply_confirmation(
+        job=sample_job,
+        status="manual_required",
+        method="browser_automation",
+        pdf_path=sample_pdf,
+        screenshot_path=sample_img,
+        notes="Bot Protection: OTP verification required.",
+        ai_answers=answers
+    )
+    assert res is True
