@@ -7,13 +7,13 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "30 3 * * *"
+              "expression": "30 15 * * *"
             }
           ]
         }
       },
       "id": "node-schedule-trigger",
-      "name": "Schedule Trigger (09:00 AM IST)",
+      "name": "Schedule Trigger (09:00 PM IST Night Digest)",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -23,7 +23,7 @@
     },
     {
       "parameters": {
-        "command": "uv run resume-agent daily --format json"
+        "command": "cd /Users/utkarshsingh/Desktop/Job_finder && .venv/bin/python -m resume_agent.cli daily --auto-apply --format json"
       },
       "id": "node-execute-daily-cli",
       "name": "Execute Daily Pipeline CLI",
@@ -132,7 +132,7 @@
     }
   ],
   "connections": {
-    "Schedule Trigger (09:00 AM IST)": {
+    "Schedule Trigger (09:00 PM IST Night Digest)": {
       "main": [
         [
           {

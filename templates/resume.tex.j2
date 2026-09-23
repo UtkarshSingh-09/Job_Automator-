@@ -5,7 +5,7 @@
 \pdfgentounicode=1
 
 % --- Layout & Geometry (Strict 1-Page ATS Budget) ---
-\usepackage[margin=0.5in,top=0.42in,bottom=0.42in]{geometry}
+\usepackage[margin=0.45in,top=0.35in,bottom=0.35in]{geometry}
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
@@ -24,11 +24,11 @@
 
 % Pure standard LaTeX Section styling with solid horizontal divider
 \renewcommand{\section}[1]{
-  \vspace{4pt}
-  \noindent{\large\bfseries\scshape #1}
-  \vspace{2pt}
-  \hrule height 0.6pt
   \vspace{3pt}
+  \noindent{\large\bfseries\scshape #1}
+  \vspace{1.5pt}
+  \hrule height 0.6pt
+  \vspace{2.5pt}
 }
 
 \setlist[itemize]{
@@ -37,7 +37,7 @@
   topsep=1pt,
   partopsep=0pt,
   parsep=0pt,
-  itemsep=1.2pt,
+  itemsep=1.0pt,
   after=\vspace{1pt}
 }
 
@@ -49,11 +49,8 @@
 \begin{center}
     {\Huge \textbf{ {{ profile.name | latex_escape }} }} \\ \vspace{2pt}
     \small
-    {{ profile.location | latex_escape }} \ $|$ \ 
-    {{ profile.phone | latex_escape }} \ $|$ \ 
-    \href{mailto:{{ profile.email }}}{\underline{ {{ profile.email | latex_escape }} }} \ $|$ \ 
-    \href{https://github.com/{{ profile.github }}}{\underline{github.com/{{ profile.github | latex_escape }} }} \ $|$ \ 
-    \href{https://linkedin.com/in/{{ profile.linkedin }}}{\underline{linkedin.com/in/{{ profile.linkedin | latex_escape }} }}
+    {{ profile.location | latex_escape }} \ $|$ \ {{ profile.phone | latex_escape }} \ $|$ \ \href{mailto:{{ profile.email }}}{\underline{ {{ profile.email | latex_escape }} }} \\ \vspace{1pt}
+    \href{https://github.com/{{ profile.github }}}{\underline{github.com/{{ profile.github | latex_escape }} }} \ $|$ \ \href{https://linkedin.com/in/{{ profile.linkedin }}}{\underline{linkedin.com/in/{{ profile.linkedin | latex_escape }} }}
 \end{center}
 \vspace{-6pt}
 
@@ -80,7 +77,25 @@
 \vspace{-2pt}
 
 % ==============================================================================
-% 4. FEATURED TECHNICAL PROJECTS (Top 3 Selected by Semantic Matcher)
+% 4. WORK & FREELANCE EXPERIENCE
+% ==============================================================================
+{% if experience %}
+\section{Experience}
+{% for exp in experience %}
+\noindent\textbf{ {{ exp.role | latex_escape }} } \hfill \textbf{ {{ exp.location | latex_escape }} } \\
+\textit{ {{ exp.organization | latex_escape }} } \hfill \textbf{ {{ exp.date_range | latex_escape }} }
+\begin{itemize}
+    {% for bullet in exp.bullets %}
+    \item {{ bullet | latex_escape }}
+    {% endfor %}
+\end{itemize}
+{% if not loop.last %}\vspace{2pt}{% endif %}
+{% endfor %}
+\vspace{-2pt}
+{% endif %}
+
+% ==============================================================================
+% 5. FEATURED TECHNICAL PROJECTS (Top Selected by Semantic Matcher)
 % ==============================================================================
 \section{Technical Projects}
 
@@ -98,7 +113,7 @@
 \vspace{-2pt}
 
 % ==============================================================================
-% 5. HONORS \& ACHIEVEMENTS
+% 6. HONORS \& ACHIEVEMENTS
 % ==============================================================================
 \section{Honors \& Achievements}
 \begin{itemize}

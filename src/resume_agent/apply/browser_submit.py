@@ -235,7 +235,61 @@ def fill_form_fields(page: Page, candidate: CandidateSubmissionPayload, resume_p
             except Exception:
                 pass
 
-    # 9. Resume File Upload
+    # 9. City / Location / Address
+    loc_selectors = [
+        "input[name*='city' i]",
+        "input[name*='location' i]",
+        "input[name*='address' i]",
+        "input[placeholder*='city' i]",
+        "input[placeholder*='location' i]",
+        "input[id*='city' i]",
+    ]
+    for sel in loc_selectors:
+        loc = page.locator(sel)
+        if loc.count() > 0 and loc.first.is_visible():
+            try:
+                loc.first.fill(candidate.location)
+                matched["location"] = True
+                break
+            except Exception:
+                pass
+
+    # 10. School / University
+    school_selectors = [
+        "input[name*='school' i]",
+        "input[name*='university' i]",
+        "input[name*='college' i]",
+        "input[placeholder*='school' i]",
+        "input[placeholder*='university' i]",
+    ]
+    for sel in school_selectors:
+        loc = page.locator(sel)
+        if loc.count() > 0 and loc.first.is_visible():
+            try:
+                loc.first.fill(candidate.college)
+                matched["school"] = True
+                break
+            except Exception:
+                pass
+
+    # 11. Degree / Major
+    degree_selectors = [
+        "input[name*='degree' i]",
+        "input[name*='major' i]",
+        "input[placeholder*='degree' i]",
+        "input[placeholder*='major' i]",
+    ]
+    for sel in degree_selectors:
+        loc = page.locator(sel)
+        if loc.count() > 0 and loc.first.is_visible():
+            try:
+                loc.first.fill(candidate.degree)
+                matched["degree"] = True
+                break
+            except Exception:
+                pass
+
+    # 12. Resume File Upload
     file_selectors = [
         "input[type='file'][accept*='pdf']",
         "input[type='file'][name*='resume' i]",

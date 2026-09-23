@@ -208,7 +208,8 @@ class TelegramClient:
 
     def send_daily_digest(self, stats: Dict[str, Any]) -> bool:
         """
-        Send the 09:00 IST executive morning briefing summarizing pipeline activity.
+        Send the 09:00 PM IST executive evening briefing summarizing pipeline activity,
+        including direct career page links and attached tailored ATS resumes for all applied jobs.
         """
         date_str = stats.get("date", time.strftime("%Y-%m-%d"))
         boards_count = stats.get("boards_monitored", 41)
@@ -221,29 +222,48 @@ class TelegramClient:
         match_items = stats.get("matches", [])
         if match_items:
             bullets = []
-            for m in match_items[:5]:
+            for idx, m in enumerate(match_items[:8], 1):
                 comp = html.escape(m.get("company", ""))
                 tit = html.escape(m.get("title", ""))
                 sc = m.get("score", 0.0)
-                bullets.append(f"• <b>{comp}</b> — {tit} (<b>{sc:.1f}/100</b>)")
-            matches_section = "🔥 <b>Top Matches Today:</b>\n" + "\n".join(bullets)
+                apply_url = m.get("apply_url", "")
+                link_html = f" | <a href='{apply_url}'>Career Link</a>" if apply_url else ""
+                bullets.append(f"{idx}. 🏢 <b>{comp}</b> — {tit} (<b>{sc:.1f}/100</b>){link_html}")
+            matches_section = "🚀 <b>Roles & Career Links:</b>\n" + "\n".join(bullets)
         else:
             matches_section = "ℹ️ <i>0 new internships exceeded threshold today. Continuous monitoring active across 41 boards.</i>"
 
         text = (
-            f"🌅 <b>DAILY INTERNSHIP DIGEST — {date_str}</b>\n\n"
-            f"📊 <b>Autonomous Pipeline Summary:</b>\n"
+            f"🌙 <b>DAILY 9:00 PM EXECUTIVE BRIEFING — {date_str}</b>\n\n"
+            f"📊 <b>Today's Autonomous Pipeline Activity:</b>\n"
             f"• Verified ATS Boards Monitored: <b>{boards_count}</b>\n"
-            f"• Jobs Ingested: <b>{jobs_ingested}</b>\n"
-            f"• High-Fit Matches: <b>{matches_found}</b>\n"
+            f"• New Job Postings Analyzed: <b>{jobs_ingested}</b>\n"
+            f"• High-Fit Matches Identified: <b>{matches_found}</b>\n"
             f"• Tailored Resumes Generated: <b>{resumes_generated}</b>\n"
             f"• 7-Gate ATS Validations Passed: <b>{resumes_validated}</b>\n"
             f"• Applications Auto-Submitted: <b>{applied_count}</b>\n\n"
             f"{matches_section}\n\n"
+            f"📎 <i>Tailored 1-page ATS resumes dispatched below...</i>\n\n"
             f"⚡ <i>Orchestrated by n8n Visual Workflow Engine & Resume Agent v0.1.0</i>"
         )
 
-        return self.send_message(text=text, parse_mode="HTML")
+        ok = self.send_message(text=text, parse_mode="HTML")
+
+        # Automatically dispatch PDFs for applied / validated matches
+        for m in match_items:
+            pdf_str = m.get("pdf_path")
+            if pdf_str and Path(pdf_str).exists():
+                comp = m.get("company", "")
+                tit = m.get("title", "")
+                url = m.get("apply_url", "")
+                markup = {"inline_keyboard": [[{"text": "🔗 View Job Posting", "url": url}]]} if url else None
+                self.send_document(
+                    document_path=Path(pdf_str),
+                    caption=f"📄 <b>ATS Resume:</b> {comp} — {tit}",
+                    reply_markup=markup
+                )
+
+        return ok
 
     def send_photo(
         self,

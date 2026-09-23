@@ -113,7 +113,7 @@ def test_n8n_workflow_json_structure():
     assert "nodes" in data
     assert "connections" in data
     node_names = [n["name"] for n in data["nodes"]]
-    assert "Schedule Trigger (09:00 AM IST)" in node_names
+    assert "Schedule Trigger (09:00 PM IST Night Digest)" in node_names
     assert "Execute Daily Pipeline CLI" in node_names
     assert "Matches Found?" in node_names
     assert "Telegram: Matches Digest" in node_names

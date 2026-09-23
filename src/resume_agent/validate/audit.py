@@ -54,7 +54,7 @@ def _assemble_candidate_ground_truth(
         "chromadb", "mongodb", "xgboost", "lightgbm", "shap", "lime", "livekit", "deepgram", "razorpay",
         "react", "next.js", "nextjs", "langgraph", "langchain", "pytorch", "sentence-transformers",
         "transformers", "lora", "grpo", "openenv", "trl", "unsloth", "mediapipe", "three.js", "pydantic",
-        "raw sockets", "tcp", "udp",
+        "raw sockets", "tcp", "udp", "rag", "retrieval-augmented generation", "slms", "llms",
     ]
     for item in foundational:
         truth_tokens.add(item.lower())

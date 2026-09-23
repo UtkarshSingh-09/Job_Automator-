@@ -139,6 +139,19 @@ def generate_tailored_resume(job_id: int) -> Path:
     if profile.degree and "bachelor" in profile.degree.lower():
         degree_display = profile.degree
 
+    experience_context = [
+        {
+            "role": "Software Engineer — Freelance Consulting",
+            "organization": "Client Deliveries & Applied AI Solutions",
+            "location": "Ayodhya / Remote, India",
+            "date_range": "Apr 2026 -- Present",
+            "bullets": [
+                "Shipped **Sanchay** (May 2026), a mobile inventory-management platform for real estate businesses serving **15+ active users**, featuring a voice-input RAG pipeline for natural-language queries that reduced manual tracking time by **~60%**.",
+                "Engaged directly with SME clients to translate business requirements into production software; engineered backend APIs and managed Git pull request workflows.",
+            ]
+        }
+    ]
+
     template_context = {
         "profile": {
             "name": profile.full_name,
@@ -158,6 +171,7 @@ def generate_tailored_resume(job_id: int) -> Path:
         "skills_databases": skills_databases,
         "skills_ai": skills_ai,
         "skills_tools": skills_tools,
+        "experience": experience_context,
         "projects": projects_context,
         "achievements": achievements,
     }

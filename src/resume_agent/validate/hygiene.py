@@ -13,21 +13,23 @@ def verify_section_order(pdf_text: str) -> Tuple[bool, Dict[str, Any], List[str]
     violations = []
     text_lower = pdf_text.lower()
 
-    # Define standard headings and their regex patterns
+    # Define standard headings, regex patterns, and whether section is strictly mandatory
     sections = [
-        ("education", r"\b(education)\b"),
-        ("skills", r"\b(technical skills|skills)\b"),
-        ("projects", r"\b(technical projects|featured projects|projects)\b"),
-        ("honors", r"\b(honors & achievements|honors and achievements|achievements|honors)\b"),
+        ("education", r"\b(education)\b", True),
+        ("skills", r"\b(technical skills|skills)\b", True),
+        ("experience", r"\b(experience|work experience|freelance experience|freelance consulting)\b", False),
+        ("projects", r"\b(technical projects|featured projects|projects)\b", True),
+        ("honors", r"\b(honors & achievements|honors and achievements|achievements|honors)\b", True),
     ]
 
     positions = {}
     last_pos = -1
 
-    for name, pat in sections:
+    for name, pat, is_required in sections:
         match = re.search(pat, text_lower)
         if not match:
-            violations.append(f"Gate 2: Expected section '{name.upper()}' was not detected in resume text")
+            if is_required:
+                violations.append(f"Gate 2: Expected section '{name.upper()}' was not detected in resume text")
             positions[name] = -1
         else:
             pos = match.start()
