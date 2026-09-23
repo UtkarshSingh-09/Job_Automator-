@@ -8,12 +8,14 @@ from resume_agent.jobs.sources.greenhouse import GreenhouseAdapter
 from resume_agent.jobs.sources.lever import LeverAdapter
 from resume_agent.jobs.sources.ashby import AshbyAdapter
 from resume_agent.jobs.sources.workable import WorkableAdapter
+from resume_agent.jobs.sources.workday import WorkdayAdapter
 
 ADAPTER_REGISTRY: Dict[str, Type[JobSourceAdapter]] = {
     "greenhouse": GreenhouseAdapter,
     "lever": LeverAdapter,
     "ashby": AshbyAdapter,
     "workable": WorkableAdapter,
+    "workday": WorkdayAdapter,
 }
 
 def get_adapter(provider: str) -> JobSourceAdapter | None:

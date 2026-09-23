@@ -68,6 +68,13 @@ def compile_resume_pdf(
             "or TeX Live ('/Library/TeX/texbin/pdflatex')."
         )
 
+    # Hard rule: Never pass more than 3 projects when Experience section exists
+    if "projects" in context and len(context["projects"]) > 3:
+        context["projects"] = context["projects"][:3]
+
+    if "achievements" in context and len(context["achievements"]) > 4:
+        context["achievements"] = context["achievements"][:4]
+
     tex_content = render_latex_template(context)
     settings = get_settings()
 
@@ -85,39 +92,67 @@ def compile_resume_pdf(
         tex_file = tmp_path / "resume.tex"
         tex_file.write_text(tex_content, encoding="utf-8")
 
-        # Compile
-        logger.info(f"Compiling resume PDF using '{compiler}'...")
-        if "tectonic" in compiler.lower():
-            cmd = [compiler, str(tex_file), "--outdir", str(tmp_path)]
-        else:
-            cmd = [
-                compiler,
-                "-interaction=nonstopmode",
-                "-halt-on-error",
-                "-output-directory",
-                str(tmp_path),
-                str(tex_file),
-            ]
+        def _run_compile(t_file: Path) -> Path:
+            if "tectonic" in compiler.lower():
+                cmd = [compiler, str(t_file), "--outdir", str(tmp_path)]
+            else:
+                cmd = [
+                    compiler,
+                    "-interaction=nonstopmode",
+                    "-halt-on-error",
+                    "-output-directory",
+                    str(tmp_path),
+                    str(t_file),
+                ]
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            c_pdf = tmp_path / "resume.pdf"
+            if not c_pdf.exists():
+                log_preview = res.stdout[-1500:] if res.stdout else res.stderr[-1500:]
+                raise RuntimeError(f"LaTeX compilation failed to produce PDF:\n{log_preview}")
+            return c_pdf
 
-        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        compiled_pdf = tmp_path / "resume.pdf"
-
-        if not compiled_pdf.exists():
-            log_preview = res.stdout[-1500:] if res.stdout else res.stderr[-1500:]
-            logger.error(f"LaTeX compilation failed:\n{log_preview}")
-            raise RuntimeError(f"LaTeX compilation failed to produce PDF:\n{log_preview}")
+        compiled_pdf = _run_compile(tex_file)
 
         # Verify page count with PyMuPDF
         doc = fitz.open(compiled_pdf)
         page_count = doc.page_count
         doc.close()
 
+        # If it spills over, dynamically reduce to top 3 achievements and 2 bullets per project
+        if page_count > 1:
+            logger.warning(f"PDF compiled to {page_count} pages. Applying automatic micro-budget trimming...")
+            if "achievements" in context:
+                context["achievements"] = context["achievements"][:3]
+            if "projects" in context:
+                for p in context["projects"]:
+                    if len(p.get("bullets", [])) > 2:
+                        p["bullets"] = p["bullets"][:2]
+
+            trimmed_tex = render_latex_template(context)
+            tex_file.write_text(trimmed_tex, encoding="utf-8")
+            compiled_pdf = _run_compile(tex_file)
+
+            doc = fitz.open(compiled_pdf)
+            page_count = doc.page_count
+            doc.close()
+
         if page_count != 1:
-            logger.warning(
-                f"Generated PDF has {page_count} pages (must be strictly 1 page for ATS budget)!"
-            )
-        else:
-            logger.info("Verified single-page constraint: 1/1 pages.")
+            # Emergency trim step 2: Keep top 2 projects to guarantee strict 1 page
+            if "projects" in context and len(context["projects"]) > 2:
+                logger.warning("Emergency trim: Keeping top 2 projects to strictly guarantee 1-page fit...")
+                context["projects"] = context["projects"][:2]
+                trimmed_tex = render_latex_template(context)
+                tex_file.write_text(trimmed_tex, encoding="utf-8")
+                compiled_pdf = _run_compile(tex_file)
+
+                doc = fitz.open(compiled_pdf)
+                page_count = doc.page_count
+                doc.close()
+
+        if page_count != 1:
+            raise RuntimeError(f"CRITICAL ATS FAILURE: Generated resume has {page_count} pages (must be strictly 1 page)!")
+
+        logger.info("Verified single-page constraint: 1/1 pages (100% canvas budget).")
 
         # Copy to output destination
         shutil.copy2(compiled_pdf, dest_pdf_path)

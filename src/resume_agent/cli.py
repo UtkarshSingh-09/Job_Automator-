@@ -1085,5 +1085,14 @@ def applications_cmd():
     console.print(table)
 
 
+@cli.command("daemon")
+@click.option("--run-now", is_flag=True, help="Execute an immediate pipeline run upon startup before waiting for next slot.")
+@click.option("--dry-run", is_flag=True, help="Run all pipeline cycles in dry-run simulation mode.")
+def daemon_cmd(run_now: bool, dry_run: bool):
+    """Run autonomous 4-slot IST scheduler daemon (Railway/Cloud deployment)."""
+    from resume_agent.orchestrate.scheduler import run_ist_daemon
+    run_ist_daemon(run_immediately=run_now, dry_run=dry_run)
+
+
 if __name__ == "__main__":
     cli()

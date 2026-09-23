@@ -1,6 +1,7 @@
 # Environment
 .env
 .env.local
+.env.railway
 
 # Python
 __pycache__/

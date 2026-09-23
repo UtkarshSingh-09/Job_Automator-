@@ -375,11 +375,12 @@ class TelegramClient:
         else:
             self.send_message(text=caption, reply_markup=reply_markup)
 
-        # Also dispatch PDF resume if available and not dry-run
-        if status == "submitted" and pdf_path and Path(pdf_path).exists():
+        # Also dispatch PDF resume if available
+        if pdf_path and Path(pdf_path).exists() and status != "dry_run":
+            caption_prefix = "📎 ATS Resume Submitted" if status == "submitted" else "📎 Tailored ATS Resume (Ready to Upload)"
             self.send_document(
                 document_path=Path(pdf_path),
-                caption=f"📎 ATS Resume Submitted for {comp} — {title}"
+                caption=f"{caption_prefix} for {comp} — {title}"
             )
 
         return True
