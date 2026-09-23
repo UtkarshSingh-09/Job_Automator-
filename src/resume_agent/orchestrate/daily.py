@@ -93,9 +93,10 @@ def run_daily_pipeline(
                 FROM matches m
                 JOIN jobs j ON m.job_id = j.id
                 WHERE m.overall_fit >= ?
-                  AND m.job_id NOT IN (
-                      SELECT DISTINCT job_id FROM applications 
+                  AND m.id NOT IN (
+                      SELECT DISTINCT match_id FROM applications 
                       WHERE status IN ('applied', 'manual_required')
+                         OR auto_apply_status IN ('applied', 'manual_required')
                   )
                 ORDER BY m.overall_fit DESC
                 LIMIT ?;
