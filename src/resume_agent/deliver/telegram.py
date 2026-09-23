@@ -212,7 +212,7 @@ class TelegramClient:
         including direct career page links and attached tailored ATS resumes for all applied jobs.
         """
         date_str = stats.get("date", time.strftime("%Y-%m-%d"))
-        boards_count = stats.get("boards_monitored", 41)
+        boards_count = stats.get("boards_monitored", 505)
         jobs_ingested = stats.get("jobs_ingested", 0)
         matches_found = stats.get("matches_found", 0)
         resumes_generated = stats.get("resumes_generated", 0)
@@ -244,6 +244,7 @@ class TelegramClient:
                             existing_pairs.add(pair)
         except Exception as e:
             logger.debug(f"Could not aggregate daily apps from DB: {e}")
+
         if match_items:
             bullets = []
             for idx, m in enumerate(match_items[:8], 1):
@@ -255,10 +256,10 @@ class TelegramClient:
                 bullets.append(f"{idx}. 🏢 <b>{comp}</b> — {tit} (<b>{sc:.1f}/100</b>){link_html}")
             matches_section = "🚀 <b>Roles & Career Links:</b>\n" + "\n".join(bullets)
         else:
-            matches_section = "ℹ️ <i>0 new internships exceeded threshold today. Continuous monitoring active across 41 boards.</i>"
+            matches_section = f"ℹ️ <i>0 new internships exceeded threshold today. Continuous monitoring active across {boards_count} verified boards.</i>"
 
         text = (
-            f"🌙 <b>DAILY 9:00 PM EXECUTIVE BRIEFING — {date_str}</b>\n\n"
+            f"🌙 <b>DAILY EXECUTIVE EVENING BRIEFING — {date_str}</b>\n\n"
             f"📊 <b>Today's Autonomous Pipeline Activity:</b>\n"
             f"• Verified ATS Boards Monitored: <b>{boards_count}</b>\n"
             f"• New Job Postings Analyzed: <b>{jobs_ingested}</b>\n"
