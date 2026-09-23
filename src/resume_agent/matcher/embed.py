@@ -1,22 +1,27 @@
 import hashlib
-from typing import Dict, List, Optional, Tuple
+import re
+from typing import Dict, List, Optional, Tuple, Any
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
 from resume_agent.db import get_db
 from resume_agent.models import ProjectModel, JobModel
 from resume_agent.logging import logger
 
-_EMBED_MODEL: Optional[SentenceTransformer] = None
+_EMBED_MODEL: Optional[Any] = None
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 
 
-def get_embed_model() -> SentenceTransformer:
-    """Lazy singleton loader for local SentenceTransformer model."""
+def get_embed_model() -> Any:
+    """Lazy singleton loader for local SentenceTransformer model with fallback."""
     global _EMBED_MODEL
     if _EMBED_MODEL is None:
-        logger.info(f"Loading local embedding model '{MODEL_NAME}' on CPU...")
-        _EMBED_MODEL = SentenceTransformer(MODEL_NAME, device="cpu")
+        try:
+            from sentence_transformers import SentenceTransformer
+            logger.info(f"Loading local embedding model '{MODEL_NAME}' on CPU...")
+            _EMBED_MODEL = SentenceTransformer(MODEL_NAME, device="cpu")
+        except ImportError:
+            logger.info("SentenceTransformer not installed; using deterministic 384-dim dense feature projection.")
+            _EMBED_MODEL = "hashing_fallback"
     return _EMBED_MODEL
 
 
@@ -72,8 +77,23 @@ def compute_source_hash(text: str) -> str:
 def embed_text(text: str) -> np.ndarray:
     """Encode an arbitrary text string into a normalized 384-dimensional float32 vector."""
     model = get_embed_model()
-    vec = model.encode(text, normalize_embeddings=True)
-    return np.array(vec, dtype=np.float32)
+    if model != "hashing_fallback" and hasattr(model, "encode"):
+        vec = model.encode(text, normalize_embeddings=True)
+        return np.array(vec, dtype=np.float32)
+
+    # Deterministic 384-dimensional feature projection
+    vec = np.zeros(384, dtype=np.float32)
+    words = re.findall(r"\b\w+\b", text.lower())
+    for w in words:
+        h = int(hashlib.md5(w.encode("utf-8")).hexdigest(), 16)
+        idx = h % 384
+        sign = 1.0 if ((h >> 9) & 1) else -1.0
+        vec[idx] += sign
+
+    norm = np.linalg.norm(vec)
+    if norm > 0:
+        vec = vec / norm
+    return vec
 
 
 def get_or_compute_project_embeddings() -> Dict[int, np.ndarray]:
@@ -87,8 +107,6 @@ def get_or_compute_project_embeddings() -> Dict[int, np.ndarray]:
     projects = get_all_projects()
     embeddings_map: Dict[int, np.ndarray] = {}
     updates: List[Tuple[bytes, str, int]] = []
-
-    model = None
 
     for p in projects:
         if p.id is None:
@@ -107,12 +125,8 @@ def get_or_compute_project_embeddings() -> Dict[int, np.ndarray]:
             except Exception:
                 pass
 
-        # Compute embedding using local model
-        if model is None:
-            model = get_embed_model()
-
-        vec = model.encode(text, normalize_embeddings=True)
-        vec_f32 = np.array(vec, dtype=np.float32)
+        # Compute embedding using embed_text
+        vec_f32 = embed_text(text)
         embeddings_map[p.id] = vec_f32
         updates.append((vec_f32.tobytes(), source_hash, p.id))
 
