@@ -87,13 +87,17 @@ def resolve_custom_form_questions(
     qa = QAGenerator()
     filled_answers = {}
 
-    # 0. Handle standard custom text inputs and textareas (excluding comboboxes)
+    # 0. Handle standard custom text inputs and textareas (excluding comboboxes and file inputs)
     try:
-        q_elements = page.locator('input[id^="question_"], textarea[id^="question_"]')
+        q_elements = page.locator('input[id^="question_"]:not([type="file"]):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), textarea[id^="question_"]')
         count = q_elements.count()
         for i in range(count):
             elem = q_elements.nth(i)
             if not elem.is_visible():
+                continue
+
+            input_type = (elem.get_attribute("type") or "").lower()
+            if input_type in ("file", "hidden", "checkbox", "radio", "submit", "button"):
                 continue
 
             role = elem.get_attribute("role") or ""
