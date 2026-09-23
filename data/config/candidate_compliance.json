@@ -1,0 +1,47 @@
+{
+  "legal_identity": {
+    "full_legal_name": "Utkarsh Singh",
+    "preferred_first_name": "Utkarsh",
+    "pronouns": "He/Him",
+    "country_of_citizenship": "India",
+    "current_country": "India"
+  },
+  "work_authorization": {
+    "authorized_in_india": true,
+    "authorized_in_us": false,
+    "requires_us_sponsorship": true,
+    "authorized_in_uk": false,
+    "requires_uk_sponsorship": true,
+    "authorized_in_canada": false,
+    "requires_canada_sponsorship": true,
+    "requires_general_sponsorship": true
+  },
+  "education_and_availability": {
+    "current_university": "SRM University Amaravati",
+    "degree": "B.Tech in Computer Science",
+    "major": "Computer Science",
+    "expected_graduation": "May 2028",
+    "expected_graduation_year": "2028",
+    "expected_graduation_month": "May",
+    "cgpa": "8.78",
+    "notice_period": "Immediate / Student Available for Internships",
+    "earliest_start_date": "Summer 2026 / Winter 2027",
+    "willing_to_relocate": "Yes"
+  },
+  "eeo_demographics": {
+    "gender": "Male",
+    "gender_decline": "Decline to self-identify",
+    "race_ethnicity": "Asian (Indian)",
+    "race_decline": "Decline to self-identify",
+    "veteran_status": "I am not a protected veteran",
+    "veteran_decline": "Decline to self-identify",
+    "disability_status": "No, I do not have a disability",
+    "disability_decline": "Decline to self-identify",
+    "prefer_decline_all_eeo": false
+  },
+  "company_relations": {
+    "previously_employed": "No",
+    "has_relatives_employed": "No",
+    "how_did_you_hear": "LinkedIn / Company Careers Page"
+  }
+}

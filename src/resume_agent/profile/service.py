@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 from resume_agent.db import get_db
 from resume_agent.models import ProfileModel
 from resume_agent.logging import logger
@@ -149,3 +149,28 @@ def ensure_candidate_profile(force_reload: bool = False) -> Optional[ProfileMode
 
     logger.warning("No candidate profile found or seed JSON available.")
     return None
+
+
+def get_compliance_profile() -> Dict[str, Any]:
+    """Retrieve candidate static compliance, legal, and EEO preferences."""
+    from pathlib import Path
+    from resume_agent.config import get_settings
+    settings = get_settings()
+
+    paths = [
+        settings.data_dir / "config" / "candidate_compliance.json",
+        settings.project_root / "data" / "config" / "candidate_compliance.json",
+        Path("/app/seed_config/candidate_compliance.json"),
+        Path("/app/data/config/candidate_compliance.json"),
+        Path(__file__).resolve().parent.parent.parent.parent / "data" / "config" / "candidate_compliance.json",
+    ]
+
+    for p in paths:
+        if p.exists():
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.warning(f"Could not read compliance profile from {p}: {e}")
+
+    return {}

@@ -350,7 +350,8 @@ class TelegramClient:
         method: str,
         pdf_path: Optional[Path] = None,
         screenshot_path: Optional[Path] = None,
-        notes: str = ""
+        notes: str = "",
+        ai_answers: Optional[Dict[str, str]] = None
     ) -> bool:
         """
         Send application dispatch confirmation or safety intervention alert to Telegram.
@@ -359,6 +360,15 @@ class TelegramClient:
         title = html.escape(job.title)
         apply_url = job.apply_url
 
+        answers_section = ""
+        if ai_answers:
+            bullets = []
+            for q_label, ans_val in list(ai_answers.items())[:3]:
+                q_short = html.escape(q_label[:45] + ("..." if len(q_label) > 45 else ""))
+                a_short = html.escape(ans_val[:90] + ("..." if len(ans_val) > 90 else ""))
+                bullets.append(f"• <b>{q_short}:</b> <i>{a_short}</i>")
+            answers_section = "\n\n🧠 <b>Grounded Answers Auto-Filled:</b>\n" + "\n".join(bullets)
+
         if status == "submitted":
             button_label = "🔗 View Job Posting"
             caption = (
@@ -366,7 +376,7 @@ class TelegramClient:
                 f"🏢 <b>Company:</b> {comp}\n"
                 f"💼 <b>Role:</b> {title}\n"
                 f"⚙️ <b>Submission Method:</b> <code>{method}</code>\n"
-                f"📝 <b>Status:</b> Success\n\n"
+                f"📝 <b>Status:</b> Success{answers_section}\n\n"
                 f"📄 <i>Tailored 1-page ATS resume used for this application is attached below.</i>"
             )
         elif status == "dry_run":
@@ -376,7 +386,7 @@ class TelegramClient:
                 f"🏢 <b>Company:</b> {comp}\n"
                 f"💼 <b>Role:</b> {title}\n"
                 f"⚙️ <b>Engine:</b> <code>{method}</code>\n"
-                f"📝 <b>Note:</b> {html.escape(notes or 'Form filled and verified.')}\n\n"
+                f"📝 <b>Note:</b> {html.escape(notes or 'Form filled and verified.')}{answers_section}\n\n"
                 f"📸 Pre-submit form screenshot attached below."
             )
         else:

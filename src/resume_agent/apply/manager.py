@@ -170,6 +170,11 @@ class ApplyManager:
         if can_api:
             logger.info(f"Routing Job #{job_id} to Tier 1 Direct API ({provider})")
             result = submit_via_api(job, candidate, resume_pdf_path, company=company, dry_run=is_dry_run)
+            # If Direct API requires manual web submission (e.g. 401 unauthenticated or 422 custom questions),
+            # automatically fall back to Tier 2 Playwright Browser Automation!
+            if not result.success and result.status == "manual_required":
+                logger.info(f"Direct API restricted for Job #{job_id}. Falling back to Tier 2 Playwright Browser with AI Question Answering...")
+                result = submit_via_browser(job, candidate, resume_pdf_path, company=company, dry_run=is_dry_run)
         else:
             logger.info(f"Routing Job #{job_id} to Tier 2 Headless Browser Automation (Playwright)")
             result = submit_via_browser(job, candidate, resume_pdf_path, company=company, dry_run=is_dry_run)
@@ -211,13 +216,15 @@ class ApplyManager:
 
         # 8. Dispatch Telegram Notification
         try:
+            ai_answers_dict = (result.response_data or {}).get("filled_answers") if result.response_data else None
             self.telegram.send_apply_confirmation(
                 job=job,
                 status=result.status,
                 method=result.method,
                 pdf_path=resume_pdf_path,
                 screenshot_path=result.screenshot_path,
-                notes=result.notes or result.error or ""
+                notes=result.notes or result.error or "",
+                ai_answers=ai_answers_dict
             )
         except Exception as e:
             logger.warning(f"Failed to dispatch Telegram application confirmation: {e}")

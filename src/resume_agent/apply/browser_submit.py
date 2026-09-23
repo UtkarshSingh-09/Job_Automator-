@@ -1,11 +1,12 @@
 import re
 import time
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 from playwright.sync_api import sync_playwright, Page, TimeoutError as PlaywrightTimeoutError
 
 from resume_agent.models import JobModel, CompanyModel
 from resume_agent.apply.models import ApplyResult, CandidateSubmissionPayload
+from resume_agent.apply.qa_generator import QAGenerator
 from resume_agent.config import get_settings
 from resume_agent.logging import logger
 
@@ -74,10 +75,128 @@ def check_login_wall_present(page: Page, url: str) -> bool:
     return False
 
 
-def fill_form_fields(page: Page, candidate: CandidateSubmissionPayload, resume_pdf_path: Path) -> Dict[str, Any]:
+def resolve_custom_form_questions(
+    page: Page,
+    job: Optional[JobModel],
+    candidate: CandidateSubmissionPayload
+) -> Dict[str, str]:
     """
-    Locates common job application fields and fills them with candidate data.
-    Returns audit dictionary of matched fields.
+    Scans the page for custom textareas, select dropdowns, and unhandled inputs.
+    Resolves each with QAGenerator and fills them in.
+    Returns audit dictionary: {question_label: answered_value}
+    """
+    qa = QAGenerator()
+    filled_answers = {}
+
+    # 1. Handle Textarea fields (Essays, Why company, Project descriptions)
+    try:
+        textareas = page.locator("textarea")
+        count = textareas.count()
+        for i in range(count):
+            ta = textareas.nth(i)
+            if not ta.is_visible():
+                continue
+
+            current_val = ta.input_value() or ""
+            if current_val.strip():
+                continue
+
+            label_text = ""
+            ta_id = ta.get_attribute("id")
+            if ta_id:
+                label_elem = page.locator(f"label[for='{ta_id}']")
+                if label_elem.count() > 0:
+                    label_text = label_elem.first.inner_text()
+
+            if not label_text:
+                label_text = ta.get_attribute("aria-label") or ta.get_attribute("placeholder") or ""
+
+            if not label_text:
+                parent = ta.locator("xpath=..")
+                label_text = parent.inner_text() if parent.count() > 0 else ""
+
+            if not label_text.strip():
+                label_text = "Tell us about your background and why you are interested in this role."
+
+            clean_label = label_text.split("\n")[0].strip()[:200]
+            logger.info(f"Resolving custom textarea prompt: '{clean_label}'")
+            res = qa.resolve_question(clean_label, field_type="textarea", job=job, candidate=candidate)
+            answer_text = res.get("answer", "")
+            if answer_text:
+                ta.fill(answer_text)
+                filled_answers[clean_label] = answer_text
+    except Exception as e:
+        logger.warning(f"Error resolving custom textareas: {e}")
+
+    # 2. Handle Select / Dropdown fields (Work auth, EEO, Track choices)
+    try:
+        selects = page.locator("select")
+        count = selects.count()
+        for i in range(count):
+            sel = selects.nth(i)
+            if not sel.is_visible():
+                continue
+
+            label_text = ""
+            sel_id = sel.get_attribute("id")
+            if sel_id:
+                label_elem = page.locator(f"label[for='{sel_id}']")
+                if label_elem.count() > 0:
+                    label_text = label_elem.first.inner_text()
+
+            if not label_text:
+                label_text = sel.get_attribute("aria-label") or ""
+
+            if not label_text:
+                parent = sel.locator("xpath=..")
+                label_text = parent.inner_text() if parent.count() > 0 else ""
+
+            clean_label = label_text.split("\n")[0].strip()[:200]
+            if not clean_label:
+                continue
+
+            options = []
+            try:
+                opt_locs = sel.locator("option")
+                for o_idx in range(opt_locs.count()):
+                    o_text = opt_locs.nth(o_idx).inner_text().strip()
+                    if o_text:
+                        options.append(o_text)
+            except Exception:
+                pass
+
+            if not options:
+                continue
+
+            logger.info(f"Resolving custom select dropdown: '{clean_label}'")
+            res = qa.resolve_question(clean_label, field_type="select", job=job, candidate=candidate, options=options)
+            chosen_opt = res.get("answer", "")
+            if chosen_opt:
+                try:
+                    sel.select_option(label=chosen_opt)
+                    filled_answers[clean_label] = chosen_opt
+                except Exception:
+                    try:
+                        sel.select_option(value=chosen_opt)
+                        filled_answers[clean_label] = chosen_opt
+                    except Exception as e:
+                        logger.warning(f"Could not select option '{chosen_opt}' for '{clean_label}': {e}")
+    except Exception as e:
+        logger.warning(f"Error resolving custom selects: {e}")
+
+    return filled_answers
+
+
+def fill_form_fields(
+    page: Page,
+    candidate: CandidateSubmissionPayload,
+    resume_pdf_path: Path,
+    job: Optional[JobModel] = None
+) -> Tuple[Dict[str, Any], Dict[str, str]]:
+    """
+    Locates common job application fields and fills them with candidate data,
+    then automatically resolves custom textareas and select fields using QAGenerator.
+    Returns: (matched_summary, filled_answers)
     """
     matched = {
         "first_name": False,
@@ -306,7 +425,10 @@ def fill_form_fields(page: Page, candidate: CandidateSubmissionPayload, resume_p
             except Exception as e:
                 logger.warning(f"Failed to attach resume to {sel}: {e}")
 
-    return matched
+    # 13. Automatically resolve custom employer questions & dropdowns
+    filled_answers = resolve_custom_form_questions(page, job, candidate)
+
+    return matched, filled_answers
 
 
 def submit_via_browser(
@@ -381,8 +503,9 @@ def submit_via_browser(
                 )
 
             # 4. Fill Application Form
-            matched_fields = fill_form_fields(page, candidate, resume_pdf_path)
+            matched_fields, filled_answers = fill_form_fields(page, candidate, resume_pdf_path, job=job)
             logger.info(f"Form field matching summary: {matched_fields}")
+            logger.info(f"Custom questions answered ({len(filled_answers)}): {list(filled_answers.keys())}")
 
             # Confidence gate: Must find email and either full_name or (first_name and last_name)
             has_identity = matched_fields["email"] and (matched_fields["full_name"] or (matched_fields["first_name"] and matched_fields["last_name"]))
@@ -460,7 +583,7 @@ def submit_via_browser(
                 method="playwright_form",
                 screenshot_path=ss_file,
                 notes="Submitted via headless browser.",
-                response_data={"matched_fields": matched_fields}
+                response_data={"matched_fields": matched_fields, "filled_answers": filled_answers}
             )
 
         except PlaywrightTimeoutError as te:
