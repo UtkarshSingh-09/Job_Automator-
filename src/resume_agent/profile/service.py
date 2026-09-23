@@ -108,3 +108,43 @@ def is_profile_confirmed() -> bool:
     with get_db() as conn:
         row = conn.execute("SELECT confirmed_at FROM profile WHERE id = 1;").fetchone()
         return bool(row and row["confirmed_at"])
+
+
+def ensure_candidate_profile() -> Optional[ProfileModel]:
+    """Ensure candidate profile exists in SQLite database, initializing from seed JSON if missing."""
+    p = get_profile()
+    if p is not None:
+        return p
+
+    from pathlib import Path
+    from resume_agent.config import get_settings
+    settings = get_settings()
+
+    candidate_paths = [
+        settings.data_dir / "config" / "candidate_profile.json",
+        settings.project_root / "data" / "config" / "candidate_profile.json",
+        Path("/app/seed_config/candidate_profile.json"),
+        Path("/app/data/config/candidate_profile.json"),
+        Path(__file__).resolve().parent.parent.parent.parent / "data" / "config" / "candidate_profile.json",
+    ]
+
+    for cpath in candidate_paths:
+        if cpath.exists():
+            try:
+                with open(cpath, "r", encoding="utf-8") as f:
+                    pdata = json.load(f)
+                # Convert timestamps if present as strings
+                if "confirmed_at" in pdata and pdata["confirmed_at"]:
+                    pdata["confirmed_at"] = datetime.fromisoformat(str(pdata["confirmed_at"]))
+                if "updated_at" in pdata and pdata["updated_at"]:
+                    pdata["updated_at"] = datetime.fromisoformat(str(pdata["updated_at"]))
+                profile = ProfileModel(**pdata)
+                save_profile(profile)
+                confirm_profile()
+                logger.info(f"Initialized verified candidate profile for '{profile.full_name}' from {cpath}")
+                return profile
+            except Exception as e:
+                logger.warning(f"Could not load seed profile from {cpath}: {e}")
+
+    logger.warning("No candidate profile found or seed JSON available.")
+    return None

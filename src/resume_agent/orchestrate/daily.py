@@ -19,9 +19,11 @@ def run_daily_pipeline(
     skip_fetch: bool = False,
     limit: int = 5,
     send_telegram: bool = True,
+    send_digest: bool = True,
     auto_apply: bool = False,
     min_fit_threshold: float = 75.0,
-    date_str: Optional[str] = None
+    date_str: Optional[str] = None,
+    slot_label: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Master Daily Pipeline Orchestrator (09:00 IST Visual Loop).
@@ -221,12 +223,24 @@ def run_daily_pipeline(
             })
 
         # ----------------------------------------------------------------------
-        # Stage 5: Morning Digest Delivery via Telegram
+        # Stage 5: Telegram Reporting (Evening Digest or Slot Status Pulse)
         # ----------------------------------------------------------------------
-        current_stage = "Daily Digest Delivery"
-        if send_telegram:
-            logger.info("Dispatching daily morning digest to Telegram...")
+        current_stage = "Telegram Reporting"
+        if send_telegram and send_digest:
+            logger.info("Dispatching daily evening executive briefing to Telegram...")
             telegram.send_daily_digest(stats)
+        elif send_telegram and not send_digest:
+            slot_name = slot_label or "Scheduled Scan"
+            matched_cnt = len(stats.get("matches", []))
+            if matched_cnt == 0:
+                logger.info(f"Dispatching slot heartbeat to Telegram ({slot_name})...")
+                telegram.send_message(
+                    f"📡 <b>{slot_name} Complete</b>\n\n"
+                    f"• ATS Boards Monitored: <b>{stats['boards_monitored']}</b>\n"
+                    f"• Postings Scanned & Analyzed: <b>{stats['jobs_ingested']}</b>\n"
+                    f"• Qualifying Internships: <i>0 new high-fit roles detected in this slot window.</i>\n\n"
+                    f"💤 <i>Engine sleeping until next scheduled IST slot.</i>"
+                )
 
     except Exception as e:
         err_str = f"Pipeline failure in stage '{current_stage}': {e}"

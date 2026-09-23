@@ -1,3 +1,4 @@
+import os
 import time
 import signal
 import sys
@@ -79,6 +80,26 @@ def run_ist_daemon(run_immediately: bool = False, dry_run: bool = False):
     seeded = seed_companies_from_yaml()
     logger.info(f"Database ready: applied {len(applied)} migrations, loaded {seeded} seed companies.")
 
+    # Ensure Candidate Profile and Verified Projects exist in DB
+    from resume_agent.profile.service import ensure_candidate_profile
+    from resume_agent.github.sync import get_all_projects, sync_projects
+    prof = ensure_candidate_profile()
+    if prof:
+        logger.info(f"Candidate profile active: {prof.full_name} ({prof.college}, CGPA {prof.cgpa})")
+
+    existing_projs = get_all_projects()
+    if not existing_projs:
+        logger.info("Projects table is empty on volume; synchronizing portfolio from GitHub & verified overrides...")
+        try:
+            synced_projs = sync_projects(offline=False)
+            logger.info(f"Synchronized {len(synced_projs)} projects into candidate portfolio.")
+        except Exception as e:
+            logger.warning(f"Live GitHub sync failed ({e}), falling back to offline overrides sync...")
+            synced_projs = sync_projects(offline=True)
+            logger.info(f"Loaded {len(synced_projs)} projects from verified overrides.")
+    else:
+        logger.info(f"Loaded {len(existing_projs)} verified projects from portfolio.")
+
     running = True
 
     def handle_signal(sig, frame):
@@ -90,12 +111,19 @@ def run_ist_daemon(run_immediately: bool = False, dry_run: bool = False):
     signal.signal(signal.SIGINT, handle_signal)
     signal.signal(signal.SIGTERM, handle_signal)
 
-    if run_immediately:
-        logger.info("Immediate run requested on startup (--run-now). Running pipeline cycle...")
+    run_on_start = run_immediately or os.environ.get("RUN_ON_STARTUP", "").lower() in ("1", "true", "yes")
+    if run_on_start:
+        logger.info("Immediate run requested on startup (RUN_ON_STARTUP=true or --run-now). Running pipeline cycle...")
         now = datetime.now(IST)
         # Only send evening digest if close to 9 PM IST (between 20:30 and 22:00)
         is_evening = (now.hour == 20 and now.minute >= 30) or (now.hour == 21) or (now.hour == 22 and now.minute <= 30)
-        run_daily_pipeline(auto_apply=True, send_telegram=is_evening, dry_run=dry_run)
+        run_daily_pipeline(
+            auto_apply=True,
+            send_telegram=True,
+            send_digest=is_evening,
+            dry_run=dry_run,
+            slot_label="Afternoon Catch-Up Scan",
+        )
 
     while running:
         now_ist = datetime.now(IST)
@@ -124,8 +152,10 @@ def run_ist_daemon(run_immediately: bool = False, dry_run: bool = False):
         try:
             stats = run_daily_pipeline(
                 auto_apply=True,
-                send_telegram=is_digest,
-                dry_run=dry_run
+                send_telegram=True,
+                send_digest=is_digest,
+                dry_run=dry_run,
+                slot_label=label,
             )
             logger.info(f"Cycle completed successfully. Stats: {stats}")
         except Exception as e:

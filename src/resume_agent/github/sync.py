@@ -12,12 +12,37 @@ from resume_agent.logging import logger
 
 
 def load_overrides() -> List[Dict[str, Any]]:
-    """Load curated project manual notes and priorities from projects_override.yaml."""
+    """Load curated project manual notes and priorities from projects_override.yaml or fallback seed paths."""
+    import shutil
     settings = get_settings()
-    override_path = settings.data_dir / "config" / "projects_override.yaml"
-    if not override_path.exists():
-        logger.warning(f"Projects override file missing at {override_path}")
+
+    candidate_paths = [
+        settings.data_dir / "config" / "projects_override.yaml",
+        settings.project_root / "data" / "config" / "projects_override.yaml",
+        Path("/app/seed_config/projects_override.yaml"),
+        Path("/app/data/config/projects_override.yaml"),
+        Path(__file__).resolve().parent.parent.parent.parent / "data" / "config" / "projects_override.yaml",
+    ]
+
+    override_path = None
+    for p in candidate_paths:
+        if p.exists():
+            override_path = p
+            break
+
+    if not override_path:
+        logger.warning(f"Projects override file missing at {settings.data_dir / 'config' / 'projects_override.yaml'}")
         return []
+
+    # Initialize volume location from seed if running with mounted volume
+    target_vol_path = settings.data_dir / "config" / "projects_override.yaml"
+    if override_path != target_vol_path and not target_vol_path.exists():
+        try:
+            target_vol_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(override_path, target_vol_path)
+            logger.info(f"Initialized volume projects override at {target_vol_path} from {override_path}")
+        except Exception as e:
+            logger.debug(f"Could not copy seed projects override to volume: {e}")
 
     with open(override_path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)

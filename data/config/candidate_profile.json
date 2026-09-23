@@ -1,0 +1,51 @@
+{
+  "id": 1,
+  "full_name": "Utkarsh Singh",
+  "email": "thakurutkarsh2212@gmail.com",
+  "phone": "+91-7565960168",
+  "github_url": "https://github.com/UtkarshSingh-09",
+  "linkedin_url": "https://linkedin.com/in/utkarshsingh09",
+  "portfolio_url": "https://github.com/UtkarshSingh-09",
+  "college": "SRM University Amaravati",
+  "degree": "B.Tech in Computer Science",
+  "branch": "Computer Science",
+  "grad_year": 2028,
+  "cgpa": 8.78,
+  "location": "Ayodhya, UP, India",
+  "skills": [
+    "Python",
+    "C++",
+    "SQL",
+    "DSA",
+    "System Design",
+    "OOPs",
+    "Concurrency",
+    "Testing",
+    "Classical Ml",
+    "LangGraph",
+    "LangChain",
+    "RAG",
+    "SLMs",
+    "LLMs (GPT-4, Llama-3)"
+  ],
+  "coursework": [
+    "Data Structures & Algorithms",
+    "DBMS",
+    "Operating Systems",
+    "Machine Learning",
+    "System Design",
+    "Distributed Systems",
+    "Object-Oriented Programming"
+  ],
+  "achievements": [
+    "Top Finalist \u2014 Meta OpenEnv \u00d7 PyTorch Hackathon 2026: Built RudraKernel with reinforcement-learning-based LLM safety training.",
+    "Runner-Up ($1,500 Prize) \u2014 Zenith National Hackathon: Shipped a distributed AI system under competitive time constraints.",
+    "Top 25 Finalist \u2014 Logithon 25 @ IIT Bombay and HackFor Green Bharat @ Microsoft Gurugram, competing against top institutions nationally.",
+    "Top 26 Finalist \u2014 iQOO Hackathon ,Chennai",
+    "Competitive Programming: 150+ DSA problems on LeetCode spanning graph algorithms, dynamic programming, and system-level optimization."
+  ],
+  "certifications": [],
+  "raw_text": "UTKARSH SINGH\nAyodhya, UP, India | +91-7565960168 | thakurutkarsh2212@gmail.com\nlinkedin.com/in/utkarshsingh09 | github.com/UtkarshSingh-09\nEDUCATION\nSRM University Amaravati \u2014 B.Tech in Computer Science\nAug 2024 \u2013 May 2028\nCGPA: 8.78/10.00 | Coursework: Data Structures & Algorithms, DBMS, Operating Systems, Machine Learning, System Design,\nDistributed Systems, Object-Oriented Programming\nTECHNICAL SKILLS\nLanguages: Python, C++, SQL, C\nCS Fundamentals: DSA, System Design, OOPs, Concurrency, Testing\nAI/ML & Analytics: Classical Ml, LangGraph, LangChain, RAG, SLMs ,LLMs (GPT-4, Llama-3)\nEXPERIENCE\nCo-Founder & Software Engineer \u2014 ShulinTech\nApr 2026 \u2013 Present\nUdyam-Registered MSME, Govt. of India | Software Development & AI Consultancy\n\u2022 Engage directly with SME clients to gather requirements, translate business needs into technical solutions, and deliver production-grade software;\nparticipate in peer code reviews and manage Git-based pull request workflows within a 3-person team.\n\u2022 Shipped Sanchay (May 2026), a mobile inventory-management platform for real estate businesses currently serving 15+ active users, featuring a\nvoice-input RAG pipeline for natural-language queries \u2014 reducing manual inventory tracking time by ~60%.\nPROJECTS\nMerchantMind \u2014 Autonomous AI Shopping & Growth Agent (Live | Demo Video | GitHub)\nPython, FastAPI, Next.js, Groq,\nRazorpay, PostgreSQL, Redis\n\u2022 Built a multi-agent conversational-commerce platform for natural-language and voice-based shopping, enabling discovery across 200+ Bangalore\nstores and 5,000+ products with sub-650ms cached catalog retrieval.\n\u2022 Engineered an atomic 3-phase checkout saga using PostgreSQL row-level locks, Razorpay Orders and Payment Links, idempotency keys, and\nHMAC-SHA256 webhook verification to prevent overselling and duplicate payments.\n\u2022 Implemented deterministic budget enforcement, contextual occasion-based upselling, prompt-injection sanitization, Redis rate limiting, and live\ndelivery tracking; validated reliability through a 151-test security and integration suite.\nTrinetra \u2014 Cross Compliance Guardian (Patent Filed) GitHub)\nPython, LangGraph, FastAPI, XGBoost, PostgreSQL\n\u2022 Built a production financial-document intelligence pipeline ingesting ITR filings, GST records, annual reports, and bank statements to autonomously\ngenerate a 12-page Credit Assessment Memorandum in under 90 seconds \u2014 replacing 2\u20133 weeks of manual analyst work at NBFCs.\n\u2022 Designed RESTful APIs coordinating 13 concurrent agents with sub-second task scheduling for parallel multi-format financial data processing;\ninstrumented with health-check endpoints and structured logging for observability.\n\u2022 Integrated XGBoost with SHAP/LIME explainability for transparent, auditable credit risk scoring aligned with regulatory compliance requirements \u2014\nenabling client-facing audit trails critical for consulting deliverables.\nAegis Forge \u2014 Real-Time Voice AI Interview Platform (Demo Video | GitHub)\nPython, FastAPI, JavaScript, LiveKit, WebRTC\n\u2022 Built a real-time voice AI platform achieving 850ms end-to-end latency across speech-to-text, LLM, and text-to-speech pipelines over LiveKit\nWebRTC with FastAPI backend orchestration.\n\u2022 Architected a 6-agent orchestration system with event-driven inter-agent communication and shared state via a singleton knowledge engine; wrote\nintegration tests covering session lifecycle and failover paths.\n\u2022 Designed anti-cheating and integrity systems using MediaPipe behavioral biometrics for real-time gaze tracking and audit-grade candidate\nverification.\nRudraKernel \u2014 Multi-Agent RL Environment for LLM Safety (Live | GitHub)\nPython, TRL, GRPO, FastAPI\n\u2022 Built an OpenEnv-compatible multi-agent reinforcement-learning environment training LLMs to detect adversarial sleeper-agent attacks and\nepistemic cascade failures \u2014 directly relevant to Microsoft\u2019s Responsible AI initiatives.\n\u2022 Engineered a fine-tuning pipeline with a 9-component composable reward system, deterministic replay for auditable training, and step-gated test\ncoverage across unit, integration, and end-to-end suites.\nACHIEVEMENTS\n\u2022 Top Finalist \u2014 Meta OpenEnv \u00d7 PyTorch Hackathon 2026: Built RudraKernel with reinforcement-learning-based LLM safety training.\n\u2022 Runner-Up ($1,500 Prize) \u2014 Zenith National Hackathon: Shipped a distributed AI system under competitive time constraints.\n\u2022 Top 25 Finalist \u2014 Logithon 25 @ IIT Bombay and HackFor Green Bharat @ Microsoft Gurugram, competing against top institutions\nnationally.\n\u2022 Top 26 Finalist \u2014 iQOO Hackathon ,Chennai\n\u2022 Competitive Programming: 150+ DSA problems on LeetCode spanning graph algorithms, dynamic programming, and system-level optimization.\n",
+  "confirmed_at": "2026-09-21T19:27:04",
+  "updated_at": "2026-09-21T19:27:04"
+}
