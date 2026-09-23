@@ -157,7 +157,7 @@ def generate_tailored_resume(job_id: int) -> Path:
             "name": profile.full_name,
             "email": profile.email,
             "phone": profile.phone or "+91-7565960168",
-            "college": "SRM University Amaravati",
+            "college": profile.college or "SRM University, AP",
             "degree": degree_display,
             "date_range": "Aug 2024 -- May 2028",
             "cgpa": f"{profile.cgpa:.2f}" if profile.cgpa else "8.78",
