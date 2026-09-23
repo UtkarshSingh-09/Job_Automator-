@@ -13,6 +13,21 @@ EXCLUDE_REGEX = re.compile(
     re.IGNORECASE
 )
 
+NON_TECH_EXCLUSIONS = re.compile(
+    r"\b(accounting|accountant|recruitment|recruiter|talent acquisition|hr\b|human resources|"
+    r"legal|paralegal|tax|brokerage|underwriting|real estate|nurse|medical|clinical|"
+    r"video editor|youtube|social media|content creator|copywriter|sales|business development|"
+    r"operations associate|workplace experience|facilities|office manager|executive assistant)\b",
+    re.IGNORECASE
+)
+
+TECH_ROLE_KEYWORDS = re.compile(
+    r"\b(software|engineer|developer|data|ml\b|machine learning|ai\b|artificial intelligence|"
+    r"systems|infra|backend|frontend|full.?stack|devops|security|quant|quantitative|algorithm|"
+    r"computer science|research|deep learning|nlp|robotics|computational)\b",
+    re.IGNORECASE
+)
+
 INDIA_LOCATIONS = {
     "india", "bangalore", "bengaluru", "hyderabad", "gurugram", "gurgaon",
     "mumbai", "delhi", "noida", "pune", "chennai", "kolkata", "ahmedabad", "remote"
@@ -37,6 +52,10 @@ def evaluate_job_filter(title: str, location: str, description: str) -> Tuple[bo
     exclude_match = EXCLUDE_REGEX.search(title_lower)
     if exclude_match:
         return False, f"Title contains excluded term: '{exclude_match.group(0)}'"
+
+    # Check non-technical exclusions (accounting, recruiter, hr, etc.) unless tech role keyword present
+    if NON_TECH_EXCLUSIONS.search(title_lower) and not TECH_ROLE_KEYWORDS.search(title_lower):
+        return False, "Title matches non-technical role exclusion pattern"
 
     # 2. Check title or preview inclusions
     include_match = INCLUDE_REGEX.search(title_lower)

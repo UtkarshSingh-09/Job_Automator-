@@ -21,7 +21,7 @@ def run_daily_pipeline(
     send_telegram: bool = True,
     send_digest: bool = True,
     auto_apply: bool = False,
-    min_fit_threshold: float = 75.0,
+    min_fit_threshold: float = 65.0,
     date_str: Optional[str] = None,
     slot_label: Optional[str] = None,
 ) -> Dict[str, Any]:
@@ -86,33 +86,38 @@ def run_daily_pipeline(
 
         # Find eligible jobs: passed_filter = 1
         with get_db() as conn:
-            # First find jobs already matched with high fit
+            # First find existing high-fit matches not yet applied to
             matched_rows = conn.execute(
                 """
                 SELECT m.*, j.title, j.company_name, j.apply_url, j.location, j.remote_type
                 FROM matches m
                 JOIN jobs j ON m.job_id = j.id
                 WHERE m.overall_fit >= ?
+                  AND m.job_id NOT IN (
+                      SELECT DISTINCT job_id FROM applications 
+                      WHERE status IN ('applied', 'manual_required')
+                  )
                 ORDER BY m.overall_fit DESC
                 LIMIT ?;
                 """,
                 (min_fit_threshold, limit),
             ).fetchall()
 
+            # Query fresh unmatched jobs (id DESC gives newest ingested postings first)
+            # Fetch a candidate pool of up to 50 to ensure finding top matches
             unmatched_jobs = conn.execute(
                 """
                 SELECT * FROM jobs
                 WHERE passed_filter = 1
                   AND id NOT IN (SELECT job_id FROM matches)
-                ORDER BY posted_at DESC
-                LIMIT ?;
+                ORDER BY id DESC
+                LIMIT 50;
                 """,
-                (limit,),
             ).fetchall()
 
         eligible_matches: List[Dict[str, Any]] = []
 
-        # Run matcher on unmatched jobs if any exist
+        # Run matcher on unmatched jobs until limit is satisfied
         for u_row in unmatched_jobs:
             if len(eligible_matches) >= limit:
                 break

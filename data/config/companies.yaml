@@ -37,7 +37,7 @@ companies:
 - name: Supabase
   domain: supabase.com
   tier: 1
-  ats_provider: greenhouse
+  ats_provider: ashby
   ats_slug: supabase
 - name: Retool
   domain: retool.com
@@ -72,8 +72,8 @@ companies:
 - name: Together AI
   domain: together.ai
   tier: 1
-  ats_provider: ashby
-  ats_slug: together-ai
+  ats_provider: greenhouse
+  ats_slug: togetherai
 - name: LlamaIndex
   domain: llamaindex.ai
   tier: 1
@@ -99,10 +99,1031 @@ companies:
   tier: 1
   ats_provider: greenhouse
   ats_slug: coinbase
+- name: Kite (Zerodha)
+  domain: zerodha.com
+  tier: 1
+- name: Zomato
+  domain: zomato.com
+  tier: 1
+- name: Blinkit
+  domain: blinkit.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: blinkit
+- name: PhonePe
+  domain: phonepe.com
+  tier: 1
+- name: Paytm
+  domain: paytm.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: paytm
+- name: BharatPe
+  domain: bharatpe.com
+  tier: 1
+- name: Slice
+  domain: sliceit.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: slice
+- name: Navi
+  domain: navi.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: navi
+- name: Flipkart
+  domain: flipkart.com
+  tier: 1
+- name: InMobi
+  domain: inmobi.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: inmobi
+- name: ShareChat
+  domain: sharechat.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: sharechat
+- name: Games24x7
+  domain: games24x7.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: games24x7
+- name: Pocket FM
+  domain: pocketfm.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: pocketfm
+- name: Kuku FM
+  domain: kukufm.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: kukufm
+- name: Zetwerk
+  domain: zetwerk.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: zetwerk
+- name: OfBusiness
+  domain: ofbusiness.com
+  tier: 1
+- name: Nykaa
+  domain: nykaa.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: nykaa
+- name: Appsmith
+  domain: appsmith.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: appsmith
+- name: SigNoz
+  domain: signoz.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: signoz
+- name: Freshworks
+  domain: freshworks.com
+  tier: 1
+- name: Chargebee
+  domain: chargebee.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: chargebee
+- name: Zoho
+  domain: zoho.com
+  tier: 1
+- name: Sprinklr
+  domain: sprinklr.com
+  tier: 1
+  ats_provider: workday
+  ats_slug: sprinklr/careers
+- name: Druva
+  domain: druva.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: druva
+- name: Icertis
+  domain: icertis.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: icertis
+- name: Innovaccer
+  domain: innovaccer.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: innovaccer
+- name: HighRadius
+  domain: highradius.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: highradius
+- name: Whatfix
+  domain: whatfix.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: whatfix
+- name: HackerRank
+  domain: hackerrank.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: hackerrank
+- name: InterviewBit (Scaler)
+  domain: scaler.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: scaler
+- name: LeetCode
+  domain: leetcode.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: leetcode
+- name: PhysicsWallah
+  domain: pw.live
+  tier: 1
+- name: PostHog
+  domain: posthog.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: posthog
+- name: Sentry
+  domain: sentry.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: sentry
+- name: Datadog
+  domain: datadoghq.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: datadog
+- name: Grafana Labs
+  domain: grafana.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: grafanalabs
+- name: HashiCorp
+  domain: hashicorp.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: hashicorp
+- name: PagerDuty
+  domain: pagerduty.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: pagerduty
+- name: LaunchDarkly
+  domain: launchdarkly.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: launchdarkly
+- name: Pulumi
+  domain: pulumi.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: pulumi
+- name: Netlify
+  domain: netlify.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: netlify
+- name: Fastly
+  domain: fastly.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: fastly
+- name: Cloudflare
+  domain: cloudflare.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: cloudflare
+- name: GitLab
+  domain: gitlab.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: gitlab
+- name: Docker
+  domain: docker.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: docker
+- name: CircleCI
+  domain: circleci.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: circleci
+- name: Temporal
+  domain: temporal.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: temporal
+- name: Prisma
+  domain: prisma.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: prisma
+- name: Clerk
+  domain: clerk.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: clerk
+- name: WorkOS
+  domain: workos.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: workos
+- name: Stytch
+  domain: stytch.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: stytch
+- name: Uber India
+  domain: uber.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: uber
+- name: Atlassian India
+  domain: atlassian.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: atlassian
+- name: Adobe India
+  domain: adobe.com
+  tier: 1
+- name: Salesforce India
+  domain: salesforce.com
+  tier: 1
+- name: Cisco India
+  domain: cisco.com
+  tier: 1
+- name: Intel India
+  domain: intel.com
+  tier: 1
+- name: AMD India
+  domain: amd.com
+  tier: 1
+- name: NVIDIA India
+  domain: nvidia.com
+  tier: 1
+- name: Qualcomm India
+  domain: qualcomm.com
+  tier: 1
+- name: Broadcom India
+  domain: broadcom.com
+  tier: 1
+- name: Intuit India
+  domain: intuit.com
+  tier: 1
+- name: PayPal India
+  domain: paypal.com
+  tier: 1
+- name: ServiceNow India
+  domain: servicenow.com
+  tier: 1
+- name: Snowflake India
+  domain: snowflake.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: snowflake
+- name: Databricks India
+  domain: databricks.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: databricks
+- name: Twilio India
+  domain: twilio.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: twilio
+- name: MongoDB India
+  domain: mongodb.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: mongodb
+- name: Elastic India
+  domain: elastic.co
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: elastic
+- name: Confluent India
+  domain: confluent.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: confluent
+- name: Red Hat India
+  domain: redhat.com
+  tier: 1
+- name: Oracle India
+  domain: oracle.com
+  tier: 1
+- name: IBM India
+  domain: ibm.com
+  tier: 1
+- name: SAP India
+  domain: sap.com
+  tier: 1
+- name: Samsung R&D India
+  domain: samsung.com
+  tier: 1
+- name: Sony R&D India
+  domain: sony.com
+  tier: 1
+- name: Booking.com India
+  domain: booking.com
+  tier: 1
+- name: Expedia Group India
+  domain: expediagroup.com
+  tier: 1
+- name: Airbnb
+  domain: airbnb.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: airbnb
+- name: DoorDash
+  domain: doordash.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: doordash
+- name: Instacart
+  domain: instacart.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: instacart
+- name: Pinterest
+  domain: pinterest.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: pinterest
+- name: Snap Inc. India
+  domain: snap.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: snapchat
+- name: Reddit
+  domain: reddit.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: reddit
+- name: Discord
+  domain: discord.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: discord
+- name: Spotify
+  domain: spotify.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: spotify
+- name: Roku
+  domain: roku.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: roku
+- name: Box
+  domain: box.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: box
+- name: Dropbox
+  domain: dropbox.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: dropbox
+- name: Asana
+  domain: asana.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: asana
+- name: Notion
+  domain: notion.so
+  tier: 1
+  ats_provider: ashby
+  ats_slug: notion
+- name: Airtable
+  domain: airtable.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: airtable
+- name: Miro
+  domain: miro.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: miro
+- name: Canva
+  domain: canva.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: canva
+- name: Grammarly
+  domain: grammarly.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: grammarly
+- name: Duolingo
+  domain: duolingo.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: duolingo
+- name: Coursera
+  domain: coursera.org
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: coursera
+- name: Udemy
+  domain: udemy.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: udemy
+- name: D.E. Shaw India
+  domain: deshawindia.com
+  tier: 1
+- name: Tower Research Capital India
+  domain: tower-research.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: towerresearchcapital
+- name: WorldQuant India
+  domain: worldquant.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: worldquant
+- name: Graviton Research Capital
+  domain: gravitonresearch.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: gravitonresearchcapital
+- name: Millennium Management India
+  domain: mlp.com
+  tier: 1
+- name: Jump Trading
+  domain: jumptrading.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: jumptrading
+- name: Jane Street
+  domain: janestreet.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: janestreet
+- name: Optiver
+  domain: optiver.com
+  tier: 1
+- name: Citadel
+  domain: citadel.com
+  tier: 1
+- name: IMC Trading
+  domain: imc.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: imc
+- name: Goldman Sachs India
+  domain: goldmansachs.com
+  tier: 1
+- name: Morgan Stanley India
+  domain: morganstanley.com
+  tier: 1
+- name: J.P. Morgan India
+  domain: jpmorgan.com
+  tier: 1
+- name: BNY Mellon India
+  domain: bnymellon.com
+  tier: 1
+- name: American Express India
+  domain: americanexpress.com
+  tier: 1
+- name: Fidelity Investments India
+  domain: fidelity.com
+  tier: 1
+- name: Wells Fargo India
+  domain: wellsfargo.com
+  tier: 1
+- name: Deutsche Bank India
+  domain: db.com
+  tier: 1
+- name: Barclays India
+  domain: barclays.com
+  tier: 1
+- name: Standard Chartered India
+  domain: sc.com
+  tier: 1
+- name: HSBC India
+  domain: hsbc.com
+  tier: 1
+- name: UBS India
+  domain: ubs.com
+  tier: 1
+- name: Nomura India
+  domain: nomura.com
+  tier: 1
+- name: Macquarie Group India
+  domain: macquarie.com
+  tier: 1
+- name: BlackRock India
+  domain: blackrock.com
+  tier: 1
+- name: Vanguard India
+  domain: vanguard.com
+  tier: 1
+- name: S&P Global India
+  domain: spglobal.com
+  tier: 1
+- name: MSCI India
+  domain: msci.com
+  tier: 1
+- name: Bloomberg India
+  domain: bloomberg.com
+  tier: 1
+- name: LSEG India
+  domain: lseg.com
+  tier: 1
+- name: Upstox
+  domain: upstox.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: upstox
+- name: Angel One
+  domain: angelone.in
+  tier: 1
+- name: INDmoney
+  domain: indmoney.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: indmoney
+- name: Smallcase
+  domain: smallcase.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: smallcase
+- name: Clear (ClearTax)
+  domain: cleartax.in
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: cleartax
+- name: PolicyBazaar
+  domain: policybazaar.com
+  tier: 1
+- name: Digit Insurance
+  domain: godigit.com
+  tier: 1
+- name: Acko
+  domain: acko.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: acko
+- name: OneCard
+  domain: getonecard.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: onecard
+- name: PayU India
+  domain: payu.in
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: payu
+- name: Cashfree Payments
+  domain: cashfree.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: cashfree
+- name: OpenAI
+  domain: openai.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: openai
+- name: Anthropic
+  domain: anthropic.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: anthropic
+- name: Cohere
+  domain: cohere.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: cohere
+- name: Mistral AI
+  domain: mistral.ai
+  tier: 1
+  ats_provider: ashby
+  ats_slug: mistral
+- name: Hugging Face
+  domain: huggingface.co
+  tier: 1
+  ats_provider: lever
+  ats_slug: huggingface
+- name: Weights & Biases
+  domain: wandb.ai
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: wandb
+- name: Replicate
+  domain: replicate.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: replicate
+- name: Fireworks AI
+  domain: fireworks.ai
+  tier: 1
+  ats_provider: ashby
+  ats_slug: fireworks
+- name: LangChain
+  domain: langchain.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: langchain
+- name: Pinecone
+  domain: pinecone.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: pinecone
+- name: Weaviate
+  domain: weaviate.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: weaviate
+- name: Qdrant
+  domain: qdrant.tech
+  tier: 1
+  ats_provider: ashby
+  ats_slug: qdrant
+- name: Chroma
+  domain: trychroma.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: trychroma
+- name: Cursor (Anysphere)
+  domain: cursor.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: cursor
+- name: Railway
+  domain: railway.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: railway
+- name: Fly.io
+  domain: fly.io
+  tier: 1
+  ats_provider: lever
+  ats_slug: fly
+- name: Render
+  domain: render.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: render
+- name: Neon
+  domain: neon.tech
+  tier: 1
+  ats_provider: lever
+  ats_slug: neon
+- name: Resend
+  domain: resend.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: resend
+- name: Braintrust
+  domain: braintrust.dev
+  tier: 1
+  ats_provider: ashby
+  ats_slug: braintrust
+- name: Arize AI
+  domain: arize.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: arizeai
+- name: Modular
+  domain: modular.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: modular
+- name: Groq
+  domain: groq.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: groq
+- name: Cerebras Systems
+  domain: cerebras.net
+  tier: 1
+  ats_provider: ashby
+  ats_slug: cerebras
+- name: SambaNova Systems
+  domain: sambanova.ai
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: sambanovasystems
+- name: Tenstorrent
+  domain: tenstorrent.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: tenstorrent
+- name: Runway
+  domain: runwayml.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: runway
+- name: Pika
+  domain: pika.art
+  tier: 1
+  ats_provider: ashby
+  ats_slug: pika
+- name: ElevenLabs
+  domain: elevenlabs.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: elevenlabs
+- name: Character.ai
+  domain: character.ai
+  tier: 1
+  ats_provider: ashby
+  ats_slug: character
+- name: Midjourney
+  domain: midjourney.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: midjourney
+- name: Stability AI
+  domain: stability.ai
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: stabilityai
+- name: Writer
+  domain: writer.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: writer
+- name: Synthesia
+  domain: synthesia.io
+  tier: 1
+  ats_provider: ashby
+  ats_slug: synthesia
+- name: HeyGen
+  domain: heygen.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: heygen
+- name: Cognition AI (Devin)
+  domain: cognition.ai
+  tier: 1
+  ats_provider: ashby
+  ats_slug: cognition
+- name: Poolside AI
+  domain: poolside.ai
+  tier: 1
+  ats_provider: ashby
+  ats_slug: poolside
+- name: Magic AI
+  domain: magic.dev
+  tier: 1
+  ats_provider: ashby
+  ats_slug: magic
+- name: Augment Code
+  domain: augmentcode.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: augmentcode
+- name: Sourcegraph
+  domain: sourcegraph.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: sourcegraph
+- name: Codeium
+  domain: codeium.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: codeium
+- name: PharmEasy
+  domain: pharmeasy.in
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: pharmeasy
+- name: 1mg (Tata 1mg)
+  domain: 1mg.com
+  tier: 1
+- name: Palo Alto Networks India
+  domain: paloaltonetworks.com
+  tier: 1
+- name: Fortinet India
+  domain: fortinet.com
+  tier: 1
+- name: Zscaler India
+  domain: zscaler.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: zscaler
+- name: CrowdStrike India
+  domain: crowdstrike.com
+  tier: 1
+- name: SentinelOne India
+  domain: sentinelone.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: sentinelone
+- name: Qualys India
+  domain: qualys.com
+  tier: 1
+- name: Netskope India
+  domain: netskope.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: netskope
+- name: F5 Networks India
+  domain: f5.com
+  tier: 1
+- name: Akamai India
+  domain: akamai.com
+  tier: 1
+- name: Naukri (Info Edge)
+  domain: infoedge.in
+  tier: 1
+- name: Indeed India
+  domain: indeed.com
+  tier: 1
+- name: LinkedIn India
+  domain: linkedin.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: linkedin
+- name: Glassdoor India
+  domain: glassdoor.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: glassdoor
+- name: Skyroot Aerospace
+  domain: skyroot.in
+  tier: 1
+- name: Agnikul Cosmos
+  domain: agnikul.in
+  tier: 1
+- name: Pixxel Space
+  domain: pixxel.space
+  tier: 1
+  ats_provider: lever
+  ats_slug: pixxel
+- name: Exponent Energy
+  domain: exponent.energy
+  tier: 1
+  ats_provider: lever
+  ats_slug: exponentenergy
+- name: Affirm
+  domain: affirm.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: affirm
+- name: Klarna
+  domain: klarna.com
+  tier: 1
+- name: Revolut India
+  domain: revolut.com
+  tier: 1
+  ats_provider: lever
+  ats_slug: revolut
+- name: Monzo
+  domain: monzo.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: monzo
+- name: Wise (TransferWise)
+  domain: wise.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: wise
+- name: Chime
+  domain: chime.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: chime
+- name: Robinhood
+  domain: robinhood.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: robinhood
+- name: SoFi
+  domain: sofi.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: sofi
+- name: Plaid
+  domain: plaid.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: plaid
+- name: Checkout.com
+  domain: checkout.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: checkout
+- name: Adyen
+  domain: adyen.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: adyen
+- name: Toast
+  domain: toasttab.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: toast
+- name: Bill.com
+  domain: bill.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: billcom
+- name: Carta
+  domain: carta.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: carta
+- name: Gusto
+  domain: gusto.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: gusto
+- name: Deel
+  domain: deel.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: deel
+- name: Remote.com
+  domain: remote.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: remotecom
+- name: McKinsey Digital India
+  domain: mckinsey.com
+  tier: 1
+- name: BCG Platinion / Gamma India
+  domain: bcg.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: bcg
+- name: Bain & Company Vector India
+  domain: bain.com
+  tier: 1
+- name: Fractal Analytics
+  domain: fractal.ai
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: fractalanalytics
+- name: Media.net
+  domain: media.net
+  tier: 1
+- name: Directi (Zeta / Radix)
+  domain: directi.com
+  tier: 1
+- name: Zeta Suite
+  domain: zeta.tech
+  tier: 1
+  ats_provider: lever
+  ats_slug: zeta
+- name: OYO Rooms
+  domain: oyorooms.com
+  tier: 1
+- name: MakeMyTrip
+  domain: makemytrip.com
+  tier: 1
+- name: RedBus
+  domain: redbus.in
+  tier: 1
+- name: ixigo
+  domain: ixigo.com
+  tier: 1
+- name: Lenskart
+  domain: lenskart.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: lenskart
+- name: FirstCry
+  domain: firstcry.com
+  tier: 1
+- name: IndiaMart
+  domain: indiamart.com
+  tier: 1
+- name: The Trade Desk India
+  domain: thetradedesk.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: thetradedesk
+- name: Wintermute India
+  domain: wintermute.com
+  tier: 1
+  ats_provider: ashby
+  ats_slug: wintermute
+- name: Chainalysis India
+  domain: chainalysis.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: chainalysis
+- name: Fireblocks India
+  domain: fireblocks.com
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: fireblocks
+- name: Consensys India
+  domain: consensys.io
+  tier: 1
+  ats_provider: greenhouse
+  ats_slug: consensys
 - name: Meesho
   domain: meesho.com
   tier: 2
-  ats_provider: greenhouse
+  ats_provider: lever
   ats_slug: meesho
 - name: Hasura
   domain: hasura.io
@@ -122,7 +1143,7 @@ companies:
 - name: Groww
   domain: groww.in
   tier: 2
-  ats_provider: lever
+  ats_provider: greenhouse
   ats_slug: groww
 - name: CoinDCX
   domain: coindcx.com
@@ -202,6 +1223,8 @@ companies:
 - name: Apna
   domain: apna.co
   tier: 2
+  ats_provider: workable
+  ats_slug: apna
 - name: Kodo
   domain: kodo.com
   tier: 2
@@ -217,9 +1240,8 @@ companies:
 - name: Fi Money
   domain: fi.money
   tier: 2
-- name: Kite (Zerodha)
-  domain: zerodha.com
-  tier: 1
+  ats_provider: lever
+  ats_slug: fi
 - name: Rebel Foods
   domain: rebelfoods.com
   tier: 2
@@ -235,6 +1257,8 @@ companies:
 - name: Porter
   domain: porter.in
   tier: 2
+  ats_provider: greenhouse
+  ats_slug: porter
 - name: Dunzo
   domain: dunzo.com
   tier: 2
@@ -259,71 +1283,6 @@ companies:
 - name: Licious
   domain: licious.in
   tier: 2
-- name: Zomato
-  domain: zomato.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Blinkit
-  domain: blinkit.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: blinkit
-- name: PhonePe
-  domain: phonepe.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Paytm
-  domain: paytm.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: BharatPe
-  domain: bharatpe.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Slice
-  domain: sliceit.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Navi
-  domain: navi.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: navi
-- name: Flipkart
-  domain: flipkart.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: InMobi
-  domain: inmobi.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: inmobi
-- name: ShareChat
-  domain: sharechat.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: sharechat
-- name: Games24x7
-  domain: games24x7.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: games24x7
-- name: Pocket FM
-  domain: pocketfm.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: pocketfm
-- name: Kuku FM
-  domain: kukufm.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: kukufm
 - name: Pratilipi
   domain: pratilipi.com
   tier: 2
@@ -337,38 +1296,20 @@ companies:
 - name: BlackBuck
   domain: blackbuck.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: ElasticRun
   domain: elasticrun.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Bizongo
   domain: bizongo.com
   tier: 2
   ats_provider: greenhouse
   ats_slug: bizongo
-- name: Zetwerk
-  domain: zetwerk.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: zetwerk
 - name: Infra.Market
   domain: infra.market
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: OfBusiness
-  domain: ofbusiness.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Moglix
   domain: moglix.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Captain Fresh
   domain: captainfresh.in
   tier: 2
@@ -377,33 +1318,21 @@ companies:
 - name: Country Delight
   domain: countrydelight.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Curefoods
   domain: curefoods.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Furlenco
   domain: furlenco.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Rentomojo
   domain: rentomojo.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Wakefit
   domain: wakefit.co
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Pepperfry
   domain: pepperfry.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Livspace
   domain: livspace.com
   tier: 2
@@ -412,38 +1341,14 @@ companies:
 - name: HomeLane
   domain: homelane.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: NoBroker
   domain: nobroker.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Square Yards
-  domain: squareyards.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Magicbricks
-  domain: magicbricks.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: 99acres
-  domain: 99acres.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: CarDekho
   domain: cardekho.com
   tier: 2
   ats_provider: greenhouse
   ats_slug: cardekho
-- name: Droom
-  domain: droom.in
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: BluSmart
   domain: blu-smart.com
   tier: 2
@@ -454,66 +1359,21 @@ companies:
   tier: 2
   ats_provider: lever
   ats_slug: yulu
-- name: Bounce
-  domain: bounceshare.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Simple Energy
-  domain: simpleenergy.in
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: River
-  domain: riverind.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Nykaa
-  domain: nykaa.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: nykaa
 - name: Purplle
   domain: purplle.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Mamaearth (Honasa)
   domain: mamaearth.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Sugar Cosmetics
   domain: sugarcosmetics.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: boAt
   domain: boat-lifestyle.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Noise
   domain: gonoise.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Boult Audio
-  domain: boultaudio.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Appsmith
-  domain: appsmith.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: appsmith
-- name: SigNoz
-  domain: signoz.io
-  tier: 1
-  ats_provider: lever
-  ats_slug: signoz
 - name: Devtron
   domain: devtron.ai
   tier: 2
@@ -534,26 +1394,9 @@ companies:
   tier: 2
   ats_provider: greenhouse
   ats_slug: wingify
-- name: Freshworks
-  domain: freshworks.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Chargebee
-  domain: chargebee.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: chargebee
-- name: Zoho
-  domain: zoho.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Kissflow
   domain: kissflow.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: WebEngage
   domain: webengage.com
   tier: 2
@@ -579,81 +1422,21 @@ companies:
   tier: 2
   ats_provider: lever
   ats_slug: haptik
-- name: Sprinklr
-  domain: sprinklr.com
-  tier: 1
-  ats_provider: workday
-  ats_slug: sprinklr/careers
-- name: Druva
-  domain: druva.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: druva
-- name: Icertis
-  domain: icertis.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: icertis
-- name: Innovaccer
-  domain: innovaccer.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: innovaccer
-- name: HighRadius
-  domain: highradius.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Whatfix
-  domain: whatfix.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: whatfix
-- name: HackerRank
-  domain: hackerrank.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: hackerrank
-- name: InterviewBit (Scaler)
-  domain: scaler.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: scaler
-- name: LeetCode
-  domain: leetcode.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: leetcode
 - name: GeeksforGeeks
   domain: geeksforgeeks.org
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: PhysicsWallah
-  domain: pw.live
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Vedantu
   domain: vedantu.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: UpGrad
   domain: upgrad.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Simplilearn
   domain: simplilearn.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Great Learning
   domain: mygreatlearning.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Newton School
   domain: newtonschool.co
   tier: 2
@@ -669,691 +1452,100 @@ companies:
   tier: 2
   ats_provider: greenhouse
   ats_slug: codingninjas
-- name: PostHog
-  domain: posthog.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: posthog
-- name: Sentry
-  domain: sentry.io
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: sentry
-- name: Datadog
-  domain: datadoghq.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: datadog
-- name: Grafana Labs
-  domain: grafana.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: grafana
-- name: HashiCorp
-  domain: hashicorp.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: hashicorp
-- name: PagerDuty
-  domain: pagerduty.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: pagerduty
-- name: LaunchDarkly
-  domain: launchdarkly.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: launchdarkly
-- name: Pulumi
-  domain: pulumi.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: pulumi
-- name: Netlify
-  domain: netlify.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: netlify
-- name: Fastly
-  domain: fastly.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: fastly
-- name: Cloudflare
-  domain: cloudflare.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: cloudflare
-- name: GitLab
-  domain: gitlab.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: gitlab
-- name: Docker
-  domain: docker.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: docker
-- name: CircleCI
-  domain: circleci.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: circleci
 - name: Buildkite
   domain: buildkite.com
   tier: 2
   ats_provider: greenhouse
   ats_slug: buildkite
-- name: Temporal
-  domain: temporal.io
-  tier: 1
-  ats_provider: ashby
-  ats_slug: temporal
 - name: Inngest
   domain: inngest.com
   tier: 2
   ats_provider: ashby
   ats_slug: inngest
-- name: Prisma
-  domain: prisma.io
-  tier: 1
-  ats_provider: ashby
-  ats_slug: prisma
 - name: Drizzle
   domain: orm.drizzle.team
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Clerk
-  domain: clerk.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: clerk
-- name: WorkOS
-  domain: workos.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: workos
-- name: Stytch
-  domain: stytch.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: stytch
-- name: Uber India
-  domain: uber.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: uber
-- name: Atlassian India
-  domain: atlassian.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: atlassian
-- name: Adobe India
-  domain: adobe.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Salesforce India
-  domain: salesforce.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Cisco India
-  domain: cisco.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Intel India
-  domain: intel.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: AMD India
-  domain: amd.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: NVIDIA India
-  domain: nvidia.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Qualcomm India
-  domain: qualcomm.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Broadcom India
-  domain: broadcom.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Intuit India
-  domain: intuit.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: PayPal India
-  domain: paypal.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: ServiceNow India
-  domain: servicenow.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Snowflake India
-  domain: snowflake.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: snowflake
-- name: Databricks India
-  domain: databricks.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: databricks
-- name: Twilio India
-  domain: twilio.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: twilio
-- name: MongoDB India
-  domain: mongodb.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: mongodb
-- name: Elastic India
-  domain: elastic.co
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: elastic
-- name: Confluent India
-  domain: confluent.io
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: confluent
-- name: Red Hat India
-  domain: redhat.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Oracle India
-  domain: oracle.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: IBM India
-  domain: ibm.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: SAP India
-  domain: sap.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Dell Technologies India
   domain: dell.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: HP India
   domain: hp.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Samsung R&D India
-  domain: samsung.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Sony R&D India
-  domain: sony.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Rakuten India
   domain: rakuten.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Booking.com India
-  domain: booking.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Expedia Group India
-  domain: expediagroup.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Airbnb
-  domain: airbnb.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: airbnb
-- name: DoorDash
-  domain: doordash.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: doordash
-- name: Instacart
-  domain: instacart.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: instacart
-- name: Pinterest
-  domain: pinterest.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: pinterest
-- name: Snap Inc. India
-  domain: snap.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: snapchat
-- name: Reddit
-  domain: reddit.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: reddit
-- name: Discord
-  domain: discord.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: discord
-- name: Spotify
-  domain: spotify.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: spotify
-- name: Roku
-  domain: roku.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: roku
-- name: Box
-  domain: box.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: box
-- name: Dropbox
-  domain: dropbox.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: dropbox
-- name: Asana
-  domain: asana.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: asana
-- name: Notion
-  domain: notion.so
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: notion
-- name: Airtable
-  domain: airtable.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: airtable
-- name: Miro
-  domain: miro.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: miro
-- name: Canva
-  domain: canva.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: canva
-- name: Grammarly
-  domain: grammarly.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: grammarly
-- name: Duolingo
-  domain: duolingo.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: duolingo
-- name: Coursera
-  domain: coursera.org
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: coursera
-- name: Udemy
-  domain: udemy.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: udemy
 - name: Chegg India
   domain: chegg.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: D.E. Shaw India
-  domain: deshawindia.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Tower Research Capital India
-  domain: tower-research.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: towerresearchcapital
-- name: WorldQuant India
-  domain: worldquant.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: worldquant
-- name: Graviton Research Capital
-  domain: gravitonresearch.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Millennium Management India
-  domain: mlp.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Jump Trading
-  domain: jumptrading.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Jane Street
-  domain: janestreet.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Optiver
-  domain: optiver.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Citadel
-  domain: citadel.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: IMC Trading
-  domain: imc.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Goldman Sachs India
-  domain: goldmansachs.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Morgan Stanley India
-  domain: morganstanley.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: J.P. Morgan India
-  domain: jpmorgan.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: BNY Mellon India
-  domain: bnymellon.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: American Express India
-  domain: americanexpress.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Fidelity Investments India
-  domain: fidelity.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Wells Fargo India
-  domain: wellsfargo.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Deutsche Bank India
-  domain: db.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Barclays India
-  domain: barclays.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Standard Chartered India
-  domain: sc.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: HSBC India
-  domain: hsbc.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: NatWest Group India
   domain: natwestgroup.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Societe Generale India
   domain: socgen.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: UBS India
-  domain: ubs.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Nomura India
-  domain: nomura.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Macquarie Group India
-  domain: macquarie.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: BlackRock India
-  domain: blackrock.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Vanguard India
-  domain: vanguard.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: State Street India
   domain: statestreet.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Northern Trust India
   domain: northerntrust.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Invesco India
   domain: invesco.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Franklin Templeton India
   domain: franklintempleton.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Broadridge India
   domain: broadridge.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: FactSet India
   domain: factset.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: S&P Global India
-  domain: spglobal.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: MSCI India
-  domain: msci.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Morningstar India
   domain: morningstar.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Bloomberg India
-  domain: bloomberg.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: LSEG India
-  domain: lseg.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Moody's India
   domain: moodys.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Crisil
   domain: crisil.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Upstox
-  domain: upstox.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: upstox
-- name: Angel One
-  domain: angelone.in
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: 5paisa
   domain: 5paisa.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Dhan
   domain: dhan.co
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: INDmoney
-  domain: indmoney.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: indmoney
-- name: Smallcase
-  domain: smallcase.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: smallcase
 - name: Kuvera
   domain: kuvera.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Scripbox
   domain: scripbox.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: ET Money
   domain: etmoney.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Clear (ClearTax)
-  domain: cleartax.in
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: cleartax
 - name: BankBazaar
   domain: bankbazaar.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Paisabazaar
   domain: paisabazaar.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: PolicyBazaar
-  domain: policybazaar.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Turtlemint
   domain: turtlemint.com
   tier: 2
   ats_provider: lever
   ats_slug: turtlemint
-- name: Digit Insurance
-  domain: godigit.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Acko
-  domain: acko.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: acko
-- name: OneCard
-  domain: getonecard.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: onecard
 - name: Uni Cards
   domain: uni.cards
   tier: 2
   ats_provider: lever
   ats_slug: uni
-- name: PayU India
-  domain: payu.in
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: payu
-- name: Cashfree Payments
-  domain: cashfree.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: cashfree
 - name: Instamojo
   domain: instamojo.com
   tier: 2
   ats_provider: lever
   ats_slug: instamojo
-- name: Mswipe
-  domain: mswipe.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Ezetap
-  domain: ezetap.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: OkCredit
   domain: okcredit.in
   tier: 2
@@ -1362,253 +1554,32 @@ companies:
 - name: Vyapar
   domain: vyaparapp.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: myBillBook
   domain: mybillbook.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: OpenAI
-  domain: openai.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: openai
-- name: Anthropic
-  domain: anthropic.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: anthropic
-- name: Cohere
-  domain: cohere.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: cohere
-- name: Mistral AI
-  domain: mistral.ai
-  tier: 1
-  ats_provider: ashby
-  ats_slug: mistral
-- name: Hugging Face
-  domain: huggingface.co
-  tier: 1
-  ats_provider: lever
-  ats_slug: huggingface
-- name: Weights & Biases
-  domain: wandb.ai
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: wandb
-- name: Replicate
-  domain: replicate.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: replicate
-- name: Fireworks AI
-  domain: fireworks.ai
-  tier: 1
-  ats_provider: ashby
-  ats_slug: fireworks-ai
-- name: LangChain
-  domain: langchain.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: langchain
-- name: Pinecone
-  domain: pinecone.io
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: pinecone
-- name: Weaviate
-  domain: weaviate.io
-  tier: 1
-  ats_provider: ashby
-  ats_slug: weaviate
-- name: Qdrant
-  domain: qdrant.tech
-  tier: 1
-  ats_provider: ashby
-  ats_slug: qdrant
-- name: Chroma
-  domain: trychroma.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: chroma
-- name: Cursor (Anysphere)
-  domain: cursor.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: cursor
-- name: Railway
-  domain: railway.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: railway
-- name: Fly.io
-  domain: fly.io
-  tier: 1
-  ats_provider: lever
-  ats_slug: flyio
-- name: Render
-  domain: render.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: render
-- name: Neon
-  domain: neon.tech
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: neon
-- name: Resend
-  domain: resend.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: resend
-- name: Braintrust
-  domain: braintrust.dev
-  tier: 1
-  ats_provider: ashby
-  ats_slug: braintrust
-- name: Arize AI
-  domain: arize.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: arizeai
 - name: Fiddler AI
   domain: fiddler.ai
   tier: 2
-  ats_provider: greenhouse
-  ats_slug: fiddlerai
-- name: Modular
-  domain: modular.com
-  tier: 1
   ats_provider: ashby
-  ats_slug: modular
-- name: Groq
-  domain: groq.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: groq
-- name: Cerebras Systems
-  domain: cerebras.net
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: cerebras
-- name: SambaNova Systems
-  domain: sambanova.ai
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: sambanova
-- name: Tenstorrent
-  domain: tenstorrent.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: tenstorrent
-- name: Runway
-  domain: runwayml.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: runway
-- name: Pika
-  domain: pika.art
-  tier: 1
-  ats_provider: ashby
-  ats_slug: pika
-- name: ElevenLabs
-  domain: elevenlabs.io
-  tier: 1
-  ats_provider: ashby
-  ats_slug: elevenlabs
-- name: Character.ai
-  domain: character.ai
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: character
-- name: Midjourney
-  domain: midjourney.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Stability AI
-  domain: stability.ai
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: stabilityai
-- name: Writer
-  domain: writer.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: writer
+  ats_slug: fiddler-ai
 - name: Jasper
   domain: jasper.ai
   tier: 2
   ats_provider: greenhouse
   ats_slug: jasper
-- name: Synthesia
-  domain: synthesia.io
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: synthesia
-- name: HeyGen
-  domain: heygen.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: heygen
 - name: Phind
   domain: phind.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: KREA AI
   domain: krea.ai
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Cognition AI (Devin)
-  domain: cognition.ai
-  tier: 1
   ats_provider: ashby
-  ats_slug: cognition
-- name: Poolside AI
-  domain: poolside.ai
-  tier: 1
-  ats_provider: ashby
-  ats_slug: poolside
-- name: Magic AI
-  domain: magic.dev
-  tier: 1
-  ats_provider: ashby
-  ats_slug: magic
-- name: Augment Code
-  domain: augmentcode.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: augmentcode
-- name: Sourcegraph
-  domain: sourcegraph.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: sourcegraph
-- name: Codeium
-  domain: codeium.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: codeium
+  ats_slug: krea
 - name: Tabnine
   domain: tabnine.com
   tier: 2
   ats_provider: greenhouse
   ats_slug: tabnine
-- name: PharmEasy
-  domain: pharmeasy.in
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: pharmeasy
-- name: 1mg (Tata 1mg)
-  domain: 1mg.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Practo
   domain: practo.com
   tier: 2
@@ -1617,8 +1588,6 @@ companies:
 - name: MediBuddy
   domain: medibuddy.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: HealthifyMe
   domain: healthifyme.com
   tier: 2
@@ -1632,8 +1601,6 @@ companies:
 - name: DeHaat
   domain: agrevolution.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Ninjacart
   domain: ninjacart.com
   tier: 2
@@ -1642,8 +1609,6 @@ companies:
 - name: WayCool
   domain: waycool.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: AgroStar
   domain: agrostar.in
   tier: 2
@@ -1654,16 +1619,6 @@ companies:
   tier: 2
   ats_provider: lever
   ats_slug: cropin
-- name: Bijak
-  domain: bijak.in
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Fasal
-  domain: fasal.co
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: Shipsy
   domain: shipsy.io
   tier: 2
@@ -1687,8 +1642,6 @@ companies:
 - name: LogiNext
   domain: loginextsolutions.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Freight Tiger
   domain: freighttiger.com
   tier: 2
@@ -1707,13 +1660,6 @@ companies:
 - name: Euler Motors
   domain: eulermotors.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: ZenMobility
-  domain: zenmobility.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: Chalo
   domain: chalo.com
   tier: 2
@@ -1724,46 +1670,11 @@ companies:
   tier: 2
   ats_provider: lever
   ats_slug: cityflo
-- name: Shuttl
-  domain: shuttl.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Palo Alto Networks India
-  domain: paloaltonetworks.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Fortinet India
-  domain: fortinet.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Zscaler India
-  domain: zscaler.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: zscaler
-- name: CrowdStrike India
-  domain: crowdstrike.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: SentinelOne India
-  domain: sentinelone.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: sentinelone
 - name: Tenable India
   domain: tenable.com
   tier: 2
   ats_provider: greenhouse
   ats_slug: tenable
-- name: Qualys India
-  domain: qualys.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Rapid7 India
   domain: rapid7.com
   tier: 2
@@ -1772,73 +1683,36 @@ companies:
 - name: Check Point India
   domain: checkpoint.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: CyberArk India
   domain: cyberark.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Netskope India
-  domain: netskope.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: netskope
 - name: Imperva India
   domain: imperva.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: F5 Networks India
-  domain: f5.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Akamai India
-  domain: akamai.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Barracuda Networks India
   domain: barracuda.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Sophos India
   domain: sophos.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
+  ats_provider: lever
+  ats_slug: sophos
 - name: Trend Micro India
   domain: trendmicro.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: SonicWall India
   domain: sonicwall.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
+  ats_provider: greenhouse
+  ats_slug: sonicwall
 - name: Seclore
   domain: seclore.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Quick Heal
-  domain: quickheal.co.in
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: Lucideus (Safe Security)
   domain: safe.security
   tier: 2
-  ats_provider: lever
-  ats_slug: safe-security
-- name: TAC Security
-  domain: tacsecurity.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
+  ats_provider: ashby
+  ats_slug: safe
 - name: Keka
   domain: keka.com
   tier: 2
@@ -1847,98 +1721,30 @@ companies:
 - name: GreytHR
   domain: greythr.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: ZingHR
-  domain: zinghr.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: PeopleStrong
   domain: peoplestrong.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: SpurTree
-  domain: spurtree.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: Instahyre
   domain: instahyre.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Hirist
   domain: hirist.tech
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Cutshort
   domain: cutshort.io
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Naukri (Info Edge)
-  domain: infoedge.in
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Foundit (Monster)
   domain: foundit.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Shine
-  domain: shine.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Indeed India
-  domain: indeed.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: LinkedIn India
-  domain: linkedin.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Glassdoor India
-  domain: glassdoor.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: glassdoor
 - name: AmbitionBox
   domain: ambitionbox.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Skyroot Aerospace
-  domain: skyroot.in
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Agnikul Cosmos
-  domain: agnikul.in
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Pixxel Space
-  domain: pixxel.space
-  tier: 1
-  ats_provider: lever
-  ats_slug: pixxel
 - name: Bellatrix Aerospace
   domain: bellatrix.aero
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Dhruva Space
   domain: dhruvaspace.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: GalaxEye Space
   domain: galaxeye.space
   tier: 2
@@ -1947,23 +1753,6 @@ companies:
 - name: IdeaForge
   domain: ideaforgetech.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Garuda Aerospace
-  domain: garudaaerospace.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Skye Air Mobility
-  domain: skyeair.tech
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Redwing Aerospace
-  domain: redwinglabs.in
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: Kazam EV
   domain: kazam.in
   tier: 2
@@ -1972,108 +1761,14 @@ companies:
 - name: Statiq
   domain: statiq.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Bolt.earth
   domain: bolt.earth
   tier: 2
   ats_provider: lever
   ats_slug: boltearth
-- name: Exponent Energy
-  domain: exponent.energy
-  tier: 1
-  ats_provider: lever
-  ats_slug: exponentenergy
 - name: Log9 Materials
   domain: log9materials.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Affirm
-  domain: affirm.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: affirm
-- name: Klarna
-  domain: klarna.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Revolut India
-  domain: revolut.com
-  tier: 1
-  ats_provider: lever
-  ats_slug: revolut
-- name: Monzo
-  domain: monzo.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: monzo
-- name: Wise (TransferWise)
-  domain: wise.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: wise
-- name: Chime
-  domain: chime.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: chime
-- name: Robinhood
-  domain: robinhood.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: robinhood
-- name: SoFi
-  domain: sofi.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: sofi
-- name: Plaid
-  domain: plaid.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: plaid
-- name: Checkout.com
-  domain: checkout.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: checkout
-- name: Adyen
-  domain: adyen.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Toast
-  domain: toasttab.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: toast
-- name: Bill.com
-  domain: bill.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: bill
-- name: Carta
-  domain: carta.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: carta
-- name: Gusto
-  domain: gusto.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: gusto
-- name: Deel
-  domain: deel.com
-  tier: 1
-  ats_provider: ashby
-  ats_slug: deel
-- name: Remote.com
-  domain: remote.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: remote
 - name: Oyster HR
   domain: oysterhr.com
   tier: 2
@@ -2082,168 +1777,66 @@ companies:
 - name: KPMG India Tech
   domain: kpmg.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: PwC India Tech
   domain: pwc.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: EY India Tech
   domain: ey.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Deloitte India Tech
   domain: deloitte.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: McKinsey Digital India
-  domain: mckinsey.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: BCG Platinion / Gamma India
-  domain: bcg.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Bain & Company Vector India
-  domain: bain.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Fractal Analytics
-  domain: fractal.ai
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: fractalanalytics
 - name: Mu Sigma
   domain: mu-sigma.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Tiger Analytics
   domain: tigeranalytics.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: LatentView Analytics
   domain: latentview.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Tredence
   domain: tredence.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: TheMathCompany
   domain: themathcompany.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Affine Analytics
-  domain: affine.ai
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: Quantiphi
   domain: quantiphi.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Celebal Technologies
   domain: celebaltech.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Searce
   domain: searce.com
   tier: 2
   ats_provider: lever
   ats_slug: searce
-- name: Media.net
-  domain: media.net
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Directi (Zeta / Radix)
-  domain: directi.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Zeta Suite
-  domain: zeta.tech
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: zeta
 - name: Flock
   domain: flock.com
   tier: 2
-  ats_provider: greenhouse
+  ats_provider: ashby
   ats_slug: flock
 - name: Titan Mail (Nova)
   domain: titan.email
   tier: 2
-  ats_provider: greenhouse
+  ats_provider: ashby
   ats_slug: titan
 - name: Radix Registry
   domain: radix.website
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: OYO Rooms
-  domain: oyorooms.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: MakeMyTrip
-  domain: makemytrip.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Goibibo
   domain: goibibo.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Cleartrip
   domain: cleartrip.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: EaseMyTrip
   domain: easemytrip.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: RedBus
-  domain: redbus.in
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: ixigo
-  domain: ixigo.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
-- name: Lenskart
-  domain: lenskart.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: lenskart
-- name: FirstCry
-  domain: firstcry.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: Hopscotch
   domain: hopscotch.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: The Souled Store
   domain: thesouledstore.com
   tier: 2
@@ -2252,28 +1845,20 @@ companies:
 - name: Bewakoof
   domain: bewakoof.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Snitch
   domain: snitch.co.in
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Minimalist
   domain: beminimalist.co
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: CaratLane
   domain: caratlane.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: BlueStone
   domain: bluestone.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
+  ats_provider: greenhouse
+  ats_slug: bluestone
 - name: Giva
   domain: giva.co
   tier: 2
@@ -2282,23 +1867,12 @@ companies:
 - name: Urban Ladder
   domain: urbanladder.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: WoodenStreet
   domain: woodenstreet.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: IndiaMart
-  domain: indiamart.com
-  tier: 1
-  ats_provider: null
-  ats_slug: null
 - name: JustDial
   domain: justdial.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: DealShare
   domain: dealshare.in
   tier: 2
@@ -2309,36 +1883,11 @@ companies:
   tier: 2
   ats_provider: lever
   ats_slug: citymall
-- name: Koo
-  domain: kooapp.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Josh Talks
-  domain: joshtalks.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: YourStory
-  domain: yourstory.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Inc42
-  domain: inc42.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Entrackr
-  domain: entrackr.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: MediaIQ
   domain: miqdigital.com
   tier: 2
   ats_provider: greenhouse
-  ats_slug: miq
+  ats_slug: miqdigital
 - name: PubMatic India
   domain: pubmatic.com
   tier: 2
@@ -2354,133 +1903,156 @@ companies:
   tier: 2
   ats_provider: greenhouse
   ats_slug: magnite
-- name: The Trade Desk India
-  domain: thetradedesk.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: thetradedesk
 - name: Affle India
   domain: affle.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Route Mobile
   domain: routemobile.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Tanla Platforms
   domain: tanla.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Tata Elxsi
   domain: tataelxsi.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: KPIT Technologies
   domain: kpit.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Cyient
   domain: cyient.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Sonata Software
   domain: sonata-software.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Persistent Systems
   domain: persistent.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Coforge
   domain: coforge.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Mphasis
   domain: mphasis.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: LTIMindtree
   domain: ltimindtree.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Hexaware Technologies
   domain: hexaware.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
-- name: Birlasoft
-  domain: birlasoft.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: Zensar Technologies
-  domain: zensar.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
-- name: eClerx
-  domain: eclerx.com
-  tier: 3
-  ats_provider: null
-  ats_slug: null
 - name: Happiest Minds
   domain: happiestminds.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Tejas Networks
   domain: tejasnetworks.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Sterlite Technologies (STL)
   domain: stl.tech
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Netweb Technologies
   domain: netwebindia.com
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Kaynes Technology
   domain: kaynestechnology.net
   tier: 2
-  ats_provider: null
-  ats_slug: null
 - name: Sygnum India
   domain: sygnum.com
   tier: 2
   ats_provider: ashby
   ats_slug: sygnum
-- name: Wintermute India
-  domain: wintermute.com
-  tier: 1
+- name: Square Yards
+  domain: squareyards.com
+  tier: 3
+- name: Magicbricks
+  domain: magicbricks.com
+  tier: 3
+- name: 99acres
+  domain: 99acres.com
+  tier: 3
+- name: Droom
+  domain: droom.in
+  tier: 3
+- name: Bounce
+  domain: bounceshare.com
+  tier: 3
   ats_provider: ashby
-  ats_slug: wintermute
-- name: Chainalysis India
-  domain: chainalysis.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: chainalysis
-- name: Fireblocks India
-  domain: fireblocks.com
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: fireblocks
-- name: Consensys India
-  domain: consensys.io
-  tier: 1
-  ats_provider: greenhouse
-  ats_slug: consensys
+  ats_slug: bounce
+- name: Simple Energy
+  domain: simpleenergy.in
+  tier: 3
+- name: River
+  domain: riverind.com
+  tier: 3
+  ats_provider: ashby
+  ats_slug: river
+- name: Boult Audio
+  domain: boultaudio.com
+  tier: 3
+- name: Mswipe
+  domain: mswipe.com
+  tier: 3
+- name: Ezetap
+  domain: ezetap.com
+  tier: 3
+- name: Bijak
+  domain: bijak.in
+  tier: 3
+- name: Fasal
+  domain: fasal.co
+  tier: 3
+- name: ZenMobility
+  domain: zenmobility.com
+  tier: 3
+- name: Shuttl
+  domain: shuttl.com
+  tier: 3
+- name: Quick Heal
+  domain: quickheal.co.in
+  tier: 3
+- name: TAC Security
+  domain: tacsecurity.com
+  tier: 3
+- name: ZingHR
+  domain: zinghr.com
+  tier: 3
+- name: SpurTree
+  domain: spurtree.com
+  tier: 3
+- name: Shine
+  domain: shine.com
+  tier: 3
+- name: Garuda Aerospace
+  domain: garudaaerospace.com
+  tier: 3
+- name: Skye Air Mobility
+  domain: skyeair.tech
+  tier: 3
+- name: Redwing Aerospace
+  domain: redwinglabs.in
+  tier: 3
+- name: Affine Analytics
+  domain: affine.ai
+  tier: 3
+- name: Koo
+  domain: kooapp.com
+  tier: 3
+- name: Josh Talks
+  domain: joshtalks.com
+  tier: 3
+- name: YourStory
+  domain: yourstory.com
+  tier: 3
+- name: Inc42
+  domain: inc42.com
+  tier: 3
+- name: Entrackr
+  domain: entrackr.com
+  tier: 3
+- name: Birlasoft
+  domain: birlasoft.com
+  tier: 3
+- name: Zensar Technologies
+  domain: zensar.com
+  tier: 3
+- name: eClerx
+  domain: eclerx.com
+  tier: 3
