@@ -126,6 +126,18 @@ class QAGenerator:
             ans = identity.get("pronouns", "He/Him")
             return self._format_result(ans, "pronouns", options)
 
+        if any(kw in q_norm for kw in ["linkedin", "linkedin profile", "linkedin url"]):
+            ans = "https://linkedin.com/in/utkarshsingh09"
+            return self._format_result(ans, "linkedin_url", options)
+
+        if any(kw in q_norm for kw in ["github", "github profile", "github url"]):
+            ans = "https://github.com/UtkarshSingh-09"
+            return self._format_result(ans, "github_url", options)
+
+        if any(kw in q_norm for kw in ["other website", "website", "portfolio", "personal website", "portfolio website"]):
+            ans = "https://github.com/UtkarshSingh-09"
+            return self._format_result(ans, "portfolio_url", options)
+
         # --- D. Prior Employment & Referral ---
         if any(kw in q_norm for kw in ["worked for", "previously employed", "former employee"]):
             ans = relations.get("previously_employed", "No")

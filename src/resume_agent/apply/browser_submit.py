@@ -12,15 +12,14 @@ from resume_agent.logging import logger
 
 
 CAPTCHA_SELECTORS = [
-    "iframe[src*='recaptcha']",
-    "iframe[src*='hcaptcha']",
-    "iframe[src*='turnstile']",
-    "iframe[src*='arkoselabs']",
-    "iframe[src*='client-api.arkoselabs.com']",
-    "div.cf-turnstile",
-    "div.g-recaptcha",
-    "div.h-captcha",
-    "[data-sitekey]",
+    "iframe[title*='challenge' i]",
+    "iframe[src*='bframe' i]",
+    "iframe[src*='recaptcha/api2/bframe' i]",
+    "iframe[src*='arkoselabs' i]",
+    "iframe[src*='client-api.arkoselabs.com' i]",
+    "div.g-recaptcha:not([data-size='invisible'])",
+    "div.h-captcha:not([data-size='invisible'])",
+    "div.cf-turnstile:not([data-size='invisible'])",
 ]
 
 LOGIN_SELECTORS = [
@@ -88,9 +87,37 @@ def resolve_custom_form_questions(
     qa = QAGenerator()
     filled_answers = {}
 
-    # 1. Handle Textarea fields (Essays, Why company, Project descriptions)
+    # 0. Handle Greenhouse & standard custom question inputs and textareas (e.g. [id^="question_"])
     try:
-        textareas = page.locator("textarea")
+        q_elements = page.locator('input[id^="question_"], textarea[id^="question_"]')
+        count = q_elements.count()
+        for i in range(count):
+            elem = q_elements.nth(i)
+            if not elem.is_visible():
+                continue
+
+            current_val = elem.input_value() or ""
+            if current_val.strip():
+                continue
+
+            eid = elem.get_attribute("id") or ""
+            lbl_elem = page.locator(f'label[for="{eid}"], [id="{eid}-label"]')
+            lbl = lbl_elem.first.inner_text().strip().split("\n")[0] if lbl_elem.count() > 0 else eid
+            tag = elem.evaluate("e => e.tagName.toLowerCase()")
+
+            logger.info(f"Resolving custom question field: '{lbl[:50]}' ({tag})")
+            res = qa.resolve_question(lbl, field_type=tag, job=job, candidate=candidate)
+            ans = res.get("answer", "")
+            if ans:
+                elem.fill(ans)
+                clean_lbl = lbl.strip("*").strip()
+                filled_answers[clean_lbl] = ans
+    except Exception as e:
+        logger.warning(f"Error resolving custom question inputs: {e}")
+
+    # 1. Handle Generic Textarea fields (Essays, Why company, Project descriptions)
+    try:
+        textareas = page.locator("textarea:not([id^='question_'])")
         count = textareas.count()
         for i in range(count):
             ta = textareas.nth(i)
@@ -537,7 +564,7 @@ def submit_via_browser(
                     method="playwright_form",
                     screenshot_path=ss_file,
                     notes=f"Form inputs populated cleanly. Verified with screenshot.",
-                    response_data={"matched_fields": matched_fields}
+                    response_data={"matched_fields": matched_fields, "filled_answers": filled_answers}
                 )
 
             # 6. Live Submission Mode (Click Submit)
