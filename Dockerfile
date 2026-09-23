@@ -26,6 +26,7 @@ RUN playwright install --with-deps chromium
 # Copy application assets, templates, migrations, and seed configs
 COPY templates/ ./templates/
 COPY data/config/ ./data/config/
+COPY data/config/ /app/seed_config/
 COPY migrations/ ./migrations/
 
 # Create runtime directories for data volume

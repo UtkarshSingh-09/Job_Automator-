@@ -5,8 +5,19 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 
-# Find project root (directory containing pyproject.toml or src/..)
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+def _find_project_root() -> Path:
+    # 1. Check current working directory
+    cwd = Path.cwd()
+    if (cwd / "migrations").exists() or (cwd / "templates").exists():
+        return cwd
+    # 2. Check /app (standard Docker container working directory)
+    if Path("/app/migrations").exists() or Path("/app/templates").exists():
+        return Path("/app")
+    # 3. Fallback to package relative path
+    return Path(__file__).resolve().parent.parent.parent
+
+
+PROJECT_ROOT = _find_project_root()
 
 
 class Settings(BaseSettings):
@@ -20,10 +31,10 @@ class Settings(BaseSettings):
 
     # Project paths
     project_root: Path = PROJECT_ROOT
-    data_dir: Path = PROJECT_ROOT / "data"
-    db_path: Path = PROJECT_ROOT / "data" / "agent.db"
-    migrations_dir: Path = PROJECT_ROOT / "migrations"
-    output_dir: Path = PROJECT_ROOT / "data" / "output"
+    data_dir: Path = Path("/app/data") if Path("/app/data").exists() else PROJECT_ROOT / "data"
+    db_path: Path = Path("/app/data/agent.db") if Path("/app/data").exists() else PROJECT_ROOT / "data" / "agent.db"
+    migrations_dir: Path = Path("/app/migrations") if Path("/app/migrations").exists() else PROJECT_ROOT / "migrations"
+    output_dir: Path = Path("/app/data/output") if Path("/app/data").exists() else PROJECT_ROOT / "data" / "output"
 
     # API Keys & Tokens
     openrouter_api_key: Optional[str] = Field(default=None, alias="OPENROUTER_API_KEY")

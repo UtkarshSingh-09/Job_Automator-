@@ -8,12 +8,37 @@ from resume_agent.logging import logger
 
 
 def load_seed_companies_yaml() -> List[Dict[str, Any]]:
-    """Load curated company list from data/config/companies.yaml."""
+    """Load curated company list from data/config/companies.yaml or fallback seed paths."""
+    import shutil
     settings = get_settings()
-    yaml_path = settings.data_dir / "config" / "companies.yaml"
-    if not yaml_path.exists():
-        logger.warning(f"Companies YAML missing at {yaml_path}")
+
+    candidate_paths = [
+        settings.data_dir / "config" / "companies.yaml",
+        settings.project_root / "data" / "config" / "companies.yaml",
+        Path("/app/seed_config/companies.yaml"),
+        Path("/app/data/config/companies.yaml"),
+        Path(__file__).resolve().parent.parent.parent.parent / "data" / "config" / "companies.yaml",
+    ]
+
+    yaml_path = None
+    for p in candidate_paths:
+        if p.exists():
+            yaml_path = p
+            break
+
+    if not yaml_path:
+        logger.warning(f"Companies YAML missing at {settings.data_dir / 'config' / 'companies.yaml'}")
         return []
+
+    # Initialize volume location from seed if running with mounted volume
+    target_vol_path = settings.data_dir / "config" / "companies.yaml"
+    if yaml_path != target_vol_path and not target_vol_path.exists():
+        try:
+            target_vol_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(yaml_path, target_vol_path)
+            logger.info(f"Initialized volume companies catalog at {target_vol_path} from {yaml_path}")
+        except Exception as e:
+            logger.debug(f"Could not copy seed companies to volume: {e}")
 
     with open(yaml_path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
