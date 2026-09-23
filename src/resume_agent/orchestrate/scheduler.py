@@ -22,7 +22,7 @@ SCHEDULED_SLOTS: List[Tuple[dtime, str, bool]] = [
     (dtime(9, 0), "Morning Scan & Instant Apply", False),
     (dtime(13, 30), "Afternoon Scan & Instant Apply", False),
     (dtime(17, 30), "Evening Scan & Instant Apply", False),
-    (dtime(21, 0), "Night Finale & Executive Digest", True),
+    (dtime(21, 0), "Night Finale Scan & 09:30 PM Executive Digest", True),
 ]
 
 
