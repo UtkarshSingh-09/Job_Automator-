@@ -26,7 +26,10 @@
     "LangChain",
     "RAG",
     "SLMs",
-    "LLMs (GPT-4, Llama-3)"
+    "LLMs (GPT-4, Llama-3)",
+    "Fine-tuning",
+    "NLP",
+    "Deep Learning"
   ],
   "coursework": [
     "Data Structures & Algorithms",

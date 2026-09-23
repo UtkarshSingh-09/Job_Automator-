@@ -231,14 +231,14 @@ def run_daily_pipeline(
             telegram.send_daily_digest(stats)
         elif send_telegram and not send_digest:
             slot_name = slot_label or "Scheduled Scan"
-            matched_cnt = len(stats.get("matches", []))
-            if matched_cnt == 0:
+            valid_cnt = len([m for m in stats.get("matches", []) if m.get("is_valid")])
+            if valid_cnt == 0:
                 logger.info(f"Dispatching slot heartbeat to Telegram ({slot_name})...")
                 telegram.send_message(
                     f"📡 <b>{slot_name} Complete</b>\n\n"
                     f"• ATS Boards Monitored: <b>{stats['boards_monitored']}</b>\n"
                     f"• Postings Scanned & Analyzed: <b>{stats['jobs_ingested']}</b>\n"
-                    f"• Qualifying Internships: <i>0 new high-fit roles detected in this slot window.</i>\n\n"
+                    f"• Qualifying Internships: <i>0 new validated high-fit roles detected in this slot window.</i>\n\n"
                     f"💤 <i>Engine sleeping until next scheduled IST slot.</i>"
                 )
 

@@ -110,11 +110,12 @@ def is_profile_confirmed() -> bool:
         return bool(row and row["confirmed_at"])
 
 
-def ensure_candidate_profile() -> Optional[ProfileModel]:
-    """Ensure candidate profile exists in SQLite database, initializing from seed JSON if missing."""
-    p = get_profile()
-    if p is not None:
-        return p
+def ensure_candidate_profile(force_reload: bool = False) -> Optional[ProfileModel]:
+    """Ensure candidate profile exists in SQLite database, initializing from seed JSON if missing or force_reload."""
+    if not force_reload:
+        p = get_profile()
+        if p is not None:
+            return p
 
     from pathlib import Path
     from resume_agent.config import get_settings

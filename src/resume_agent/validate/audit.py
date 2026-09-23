@@ -55,6 +55,8 @@ def _assemble_candidate_ground_truth(
         "react", "next.js", "nextjs", "langgraph", "langchain", "pytorch", "sentence-transformers",
         "transformers", "lora", "grpo", "openenv", "trl", "unsloth", "mediapipe", "three.js", "pydantic",
         "raw sockets", "tcp", "udp", "rag", "retrieval-augmented generation", "slms", "llms",
+        "fine-tuning", "finetuning", "model fine-tuning", "prompt engineering", "nlp",
+        "deep learning", "reinforcement learning", "rl", "vector search", "embeddings"
     ]
     for item in foundational:
         truth_tokens.add(item.lower())
