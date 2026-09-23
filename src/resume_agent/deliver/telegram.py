@@ -219,7 +219,31 @@ class TelegramClient:
         resumes_validated = stats.get("resumes_validated", 0)
         applied_count = stats.get("applied_count", 0)
 
-        match_items = stats.get("matches", [])
+        match_items = list(stats.get("matches", []))
+
+        # Query database to aggregate all jobs processed/applied throughout the entire day
+        try:
+            from resume_agent.db import get_db
+            with get_db() as conn:
+                db_apps = conn.execute("""
+                    SELECT j.company_name as company, j.title, j.apply_url, m.overall_fit as score, m.pdf_path
+                    FROM applications a
+                    JOIN matches m ON a.match_id = m.id
+                    JOIN jobs j ON m.job_id = j.id
+                    WHERE DATE(a.submit_attempted_at) = DATE('now')
+                       OR DATE(a.applied_at) = DATE('now')
+                    ORDER BY a.submit_attempted_at DESC;
+                """).fetchall()
+                if db_apps:
+                    applied_count = max(applied_count, len(db_apps))
+                    existing_pairs = {(m.get("company"), m.get("title")) for m in match_items}
+                    for r in db_apps:
+                        pair = (r["company"], r["title"])
+                        if pair not in existing_pairs:
+                            match_items.append(dict(r))
+                            existing_pairs.add(pair)
+        except Exception as e:
+            logger.debug(f"Could not aggregate daily apps from DB: {e}")
         if match_items:
             bullets = []
             for idx, m in enumerate(match_items[:8], 1):
