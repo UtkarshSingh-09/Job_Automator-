@@ -62,14 +62,22 @@ def run_ist_daemon(run_immediately: bool = False, dry_run: bool = False):
     Autonomous Railway/Cloud Daemon that loops continuously, sleeping
     until each designated IST slot to minimize CPU/RAM utilization.
     """
+    from resume_agent.logging import setup_logging
+    from resume_agent.config import get_settings
+
+    settings = get_settings()
+    setup_logging(settings.log_level)
+
     console = Console()
-    console.print("[bold cyan]Starting Resume Agent 4-Slot IST Daemon Engine[/bold cyan]")
-    logger.info("Initializing database and verifying company catalog...")
+    console.print("[bold cyan]════════════════════════════════════════════════════════════[/bold cyan]")
+    console.print("[bold cyan]   🚀 Resume Agent 4-Slot IST Autonomous Daemon Engine    [/bold cyan]")
+    console.print("[bold cyan]════════════════════════════════════════════════════════════[/bold cyan]")
+    logger.info("Initializing SQLite database migrations & catalog...")
 
     # Ensure DB schema and seed companies exist on container start
-    run_migrations()
+    applied = run_migrations()
     seeded = seed_companies_from_yaml()
-    logger.info(f"Database ready with {seeded} seed companies.")
+    logger.info(f"Database ready: applied {len(applied)} migrations, loaded {seeded} seed companies.")
 
     running = True
 
