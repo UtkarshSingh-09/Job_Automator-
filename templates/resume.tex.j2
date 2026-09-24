@@ -10,7 +10,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\IfFileExists{lmodern.sty}{\usepackage{lmodern}}{}
 
 \pagestyle{fancy}
 \fancyhf{}
