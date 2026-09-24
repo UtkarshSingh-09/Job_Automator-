@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 from resume_agent.db import get_db
 from resume_agent.models import JobModel, CompanyModel

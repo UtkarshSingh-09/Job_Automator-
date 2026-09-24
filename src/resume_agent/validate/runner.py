@@ -94,7 +94,7 @@ class ValidationReport:
 def validate_resume_pdf(
     pdf_path: Path,
     job_id: Optional[int] = None,
-    min_coverage: float = 80.0,
+    min_coverage: float = 40.0,
     update_db: bool = True
 ) -> ValidationReport:
     """

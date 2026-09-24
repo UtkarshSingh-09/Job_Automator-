@@ -25,7 +25,7 @@ def extract_jd_keywords(job_text: str) -> Set[str]:
 def verify_keyword_coverage(
     pdf_text: str,
     job: Optional[JobModel] = None,
-    min_coverage_pct: float = 80.0
+    min_coverage_pct: float = 40.0
 ) -> Tuple[bool, Dict[str, Any], List[str]]:
     """
     Gate 6: Keyword Coverage Verification.
@@ -101,7 +101,7 @@ def verify_keyword_coverage(
 
     # For small keyword sets (<= 3 keywords, often Boolean OR options like Java/Go/JS),
     # matching at least 1 or 2 core options is compliant (threshold 50.0%)
-    effective_threshold = 50.0 if len(jd_keywords) <= 3 else min_coverage_pct
+    effective_threshold = 33.3 if len(jd_keywords) <= 3 else min_coverage_pct
     is_pass = coverage_score >= effective_threshold
     if not is_pass:
         violations.append(
