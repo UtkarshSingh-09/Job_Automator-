@@ -17,14 +17,16 @@ NON_TECH_EXCLUSIONS = re.compile(
     r"\b(accounting|accountant|recruitment|recruiter|talent acquisition|hr\b|human resources|"
     r"legal|paralegal|tax|brokerage|underwriting|real estate|nurse|medical|clinical|"
     r"video editor|youtube|social media|content creator|copywriter|sales|business development|"
-    r"operations associate|workplace experience|facilities|office manager|executive assistant)\b",
+    r"marketing|growth marketing|finance|financial|investment|fraud|prediction market|"
+    r"business operations|bizops|operations associate|workplace experience|facilities|office manager|executive assistant)\b",
     re.IGNORECASE
 )
 
 TECH_ROLE_KEYWORDS = re.compile(
     r"\b(software|engineer|developer|data|ml\b|machine learning|ai\b|artificial intelligence|"
     r"systems|infra|backend|frontend|full.?stack|devops|security|quant|quantitative|algorithm|"
-    r"computer science|research|deep learning|nlp|robotics|computational)\b",
+    r"computer science|research|deep learning|nlp|robotics|computational|sde|coding|programmer|"
+    r"platform|cloud|distributed systems|embedded|firmware|qa|test|automation|sre|web|android|ios|mobile)\b",
     re.IGNORECASE
 )
 
@@ -64,6 +66,11 @@ def evaluate_job_filter(title: str, location: str, description: str) -> Tuple[bo
         include_match = INCLUDE_REGEX.search(desc_preview[:500])
         if not include_match:
             return False, "Title does not match internship/entry-level patterns"
+
+    # 2.5 Must be a technical role (software, engineering, data, AI, systems, devops, quant)
+    is_tech_role = bool(TECH_ROLE_KEYWORDS.search(title_lower) or TECH_ROLE_KEYWORDS.search(desc_preview[:500]))
+    if not is_tech_role:
+        return False, "Role is not technical (software/engineering/data/AI/systems)"
 
     # 3. Location filtering: check if in India or open Remote
     if NON_INDIA_RESTRICTIONS.search(loc_lower) or NON_INDIA_RESTRICTIONS.search(desc_preview[:500]):
