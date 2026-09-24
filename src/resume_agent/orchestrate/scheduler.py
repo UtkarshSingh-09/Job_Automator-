@@ -75,10 +75,12 @@ def run_ist_daemon(run_immediately: bool = False, dry_run: bool = False):
     console.print("[bold cyan]════════════════════════════════════════════════════════════[/bold cyan]")
     logger.info("Initializing SQLite database migrations & catalog...")
 
-    # Ensure DB schema and seed companies exist on container start
+    # Ensure DB schema, seed companies, and verified jobs exist on container start
     applied = run_migrations()
     seeded = seed_companies_from_yaml()
-    logger.info(f"Database ready: applied {len(applied)} migrations, loaded {seeded} seed companies.")
+    from resume_agent.jobs.service import seed_verified_jobs
+    seeded_jobs = seed_verified_jobs()
+    logger.info(f"Database ready: applied {len(applied)} migrations, loaded {seeded} seed companies, {seeded_jobs} verified fresher roles.")
 
     # Ensure Candidate Profile and Verified Projects exist in DB
     from resume_agent.profile.service import ensure_candidate_profile

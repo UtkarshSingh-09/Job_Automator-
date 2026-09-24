@@ -24,7 +24,7 @@ class LLMClient:
         self,
         system_prompt: str,
         user_prompt: str,
-        max_tokens: int = 1500,
+        max_tokens: int = 450,
         temperature: float = 0.1,
     ) -> Optional[Dict[str, Any]]:
         """
@@ -44,7 +44,7 @@ class LLMClient:
         max_tokens: int,
         temperature: float,
     ) -> Optional[Dict[str, Any]]:
-        """Call OpenRouter chat completions endpoint."""
+        """Call OpenRouter chat completions endpoint with automatic token-budget management."""
         url = f"{self.settings.openrouter_base_url.rstrip('/')}/chat/completions"
         headers = {
             "Authorization": f"Bearer {self.settings.openrouter_api_key}",
@@ -59,7 +59,7 @@ class LLMClient:
                 {"role": "user", "content": user_prompt},
             ],
             "temperature": temperature,
-            "max_tokens": max_tokens,
+            "max_tokens": min(max_tokens, 450),
             "response_format": {"type": "json_object"},
         }
 
@@ -75,6 +75,10 @@ class LLMClient:
                     elif resp.status_code == 429 and attempt < 2:
                         logger.warning(f"OpenRouter 429 rate limit/admission control. Retrying in 2.5s (attempt {attempt+1}/3)...")
                         time.sleep(2.5)
+                        continue
+                    elif resp.status_code == 402 and attempt == 0:
+                        logger.warning("OpenRouter 402 in-flight token ceiling reached. Retrying with ultra-compact max_tokens=300...")
+                        payload["max_tokens"] = 300
                         continue
                     logger.warning(
                         f"OpenRouter API call failed with status {resp.status_code}: {resp.text}"

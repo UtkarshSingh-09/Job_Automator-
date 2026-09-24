@@ -77,26 +77,20 @@ def _evaluate_with_llm(
     for idx, (p, sim) in enumerate(candidates, 1):
         name = p.display_name or p.repo_name
         p_info = (
-            f"Candidate #{idx} [ID: {p.id}]: {name} (Repo: {p.repo_name})\n"
-            f"- Priority: P{p.priority} | Quality Score: {p.quality_score}/100 | Cosine Sim: {sim:.3f}\n"
-            f"- Primary Language: {p.primary_language} | Tech: {', '.join(p.languages[:8])}\n"
-            f"- Description: {p.description or 'N/A'}\n"
-            f"- Verified Highlights: {p.manual_notes or 'N/A'}\n"
+            f"Candidate #{idx} [ID: {p.id}]: {name} (P{p.priority}, Sim: {sim:.2f})\n"
+            f"- Tech: {', '.join(p.languages[:6])} | Quality: {p.quality_score}/100\n"
+            f"- Summary: {(p.manual_notes or p.description or 'N/A')[:180]}\n"
         )
-        if p.readme_md:
-            p_info += f"- README Excerpt: {p.readme_md[:600]}\n"
         candidates_text.append(p_info)
 
     user_prompt = (
         f"TARGET JOB POSTING:\n"
-        f"Company: {job.company_name}\n"
-        f"Title: {job.title}\n"
-        f"Location: {job.location}\n"
-        f"Remote Status: {job.remote_type}\n\n"
-        f"Job Description Excerpt:\n{job.description_md[:2000]}\n\n"
-        f"CANDIDATE'S 8 RETRIEVED PROJECTS:\n"
-        f"{'---'.join(candidates_text)}\n\n"
-        f"Select the Top 3 projects and compute the overall_fit (0-100). Return JSON only."
+        f"Company: {job.company_name} | Role: {job.title}\n"
+        f"Location: {job.location} | Remote: {job.remote_type}\n\n"
+        f"Job Description:\n{job.description_md[:1000]}\n\n"
+        f"CANDIDATE'S RETRIEVED PROJECTS:\n"
+        f"{''.join(candidates_text)}\n"
+        f"Select the Top 3 projects and compute overall_fit (0-100). Return JSON only."
     )
 
     result = client.generate_json(system_prompt, user_prompt)
@@ -124,7 +118,14 @@ def _evaluate_deterministically(
     # Score each candidate project on skill overlap + cosine sim
     project_scores = []
     for p, sim in candidates:
-        proj_tech = set(l.lower() for l in p.languages + p.topics)
+        proj_tech = set(l.lower() for l in p.languages)
+        for t in p.topics:
+            t_clean = t.lower()
+            proj_tech.add(t_clean)
+            proj_tech.add(t_clean.replace("-", " "))
+            for sub in t_clean.split("-"):
+                if len(sub) > 2:
+                    proj_tech.add(sub)
         if p.primary_language:
             proj_tech.add(p.primary_language.lower())
         overlap = list(proj_tech.intersection(jd_skills))
@@ -142,16 +143,16 @@ def _evaluate_deterministically(
     top_3 = project_scores[:3]
 
     # Calculate overall fit (0-100)
-    avg_sim = sum(sim for _, sim, _, _ in top_3) / 3.0
+    avg_sim = sum(sim for _, sim, _, _ in top_3) / max(1, len(top_3))
     covered_all = set()
     for _, _, overlap, _ in top_3:
         covered_all.update(overlap)
 
     # Scale fit score into 0-100
-    base_fit = min(95.0, max(45.0, (avg_sim * 60.0) + (len(covered_all) * 4.0)))
-    if any(p.priority == 1 for p, _, _, _ in top_3):
-        base_fit = min(96.0, base_fit + 8.0)
-
+    sim_component = min(75.0, avg_sim * 85.0)
+    tech_component = min(15.0, len(covered_all) * 3.0)
+    flagship_bonus = 10.0 if any(p.priority == 1 for p, _, _, _ in top_3) else 0.0
+    base_fit = min(96.0, max(50.0, sim_component + tech_component + flagship_bonus))
     overall_fit = round(base_fit, 1)
     uncovered = [s for s in list(jd_skills)[:5] if s not in covered_all]
 
@@ -229,9 +230,22 @@ def _save_match_to_db(job_id: int, match_data: Dict[str, Any]) -> MatchModel:
 def _load_skills_vocab() -> List[str]:
     """Load flat list of technical skill keywords from data/gazetteer/skills.yaml."""
     settings = get_settings()
-    skills_path = settings.data_dir / "gazetteer" / "skills.yaml"
-    if not skills_path.exists():
-        return ["python", "c++", "fastapi", "docker", "sql", "linux", "git", "rest api"]
+    candidate_paths = [
+        settings.data_dir / "gazetteer" / "skills.yaml",
+        settings.project_root / "data" / "gazetteer" / "skills.yaml",
+        Path("/app/data/gazetteer/skills.yaml"),
+        Path("/app/seed_gazetteer/skills.yaml"),
+        Path(__file__).resolve().parent.parent.parent.parent / "data" / "gazetteer" / "skills.yaml",
+    ]
+
+    skills_path = None
+    for p in candidate_paths:
+        if p.exists():
+            skills_path = p
+            break
+
+    if not skills_path:
+        return ["python", "c++", "fastapi", "docker", "sql", "linux", "git", "rest api", "quantitative", "trading"]
 
     try:
         with open(skills_path, "r", encoding="utf-8") as f:
@@ -243,4 +257,4 @@ def _load_skills_vocab() -> List[str]:
                         flat.extend([str(i).lower() for i in items])
             return flat
     except Exception:
-        return ["python", "c++", "fastapi", "docker", "sql", "linux"]
+        return ["python", "c++", "fastapi", "docker", "sql", "linux", "git", "quantitative", "trading"]

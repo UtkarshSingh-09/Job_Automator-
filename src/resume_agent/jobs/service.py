@@ -155,3 +155,63 @@ def _row_to_job(r) -> JobModel:
         content_hash=r["content_hash"],
         passed_filter=bool(r["passed_filter"]),
     )
+
+
+def seed_verified_jobs() -> int:
+    """
+    Seed verified fresher/intern jobs from data/config/seed_jobs.json into SQLite.
+    Guarantees container and fresh cloud instances always have a populated catalog.
+    """
+    import json
+    from resume_agent.config import get_settings
+    settings = get_settings()
+
+    candidate_paths = [
+        settings.data_dir / "config" / "seed_jobs.json",
+        settings.project_root / "data" / "config" / "seed_jobs.json",
+        Path("/app/seed_config/seed_jobs.json"),
+        Path("/app/data/config/seed_jobs.json"),
+        Path(__file__).resolve().parent.parent.parent.parent / "data" / "config" / "seed_jobs.json",
+    ]
+
+    seed_file = None
+    for p in candidate_paths:
+        if p.exists():
+            seed_file = p
+            break
+
+    if not seed_file:
+        logger.debug("No seed_jobs.json found; skipping seed.")
+        return 0
+
+    try:
+        with open(seed_file, "r", encoding="utf-8") as f:
+            jobs_data = json.load(f)
+    except Exception as e:
+        logger.warning(f"Failed to read seed_jobs.json: {e}")
+        return 0
+
+    inserted_count = 0
+    for j in jobs_data:
+        try:
+            job = JobModel(
+                company_id=j.get("company_id"),
+                company_name=j.get("company_name", ""),
+                title=j.get("title", ""),
+                location=j.get("location", ""),
+                remote_type=j.get("remote_type", "Onsite"),
+                description_md=j.get("description_md", ""),
+                apply_url=j.get("apply_url", ""),
+                source=j.get("source", "greenhouse"),
+                source_job_id=str(j.get("source_job_id", "")),
+                content_hash=j.get("content_hash", ""),
+                passed_filter=True,
+            )
+            if _upsert_job_to_db(job):
+                inserted_count += 1
+        except Exception as e:
+            logger.debug(f"Error seeding job {j.get('title')}: {e}")
+
+    logger.info(f"Verified jobs catalog: loaded {len(jobs_data)} entries, inserted {inserted_count} new.")
+    return inserted_count
+

@@ -124,3 +124,35 @@ core_engineering:
   - integration testing
   - microservices
   - clean architecture
+
+quant_and_trading:
+  - quantitative
+  - quant
+  - trading
+  - statistical analysis
+  - probability
+  - mathematics
+  - predictive modeling
+  - predictive models
+  - algorithmic trading
+  - market data
+  - financial markets
+  - financial modeling
+  - risk management
+  - credit risk
+  - time series
+  - signal generation
+  - backtesting
+  - portfolio management
+
+data_and_analytics:
+  - data analysis
+  - data analytics
+  - data engineering
+  - etl
+  - data pipeline
+  - data pipelines
+  - data mining
+  - feature engineering
+  - business intelligence
+  - big data

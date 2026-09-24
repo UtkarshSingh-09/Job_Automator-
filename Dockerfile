@@ -27,6 +27,8 @@ RUN playwright install --with-deps chromium
 COPY templates/ ./templates/
 COPY data/config/ ./data/config/
 COPY data/config/ /app/seed_config/
+COPY data/gazetteer/ ./data/gazetteer/
+COPY data/gazetteer/ /app/seed_gazetteer/
 COPY migrations/ ./migrations/
 
 # Create runtime directories for data volume

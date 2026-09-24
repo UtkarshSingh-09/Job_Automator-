@@ -21,7 +21,7 @@ def run_daily_pipeline(
     send_telegram: bool = True,
     send_digest: bool = True,
     auto_apply: bool = False,
-    min_fit_threshold: float = 65.0,
+    min_fit_threshold: float = 60.0,
     date_str: Optional[str] = None,
     slot_label: Optional[str] = None,
 ) -> Dict[str, Any]:
