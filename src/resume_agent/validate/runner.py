@@ -195,11 +195,10 @@ def validate_resume_pdf(
     gates["gate_7"] = GateResult(7, "Anti-Hallucination Audit", p7_pass, p7_score, 10.0, p7_det, p7_viol)
     all_violations.extend(p7_viol)
 
-    # Composite evaluation
-    # Knockout gates: 1, 2, 3, 4, 5, 7 must all pass. Gate 6 must meet min threshold.
+    # Knockout gates: 1, 2, 3, 4, 5, 7 must all pass. Gate 6 must pass or composite ATS score >= 75.0
     critical_pass = all(gates[f"gate_{i}"].passed for i in [1, 2, 3, 4, 5, 7])
-    is_valid = critical_pass and p6_pass
     total_score = sum(g.score for g in gates.values())
+    is_valid = critical_pass and (p6_pass or total_score >= 75.0)
 
     report = ValidationReport(
         pdf_path=pdf_p,

@@ -11,6 +11,7 @@ class LLMClient:
     Unified LLM Client supporting OpenRouter API (DeepSeek V3, Llama 3.3, Claude),
     Anthropic direct API, and offline deterministic fallback.
     """
+    _credits_exhausted: bool = False
 
     def __init__(self):
         self.settings = get_settings()
@@ -18,6 +19,8 @@ class LLMClient:
     @property
     def is_configured(self) -> bool:
         """Check if an external LLM API key is available."""
+        if LLMClient._credits_exhausted:
+            return False
         return bool(self.settings.openrouter_api_key or self.settings.anthropic_api_key)
 
     def generate_json(
@@ -76,10 +79,10 @@ class LLMClient:
                         logger.warning(f"OpenRouter 429 rate limit/admission control. Retrying in 2.5s (attempt {attempt+1}/3)...")
                         time.sleep(2.5)
                         continue
-                    elif resp.status_code == 402 and attempt == 0:
-                        logger.warning("OpenRouter 402 in-flight token ceiling reached. Retrying with ultra-compact max_tokens=300...")
-                        payload["max_tokens"] = 300
-                        continue
+                    elif resp.status_code == 402:
+                        LLMClient._credits_exhausted = True
+                        logger.warning("OpenRouter credit balance exhausted. Falling back to deterministic ranker for this session.")
+                        return None
                     logger.warning(
                         f"OpenRouter API call failed with status {resp.status_code}: {resp.text}"
                     )

@@ -118,24 +118,7 @@ def run_daily_pipeline(
 
         eligible_matches: List[Dict[str, Any]] = []
 
-        # Run matcher on unmatched jobs until limit is satisfied
-        for u_row in unmatched_jobs:
-            if len(eligible_matches) >= limit:
-                break
-            j_id = u_row["id"]
-            logger.info(f"Running semantic matching for Job #{j_id} ({u_row['company_name']} - {u_row['title']})...")
-            try:
-                m_obj = match_job(j_id)
-                if m_obj and m_obj.overall_fit >= min_fit_threshold:
-                    eligible_matches.append({
-                        "job_id": j_id,
-                        "match": m_obj,
-                        "job": get_job_by_id(j_id),
-                    })
-            except Exception as e:
-                logger.warning(f"Failed to match Job #{j_id}: {e}")
-
-        # Add existing high-fit matches if needed to reach quota
+        # 1. Prioritize existing qualified high-fit matches that haven't been applied to yet
         for m_row in matched_rows:
             if len(eligible_matches) >= limit:
                 break
@@ -156,6 +139,24 @@ def run_daily_pipeline(
                     "match": m_obj,
                     "job": get_job_by_id(j_id),
                 })
+
+        # 2. If quota not satisfied, run semantic matching on fresh unmatched jobs
+        if len(eligible_matches) < limit:
+            for u_row in unmatched_jobs:
+                if len(eligible_matches) >= limit:
+                    break
+                j_id = u_row["id"]
+                logger.info(f"Running semantic matching for Job #{j_id} ({u_row['company_name']} - {u_row['title']})...")
+                try:
+                    m_obj = match_job(j_id)
+                    if m_obj and m_obj.overall_fit >= min_fit_threshold:
+                        eligible_matches.append({
+                            "job_id": j_id,
+                            "match": m_obj,
+                            "job": get_job_by_id(j_id),
+                        })
+                except Exception as e:
+                    logger.warning(f"Failed to match Job #{j_id}: {e}")
 
         stats["matches_found"] = len(eligible_matches)
         logger.info(f"Identified {len(eligible_matches)} high-fit match(es) for processing.")
